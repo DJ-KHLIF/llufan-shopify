@@ -1,0 +1,128 @@
+{%- comment -%}
+  Bloc d'information réutilisable : sert aux pages Aide et Informations
+  (La marque, Livraison, Paiement, Échanges et retours, Mentions légales,
+  CGV, Politique de confidentialité).
+
+  Tout est modifiable dans l'éditeur : sur-titre, titre, introduction, blocs
+  (icône, titre, texte, lien) et note de bas de page. Les textes livrés sont des
+  textes de DÉMONSTRATION : le bandeau du haut le rappelle à l'écran tant que
+  le réglage « Bandeau d'avertissement » n'a pas été vidé.
+
+  Les liens saisis acceptent une cible lisible (« pages/livraison »,
+  « collections/allaitement ») : la résolution passe par le snippet « lien »,
+  qui masque le lien tant que la page cible n'existe pas.
+{%- endcomment -%}
+
+{%- assign nb_blocs = 0 -%}
+{%- for block in section.blocks -%}
+  {%- if block.settings.titre != blank -%}{%- assign nb_blocs = nb_blocs | plus: 1 -%}{%- endif -%}
+{%- endfor -%}
+
+{%- capture cta -%}{%- render 'lien', valeur: section.settings.cta_lien -%}{%- endcapture -%}
+{%- assign cta = cta | strip -%}
+
+<div class="section-spacing color-scheme color-scheme--scheme-1">
+  <div class="container container--md">
+    <div class="section-stack">
+
+      {%- if section.settings.bandeau_demo != blank -%}
+        <p class="info-page__demo">{{ section.settings.bandeau_demo }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.eyebrow != blank or section.settings.heading != blank -%}
+        <div class="v-stack gap-2">
+          {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+          {%- if section.settings.heading != blank -%}<h2 class="h3">{{ section.settings.heading }}</h2>{%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.intro != blank -%}
+        <div class="prose">{{ section.settings.intro }}</div>
+      {%- endif -%}
+
+      {%- if nb_blocs > 0 -%}
+        <div class="info-page__blocs">
+          {%- for block in section.blocks -%}
+            {%- if block.settings.titre == blank -%}{%- continue -%}{%- endif -%}
+            {%- capture lien_bloc -%}{%- render 'lien', valeur: block.settings.lien -%}{%- endcapture -%}
+            {%- assign lien_bloc = lien_bloc | strip -%}
+            <div class="info-page__bloc" {{ block.shopify_attributes }}>
+              {%- if block.settings.icone != blank -%}
+                <span class="info-page__icone">{% render 'icons', icon: block.settings.icone, size: 24 %}</span>
+              {%- endif -%}
+              <div class="v-stack gap-2">
+                <h3 class="h6">{{ block.settings.titre }}</h3>
+                {%- if block.settings.texte != blank -%}
+                  <div class="prose info-page__texte">{{ block.settings.texte }}</div>
+                {%- endif -%}
+                {%- if block.settings.lien_label != blank and lien_bloc != blank -%}
+                  <a class="link info-page__lien" href="{{ lien_bloc }}">{{ block.settings.lien_label }}</a>
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.note != blank -%}
+        <div class="prose info-page__note">{{ section.settings.note }}</div>
+      {%- endif -%}
+
+      {%- if section.settings.cta_label != blank and cta != blank -%}
+        <div><a class="button" href="{{ cta }}">{{ section.settings.cta_label }}</a></div>
+      {%- endif -%}
+
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Page d'information",
+  "tag": "section",
+  "settings": [
+    { "type": "paragraph", "content": "Section modifiable ici même : sur-titre, titre, introduction, blocs et note. Les textes livrés sont des textes de démonstration — videz le bandeau d'avertissement une fois vos contenus en place." },
+    { "type": "text", "id": "bandeau_demo", "label": "Bandeau d'avertissement (haut de page)", "default": "Contenu de démonstration — à remplacer avant la mise en ligne." },
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre" },
+    { "type": "text", "id": "heading", "label": "Titre de la section" },
+    { "type": "richtext", "id": "intro", "label": "Introduction" },
+    { "type": "header", "content": "Bas de page" },
+    { "type": "richtext", "id": "note", "label": "Note" },
+    { "type": "text", "id": "cta_label", "label": "Libellé du bouton" },
+    { "type": "url", "id": "cta_lien", "label": "Lien du bouton", "info": "Accepte une page (« pages/livraison ») ou une collection (« collections/allaitement »). Tant que la cible n'existe pas, le bouton reste masqué." }
+  ],
+  "blocks": [
+    {
+      "type": "bloc",
+      "name": "Bloc d'information",
+      "settings": [
+        { "type": "select", "id": "icone", "label": "Icône", "options": [
+          { "value": "heart", "label": "Cœur" },
+          { "value": "star", "label": "Étoile" },
+          { "value": "sparkle", "label": "Étincelles" },
+          { "value": "flower", "label": "Fleur" },
+          { "value": "shipping", "label": "Livraison" },
+          { "value": "payment", "label": "Paiement" },
+          { "value": "locker", "label": "Casier" },
+          { "value": "lock", "label": "Cadenas" },
+          { "value": "tag", "label": "Étiquette" },
+          { "value": "mail", "label": "Enveloppe" },
+          { "value": "whatsapp", "label": "WhatsApp" },
+          { "value": "account", "label": "Personne" },
+          { "value": "gift", "label": "Cadeau" }
+        ], "default": "heart" },
+        { "type": "text", "id": "titre", "label": "Titre" },
+        { "type": "richtext", "id": "texte", "label": "Texte" },
+        { "type": "text", "id": "lien_label", "label": "Libellé du lien (facultatif)" },
+        { "type": "url", "id": "lien", "label": "Lien" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Page d'information",
+      "blocks": [ { "type": "bloc" }, { "type": "bloc" }, { "type": "bloc" }, { "type": "bloc" } ]
+    }
+  ]
+}
+{% endschema %}

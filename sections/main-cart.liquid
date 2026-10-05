@@ -1,0 +1,95 @@
+{%- comment -%}
+  Page panier — articles puis formulaire de commande (section « Commande — livraison DZ »).
+  Parcours volontairement court : les articles, un bouton de mise à jour discret,
+  et tout de suite le formulaire qui affiche sous-total, frais de livraison et total.
+  Le passage en caisse Shopify reste disponible par un réglage, mais il n'est pas
+  affiché par défaut : la commande se fait en paiement à la livraison.
+{%- endcomment -%}
+<div class="section-spacing color-scheme color-scheme--scheme-1">
+  {%- if cart.item_count == 0 -%}
+    {%- comment -%}
+      Panier vide : même mise en page que la référence — titre, message et bouton
+      centrés dans une colonne étroite. Le titre reste un h1, à la taille des
+      titres de section de la référence.
+    {%- endcomment -%}
+    <div class="container container--xs">
+      <div class="empty-state">
+        <div class="prose">
+          <h1 class="h4">{{ 'cart.title' | t }}</h1>
+          <p>{{ 'cart.empty' | t }}</p>
+          <a href="{{ routes.all_products_collection_url }}" class="button">{{ 'cart.continue_shopping' | t }}</a>
+        </div>
+      </div>
+    </div>
+  {%- else -%}
+    <div class="container container--md">
+      <div class="section-stack">
+        <h1 class="h2 text-center">{{ 'cart.title' | t }}</h1>
+        <form action="{{ routes.cart_url }}" method="post" novalidate>
+          <div class="line-items">
+            {%- for item in cart.items -%}
+              {%- assign line_index = forloop.index -%}
+              {% render 'cart-line-item', item: item, line_index: line_index %}
+            {%- endfor -%}
+          </div>
+          {%- if settings.cart_show_note -%}
+            <label class="field" style="margin-block-start:1.5rem">
+              <span class="field__label">{{ 'cart.note' | t }}</span>
+              <textarea class="textarea" name="note" rows="3">{{ cart.note }}</textarea>
+            </label>
+          {%- endif -%}
+          {%- if section.settings.show_subtotal -%}
+            <div class="cart-totals">
+              <div class="cart-totals__row cart-totals__row--total">
+                <span>{{ 'cart.subtotal' | t }}</span>
+                <span>{{ cart.total_price | money }}</span>
+              </div>
+              <p class="text-subdued" style="font-size:var(--text-xs)">{{ 'cart.taxes_and_shipping_note' | t }}</p>
+            </div>
+          {%- endif -%}
+          {%- if section.settings.show_update_button -%}
+            <p class="cart-update">
+              <button type="submit" name="update" class="cart-update__button">{{ 'cart.update' | t }}</button>
+            </p>
+          {%- endif -%}
+
+          {%- if section.settings.show_checkout_button -%}
+            <div class="v-stack gap-3">
+              <button type="submit" name="checkout" class="button button--navy button--lg">{{ 'cart.checkout' | t }}</button>
+            </div>
+          {%- endif -%}
+        </form>
+      </div>
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Panier",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_subtotal",
+      "label": "Afficher le sous-total au-dessus du formulaire",
+      "default": false,
+      "info": "Décoché : le formulaire de commande affiche déjà le sous-total, les frais de livraison et le total."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_update_button",
+      "label": "Afficher « Mettre à jour »",
+      "default": true,
+      "info": "Affiché en petit sous les articles, pour recalculer après un changement de quantité."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_checkout_button",
+      "label": "Afficher le bouton de passage en caisse Shopify",
+      "default": false,
+      "info": "Décoché par défaut : la commande se fait dans le formulaire, en paiement à la livraison."
+    }
+  ]
+}
+{% endschema %}

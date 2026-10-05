@@ -1,0 +1,72 @@
+{%- comment -%}
+  Bandeau de produits d'une collection — titre en capitales centré, carrousel
+  de cartes produit (4 visibles sur ordinateur), flèches de défilement et
+  bouton « Voir tout » centré en dessous (structure observée).
+{%- endcomment -%}
+<div class="section-spacing color-scheme color-scheme--scheme-1">
+  <div class="container">
+    <div class="section-stack">
+      <div class="v-stack gap-4 text-center justify-self-center">
+        {%- if section.settings.heading != blank -%}<h2 class="h2">{{ section.settings.heading }}</h2>{%- endif -%}
+      </div>
+      <div class="carousel-wrapper relative">
+        <scroll-carousel class="product-list product-list--carousel scroll-area">
+          {%- assign badge_blocks = section.blocks | where: 'type', 'badge' -%}
+          {%- for product in section.settings.collection.products limit: section.settings.products_count -%}
+            {% render 'product-card', product: product, badge_blocks: badge_blocks, reveal: false %}
+          {%- else -%}
+            {%- for i in (1..4) -%}
+              <div class="product-card">
+                <div class="product-card__figure">{{ 'product-1' | placeholder_svg_tag: 'product-card__image' }}</div>
+                <div class="product-card__info"><span class="product-card__title">{{ 'onboarding.product_title' | t }}</span></div>
+              </div>
+            {%- endfor -%}
+          {%- endfor -%}
+        </scroll-carousel>
+        <div class="carousel-nav" style="position:absolute;top:-3.25rem;right:0">
+          <button type="button" class="circle-button circle-button--sm" data-carousel-prev aria-label="{{ 'accessibility.previous' | t }}">{% render 'icons', icon: 'arrow-left', size: 14 %}</button>
+          <button type="button" class="circle-button circle-button--sm" data-carousel-next aria-label="{{ 'accessibility.next' | t }}">{% render 'icons', icon: 'arrow-right', size: 14 %}</button>
+        </div>
+      </div>
+      {%- capture lien_bouton -%}{%- render 'lien', valeur: section.settings.button_link -%}{%- endcapture -%}
+      {%- assign destination = lien_bouton | strip | default: section.settings.collection.url | default: routes.all_products_collection_url -%}
+      {%- if section.settings.button_label != blank -%}
+        <div class="justify-self-center">
+          <a href="{{ destination }}" class="button">{{ section.settings.button_label }}</a>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Produits d'une collection",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Titre" },
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "range", "id": "products_count", "min": 4, "max": 12, "step": 1, "label": "Nombre de produits", "default": 8 },
+    { "type": "text", "id": "button_label", "label": "Libellé du bouton" },
+    { "type": "url", "id": "button_link", "label": "Lien du bouton (sinon la collection)" }
+  ],
+  "blocks": [
+    {
+      "type": "badge",
+      "name": "Badge produit",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Libellé du badge", "info": "Les mentions telles que « best-seller » ou « fabrication » ne doivent être ajoutées que si elles sont exactes." },
+        { "type": "select", "id": "color", "label": "Couleur", "options": [
+          { "value": "peach", "label": "Pêche" },
+          { "value": "navy", "label": "Bleu foncé" },
+          { "value": "sage", "label": "Sauge" },
+          { "value": "lilac", "label": "Lilas" },
+          { "value": "coral", "label": "Corail" }
+        ], "default": "peach" },
+        { "type": "product_list", "id": "products", "label": "Produits concernés", "info": "Laisser vide pour appliquer le badge à tous les produits de la section.", "limit": 24 }
+      ]
+    }
+  ],
+  "presets": [ { "name": "Produits d'une collection", "blocks": [ { "type": "badge" } ] } ]
+}
+{% endschema %}

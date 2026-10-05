@@ -1,0 +1,77 @@
+{%- comment -%}
+  « hide_on_purchase » : les trois sections de l'en-tête de page disparaissent
+  ensemble sur la page panier (passage à l'achat), quand le réglage du thème
+  « Masquer l'en-tête au passage à l'achat » est actif.
+{%- endcomment -%}
+{%- assign hide_on_purchase = false -%}
+{%- if settings.hide_header_on_purchase and template.name == 'cart' -%}{%- assign hide_on_purchase = true -%}{%- endif -%}
+{%- comment -%}
+  Pré-bandeau corail — 4 raccourcis avec icônes (structure observée :
+  Mama's Club / La Marque / Pièces détachées / Aide FAQ).
+  Libellés et liens à renseigner par LLUFAN.
+{%- endcomment -%}
+{%- if section.blocks.size > 0 and hide_on_purchase != true -%}
+  <div class="preheader">
+    <div class="container">
+      <div class="preheader__inner" data-preheader>
+        {%- for block in section.blocks -%}
+          {%- if block.settings.label != blank -%}
+            {%- comment -%}
+              Destination : le lien saisi, sinon la page « club-maman » quand le
+              raccourci est marqué « mène au Club Maman ». Sinon, texte simple.
+            {%- endcomment -%}
+            {%- capture lien_raccourci_resolu -%}{%- render 'lien', valeur: block.settings.link -%}{%- endcapture -%}
+            {%- assign lien_raccourci = lien_raccourci_resolu | strip -%}
+            {%- if lien_raccourci == blank and block.settings.vers_le_club and pages['club-maman'] != blank -%}
+              {%- assign lien_raccourci = pages['club-maman'].url -%}
+            {%- endif -%}
+            {%- if lien_raccourci != blank -%}
+              <a class="preheader__item" href="{{ lien_raccourci }}" {{ block.shopify_attributes }}>
+                {% render 'icons', icon: block.settings.icon, size: 16 %}
+                <span>{{ block.settings.label }}</span>
+              </a>
+            {%- else -%}
+              <span class="preheader__item" {{ block.shopify_attributes }}>
+                {% render 'icons', icon: block.settings.icon, size: 16 %}
+                <span>{{ block.settings.label }}</span>
+              </span>
+            {%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Pré-bandeau",
+  "class": "shopify-section--preheader",
+  "enabled_on": { "groups": ["header"] },
+  "settings": [],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Raccourci",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Libellé" },
+        { "type": "url", "id": "link", "label": "Lien" },
+        { "type": "checkbox", "id": "vers_le_club", "label": "Ce raccourci mène au Club Maman", "default": false },
+        { "type": "select", "id": "icon", "label": "Icône", "options": [
+          { "value": "heart", "label": "Cœur (Espace maman)" },
+          { "value": "star", "label": "Étoile (La marque)" },
+          { "value": "tag", "label": "Étiquette (Pièces détachées)" },
+          { "value": "mail", "label": "Enveloppe (Aide / FAQ)" },
+          { "value": "flower", "label": "Fleur" },
+          { "value": "shipping", "label": "Livraison" },
+          { "value": "payment", "label": "Paiement" },
+          { "value": "gift", "label": "Cadeau" },
+          { "value": "locker", "label": "Casier" },
+          { "value": "sparkle", "label": "Étincelles" }
+        ], "default": "heart" }
+      ]
+    }
+  ],
+  "presets": [ { "name": "Pré-bandeau", "blocks": [ { "type": "item" }, { "type": "item" }, { "type": "item" }, { "type": "item" } ] } ]
+}
+{% endschema %}

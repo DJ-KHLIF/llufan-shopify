@@ -1,0 +1,208 @@
+{
+  "general": {
+    "accueil": "الرئيسية",
+    "page": "صفحة",
+    "country": "البلد",
+    "language": "اللغة",
+    "pagination": "ترقيم الصفحات",
+    "search": {
+      "title": "بحث"
+    },
+    "404": {
+      "title": "هذه الصفحة غير موجودة",
+      "subtext": "قد يكون الرابط غير صحيح أو تم نقل الصفحة.",
+      "link": "تصفّح كل المنتجات"
+    }
+  },
+  "accessibility": {
+    "skip_to_content": "الانتقال إلى المحتوى",
+    "close": "إغلاق",
+    "previous": "السابق",
+    "next": "التالي",
+    "menu": "القائمة",
+    "search": "بحث",
+    "cart": "السلة",
+    "account": "الحساب",
+    "primary_nav": "القائمة الرئيسية",
+    "go_to_item": "الانتقال إلى العنصر",
+    "scroll_down": "الانتقال إلى القسم التالي"
+  },
+  "products": {
+    "product": {
+      "sold_out": "نفد المخزون",
+      "add_to_cart": "أضف إلى السلة",
+      "adding": "جارٍ الإضافة…",
+      "choose": "اختاري",
+      "quantity": "الكمية",
+      "decrease_quantity": "إنقاص الكمية",
+      "increase_quantity": "زيادة الكمية",
+      "in_stock": "متوفّر",
+      "out_of_stock": "نفد المخزون",
+      "media": "عنصر",
+      "share": "مشاركة",
+      "on_sale": "تخفيض",
+      "play_video": "تشغيل الفيديو"
+    },
+    "reviews": {
+      "rating": "التقييم"
+    }
+  },
+  "collections": {
+    "products_count": {
+      "zero": "لا منتجات",
+      "one": "منتج واحد",
+      "two": "منتجان",
+      "few": "{{ count }} منتجات",
+      "many": "{{ count }} منتجًا",
+      "other": "{{ count }} منتج"
+    },
+    "results": {
+      "zero": "لا نتائج لـ",
+      "one": "نتيجة واحدة لـ",
+      "two": "نتيجتان لـ",
+      "few": "{{ count }} نتائج لـ",
+      "many": "{{ count }} نتيجة لـ",
+      "other": "{{ count }} نتيجة لـ"
+    },
+    "empty": "لا توجد منتجات في هذه المجموعة حاليًا.",
+    "filters": {
+      "filter": "تصفية",
+      "count": {
+        "zero": "بلا مصفّيات",
+        "one": "مصفّاة واحدة",
+        "two": "مصفاتان",
+        "few": "{{ count }} مصفّيات",
+        "many": "{{ count }} مصفّاة",
+        "other": "{{ count }} مصفّاة"
+      },
+      "from": "من",
+      "to": "إلى",
+      "apply": "تطبيق",
+      "clear": "إلغاء الكل"
+    },
+    "sorting": {
+      "title": "الترتيب حسب"
+    }
+  },
+  "cart": {
+    "title": "السلة",
+    "empty": "سلتك فارغة",
+    "continue_shopping": "متابعة التسوّق",
+    "subtotal": "المجموع الفرعي",
+    "taxes_and_shipping_note": "تُحسب الرسوم والتوصيل عند تأكيد الطلب.",
+    "checkout": "إتمام الطلب",
+    "view_cart": "عرض السلة",
+    "note": "ملاحظة على الطلب",
+    "update": "تحديث",
+    "remove": "إزالة"
+  },
+  "search": {
+    "title": "بحث",
+    "placeholder": "ابحثي",
+    "results": {
+      "zero": "لا نتائج لـ « {{ terms }} »",
+      "one": "نتيجة واحدة لـ « {{ terms }} »",
+      "two": "نتيجتان لـ « {{ terms }} »",
+      "few": "{{ count }} نتائج لـ « {{ terms }} »",
+      "many": "{{ count }} نتيجة لـ « {{ terms }} »",
+      "other": "{{ count }} نتيجة لـ « {{ terms }} »"
+    },
+    "no_results": "لا نتائج. جرّبي كلمة أخرى."
+  },
+  "newsletter": {
+    "email": "البريد الإلكتروني",
+    "subscribe": "اشتراك"
+  },
+  "contact": {
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "subject": "الموضوع",
+    "message": "الرسالة",
+    "send": "إرسال",
+    "success": "شكرًا، تم إرسال رسالتك."
+  },
+  "sections": {
+    "hero": {
+      "image_placeholder": "صورة LLUFAN في انتظار تزويدنا بها"
+    },
+    "video": {
+      "placeholder": "فيديو LLUFAN في انتظار تزويدنا به",
+      "autoplay_note": "يبدأ الفيديو تلقائيًا وبدون صوت — كما في المرجع التصميمي."
+    },
+    "collection_banner": {
+      "image_placeholder": "صورة LLUFAN في انتظار تزويدنا بها"
+    }
+  },
+  "onboarding": {
+    "product_title": "عنوان المنتج (مثال للتخطيط)"
+  },
+  "customers": {
+    "login": "تسجيل الدخول",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "sign_in": "دخول",
+    "register": "إنشاء حساب",
+    "account": "حسابي",
+    "orders": "طلباتي",
+    "logout": "تسجيل الخروج",
+    "addresses": "عناويني",
+    "first_name": "الاسم",
+    "last_name": "اللقب",
+    "submit": "تأكيد",
+    "order": "طلب",
+    "date": "التاريخ",
+    "total": "المجموع",
+    "status": "الحالة",
+    "no_orders": "لا توجد لديك أي طلبات بعد.",
+    "reset_password": "إعادة تعيين كلمة المرور",
+    "address": "العنوان",
+    "city": "المدينة"
+  },
+  "club": {
+    "reponses": "ردود",
+    "likes": "إعجابات",
+    "email": "بريدك الإلكتروني"
+  },
+  "gift_cards": {
+    "issued": {
+      "title": "بطاقة الهدية الخاصة بك من LLUFAN",
+      "subtext": "استخدمي الرمز أدناه في طلبك القادم.",
+      "expired": "انتهت صلاحية هذه البطاقة.",
+      "shop_link": "متابعة التسوّق"
+    }
+  },
+  "commande": {
+    "titre_defaut": "اطلبي — الدفع عند الاستلام",
+    "cta_defaut": "اطلبي الآن",
+    "confirmation": "شكرًا! تم تسجيل طلبك، وسنتّصل بك للتأكيد.",
+    "nom": "الاسم الكامل",
+    "nom_placeholder": "الاسم واللقب",
+    "telephone": "رقم الهاتف",
+    "telephone_aide": "رقم الهاتف (أرقام، مسافات، +)",
+    "wilaya": "الولاية",
+    "commune": "البلدية",
+    "choisir": "اختاري…",
+    "wilaya_dabord": "اختاري الولاية أولًا…",
+    "livraison": "التوصيل",
+    "domicile": "إلى المنزل",
+    "stop_desk": "إلى مكتب الاستلام",
+    "sous_total": "المجموع الفرعي",
+    "frais": "التوصيل",
+    "a_calculer": "يُحسب لاحقًا",
+    "total": "المجموع",
+    "sans_paiement": "بدون دفع عبر الإنترنت",
+    "commande_protegee": "طلب محمي",
+    "delai": "التوصيل في غضون ٢ إلى ٥ أيام عمل",
+    "mentions": "في كل ولايات الجزائر · الدفع عند الاستلام",
+    "barre_cta": "اطلبي",
+    "choix_incomplet": "الرجاء اختيار الولاية والبلدية.",
+    "recap_nom": "الاسم الكامل",
+    "recap_telephone": "رقم الهاتف",
+    "recap_wilaya": "الولاية",
+    "recap_commune": "البلدية",
+    "recap_type": "نوع التوصيل",
+    "recap_sous_total": "المجموع الفرعي",
+    "recap_frais": "مصاريف التوصيل",
+    "recap_total": "المجموع"
+  }
+}

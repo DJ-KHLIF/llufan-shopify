@@ -1,0 +1,21 @@
+{%- comment -%}Article de blog{%- endcomment -%}
+<div class="section-spacing color-scheme color-scheme--scheme-1">
+  <div class="container container--md">
+    <article class="v-stack gap-6">
+      <header class="v-stack gap-3 text-center">
+        <h1 class="h1--serif">{{ article.title }}</h1>
+        <p class="text-subdued">{{ article.published_at | date: '%d/%m/%Y' }}{% if article.author != blank %} &middot; {{ article.author }}{% endif %}</p>
+      </header>
+      {%- if article.image -%}{{ article.image | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '600, 900, 1200, 1600', sizes: '100vw', alt: article.title }}{%- endif -%}
+      <div class="prose page-content">{{ article.content }}</div>
+    </article>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Article",
+  "tag": "section",
+  "settings": []
+}
+{% endschema %}

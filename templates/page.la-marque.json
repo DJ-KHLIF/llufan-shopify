@@ -1,0 +1,72 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "settings": {}
+    },
+    "info": {
+      "type": "information",
+      "blocks": {
+        "b1": {
+          "type": "bloc",
+          "settings": {
+            "icone": "star",
+            "titre": "Des produits pensés ici",
+            "texte": "<p>Chaque produit part d'un besoin réel du quotidien, avec un principe : faire simple et solide.</p>",
+            "lien_label": "",
+            "lien": ""
+          }
+        },
+        "b2": {
+          "type": "bloc",
+          "settings": {
+            "icone": "heart",
+            "titre": "Le confort avant tout",
+            "texte": "<p>Des formes qui accompagnent le corps, des matières douces sur la peau de bébé.</p>",
+            "lien_label": "",
+            "lien": ""
+          }
+        },
+        "b3": {
+          "type": "bloc",
+          "settings": {
+            "icone": "sparkle",
+            "titre": "Choisi pour durer",
+            "texte": "<p>Des matières et des finitions pensées pour être utilisées longtemps.</p>",
+            "lien_label": "",
+            "lien": ""
+          }
+        },
+        "b4": {
+          "type": "bloc",
+          "settings": {
+            "icone": "mail",
+            "titre": "Un contact humain",
+            "texte": "<p>Une équipe joignable sur WhatsApp et par e-mail, avant comme après votre commande.</p>",
+            "lien_label": "Nous écrire",
+            "lien": "pages/contact"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4"
+      ],
+      "settings": {
+        "bandeau_demo": "Contenu de démonstration — à remplacer avant la mise en ligne.",
+        "eyebrow": "La marque",
+        "heading": "Une marque algérienne, dédiée au confort de la maman et du bébé",
+        "intro": "<p>LLUFAN est née d'un constat simple : en Algérie, les mamans cherchent des produits doux, bien pensés, et un interlocuteur qui répond vraiment. Nous imaginons des produits pour la grossesse, l'allaitement et les premiers mois de bébé, avec une attention particulière portée au confort et à la simplicité au quotidien.</p><p><em>Texte de démonstration : cette page sera remplacée par l'histoire, les valeurs et la fabrication telles que LLUFAN souhaite les raconter.</em></p>",
+        "note": "",
+        "cta_label": "Voir tous nos produits",
+        "cta_lien": "collections/all"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "info"
+  ]
+}

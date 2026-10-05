@@ -1,0 +1,47 @@
+{%- comment -%}
+  Produits associés — recommandations natives Shopify (4 produits), chargées
+  côté client comme sur la référence.
+{%- endcomment -%}
+{%- if recommendations.performed and recommendations.products_count > 0 -%}
+  <div class="section-spacing color-scheme color-scheme--scheme-1">
+    <div class="container">
+      <div class="section-stack">
+        <div class="section-header">{%- if section.settings.heading != blank -%}<h2 class="h2">{{ section.settings.heading }}</h2>{%- endif -%}</div>
+        <product-list class="product-list product-list--carousel-tel">
+          {%- for product in recommendations.products -%}
+            {% render 'product-card', product: product, badge_blocks: badge_blocks, reveal: true %}
+          {%- endfor -%}
+        </product-list>
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+{%- if product -%}
+  <product-recommendations
+    class="product-recommendations"
+    data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit=4&intent=related">
+  </product-recommendations>
+  <script>
+    (() => {
+      const el = document.getElementById('shopify-section-{{ section.id }}').querySelector('product-recommendations');
+      if (!el) return;
+      fetch(el.dataset.url)
+        .then((r) => r.text())
+        .then((html) => {
+          const doc = new DOMParser().parseFromString(html, 'text/html');
+          const inner = doc.querySelector('.section-spacing');
+          if (inner) el.replaceWith(inner);
+        })
+        .catch(() => {});
+    })();
+  </script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Produits associés",
+  "tag": "section",
+  "settings": [ { "type": "text", "id": "heading", "label": "Titre" } ]
+}
+{% endschema %}

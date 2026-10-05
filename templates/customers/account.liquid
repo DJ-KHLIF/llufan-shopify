@@ -1,0 +1,31 @@
+<div class="section-spacing color-scheme color-scheme--scheme-1">
+  <div class="container container--lg">
+    <div class="v-stack gap-8">
+      <div class="section-header"><h1 class="h2">{{ 'customers.account' | t }}</h1></div>
+      <div class="v-stack gap-6">
+        <h2 class="h4">{{ 'customers.orders' | t }}</h2>
+        {%- paginate customer.orders by 20 -%}
+          {%- if customer.orders.size > 0 -%}
+            <div class="line-items">
+              {%- for order in customer.orders -%}
+                <div class="line-item" style="grid-template-columns:1fr auto auto auto">
+                  <a class="line-item__title" href="{{ order.customer_url }}">{{ 'customers.order' | t }} {{ order.name }}</a>
+                  <span>{{ order.created_at | date: '%d/%m/%Y' }}</span>
+                  <span>{{ order.total_price | money }}</span>
+                  <span class="text-subdued">{{ order.financial_status_label }}</span>
+                </div>
+              {%- endfor -%}
+            </div>
+            {%- if paginate.pages > 1 -%}<nav class="pagination">{{ paginate | default_pagination }}</nav>{%- endif -%}
+          {%- else -%}
+            <p class="text-subdued">{{ 'customers.no_orders' | t }}</p>
+          {%- endif -%}
+        {%- endpaginate -%}
+      </div>
+      <div class="h-stack gap-6">
+        <a class="button button--outline" href="{{ routes.account_addresses_url }}">{{ 'customers.addresses' | t }}</a>
+        <a class="button button--outline" href="{{ routes.account_logout_url }}">{{ 'customers.logout' | t }}</a>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,14 @@
+<div class="section-spacing color-scheme color-scheme--scheme-1">
+  <div class="container container--narrow">
+    <div class="v-stack gap-6">
+      <div class="section-header"><h1 class="h2">{{ 'customers.register' | t }}</h1></div>
+      {%- form 'activate_customer_password', class: 'v-stack gap-4' -%}
+        {%- if form.errors -%}<p class="product-form__error">{{ form.errors | default_errors }}</p>{%- endif -%}
+        <label class="field"><span class="field__label">{{ 'customers.password' | t }}</span><input class="input" type="password" name="customer[password]" required></label>
+        <label class="field"><span class="field__label">{{ 'customers.password' | t }}</span><input class="input" type="password" name="customer[password_confirmation]" required></label>
+        <button type="submit" class="button button--navy">{{ 'customers.submit' | t }}</button>
+        <button type="submit" name="decline" class="button button--outline">{{ 'accessibility.close' | t }}</button>
+      {%- endform -%}
+    </div>
+  </div>
+</div>

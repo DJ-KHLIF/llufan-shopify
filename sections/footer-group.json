@@ -1,0 +1,152 @@
+{
+  "type": "footer",
+  "name": "Pied de page",
+  "sections": {
+    "reassurance": {
+      "type": "text-with-icons",
+      "blocks": {
+        "item-1": {
+          "type": "item",
+          "settings": {
+            "icon": "shipping",
+            "heading": "",
+            "text": "Livraison dans les 69 wilayas"
+          }
+        },
+        "item-2": {
+          "type": "item",
+          "settings": {
+            "icon": "payment",
+            "heading": "",
+            "text": "Paiement à la livraison"
+          }
+        },
+        "item-3": {
+          "type": "item",
+          "settings": {
+            "icon": "heart",
+            "heading": "",
+            "text": "Conçu pour l'allaitement"
+          }
+        }
+      },
+      "block_order": [
+        "item-1",
+        "item-2",
+        "item-3"
+      ],
+      "settings": {
+        "tight": true,
+        "border": true,
+        "stacked": false
+      }
+    },
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "marque": {
+          "type": "brand",
+          "settings": {
+            "logo": "",
+            "tagline": "",
+            "text": ""
+          }
+        },
+        "llufan": {
+          "type": "menu",
+          "settings": {
+            "title": "LLUFAN",
+            "label_1": "La marque",
+            "link_1": "pages/la-marque",
+            "label_2": "Contact",
+            "link_2": "pages/contact",
+            "label_3": "FAQ",
+            "link_3": "pages/faq",
+            "label_4": "",
+            "link_4": "",
+            "label_5": "",
+            "link_5": "",
+            "label_6": "",
+            "link_6": ""
+          }
+        },
+        "univers": {
+          "type": "menu",
+          "settings": {
+            "title": "Nos univers",
+            "label_1": "Maternité",
+            "link_1": "collections/maternite",
+            "label_2": "Allaitement",
+            "link_2": "collections/allaitement",
+            "label_3": "Bébé",
+            "link_3": "collections/bebe",
+            "label_4": "Nouveautés",
+            "link_4": "collections/nouveautes",
+            "label_5": "Accessoires et pièces détachées",
+            "link_5": "collections/accessoires",
+            "label_6": "",
+            "link_6": ""
+          }
+        },
+        "aide": {
+          "type": "menu",
+          "settings": {
+            "title": "Aide",
+            "label_1": "Livraison",
+            "link_1": "pages/livraison",
+            "label_2": "Paiement",
+            "link_2": "pages/paiement",
+            "label_3": "Échanges et retours",
+            "link_3": "pages/politique-de-retour",
+            "label_4": "FAQ",
+            "link_4": "pages/faq",
+            "label_5": "",
+            "link_5": "",
+            "label_6": "",
+            "link_6": ""
+          }
+        },
+        "contact": {
+          "type": "contact",
+          "settings": {
+            "title": "Contact",
+            "note": ""
+          }
+        },
+        "engagements": {
+          "type": "reassurance",
+          "settings": {
+            "title": "Nos engagements",
+            "line_1": "Livraison partout en Algérie",
+            "line_2": "Paiement à la livraison",
+            "line_3": "Service client LLUFAN"
+          }
+        }
+      },
+      "block_order": [
+        "marque",
+        "llufan",
+        "univers",
+        "aide",
+        "contact",
+        "engagements"
+      ],
+      "settings": {
+        "copyright_text": "Tous droits réservés.",
+        "copyright_line": "Algérie · llufan.com",
+        "legal_mentions_label": "Mentions légales",
+        "legal_mentions": "pages/mentions-legales",
+        "legal_cgv_label": "Conditions générales de vente",
+        "legal_cgv": "pages/cgv",
+        "legal_confidentialite_label": "Politique de confidentialité",
+        "legal_confidentialite": "pages/confidentialite",
+        "legal_retours_label": "Politique de retour / échange",
+        "legal_retours": "pages/politique-de-retour"
+      }
+    }
+  },
+  "order": [
+    "reassurance",
+    "footer"
+  ]
+}

@@ -1,0 +1,37 @@
+{%- comment -%}Ligne de panier (tiroir et page panier){%- endcomment -%}
+<div class="line-item" data-line="{{ item.key }}">
+  <a class="line-item__image" href="{{ item.url }}">
+    {%- if item.image -%}
+      {{ item.image | image_url: width: 240 | image_tag: loading: 'lazy', alt: item.title }}
+    {%- else -%}
+      {{ 'product-1' | placeholder_svg_tag }}
+    {%- endif -%}
+  </a>
+  <div class="v-stack gap-1">
+    <a class="line-item__title" href="{{ item.url }}">{{ item.product.title }}</a>
+    {%- unless item.variant.title contains 'Default' -%}
+      <span class="line-item__properties">{{ item.variant.title }}</span>
+    {%- endunless -%}
+    {%- for property in item.properties -%}
+      {%- if property.last != blank -%}
+        <span class="line-item__properties">{{ property.first }} : {{ property.last }}</span>
+      {%- endif -%}
+    {%- endfor -%}
+    <div class="h-stack gap-4 items-center">
+      <div class="quantity-selector">
+        <button type="button" class="quantity-selector__button" data-quantity-change data-line="{{ line_index }}" data-quantity="{{ item.quantity | minus: 1 }}" aria-label="{{ 'products.product.decrease_quantity' | t }}"{% if item.quantity == 1 %} data-line-remove="true"{% endif %}>
+          {% render 'icons', icon: 'minus', size: 12 %}
+        </button>
+        <span class="quantity-selector__input">{{ item.quantity }}</span>
+        <span class="quantity-selector__spinner" aria-hidden="true"></span>
+        <button type="button" class="quantity-selector__button" data-quantity-change data-line="{{ line_index }}" data-quantity="{{ item.quantity | plus: 1 }}" aria-label="{{ 'products.product.increase_quantity' | t }}">
+          {% render 'icons', icon: 'plus', size: 12 %}
+        </button>
+      </div>
+      <span class="line-item__price">{{ item.final_line_price | money }}</span>
+    </div>
+  </div>
+  <button type="button" class="tap-area" data-quantity-change data-line="{{ line_index }}" data-quantity="0" aria-label="{{ 'cart.remove' | t }}">
+    {% render 'icons', icon: 'trash', size: 18 %}
+  </button>
+</div>

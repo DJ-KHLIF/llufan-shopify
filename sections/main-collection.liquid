@@ -1,0 +1,40 @@
+{%- comment -%}
+  Page collection — bandeau visuel avec titre serif centré et description,
+  barre d'outils (bouton Filtrer + tri en popover + nombre de produits),
+  grille de cartes produit, pagination.
+{%- endcomment -%}
+<div class="section-spacing section-spacing--no-top color-scheme color-scheme--scheme-1">
+  <div class="container">
+    <div class="v-stack gap-6 sm:gap-12">
+      {%- if section.settings.show_toolbar -%}
+        {%- render 'facets', results: collection -%}
+      {%- endif -%}
+      {%- paginate collection.products by section.settings.products_per_page -%}
+        <product-list class="product-list">
+          {%- for product in collection.products -%}
+            {% render 'product-card', product: product, badge_blocks: badge_blocks, reveal: true %}
+          {%- else -%}
+            <p class="text-subdued">{{ 'collections.empty' | t }}</p>
+          {%- endfor -%}
+        </product-list>
+        {%- if paginate.pages > 1 -%}
+          <nav class="pagination" role="navigation" aria-label="{{ 'general.pagination' | t }}">
+            {{ paginate | default_pagination }}
+          </nav>
+        {%- endif -%}
+      {%- endpaginate -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Grille de collection",
+  "tag": "section",
+  "class": "shopify-section--main-collection",
+  "settings": [
+    { "type": "checkbox", "id": "show_toolbar", "label": "Afficher les filtres et le tri", "default": true },
+    { "type": "range", "id": "products_per_page", "min": 8, "max": 48, "step": 4, "label": "Produits par page", "default": 24 }
+  ]
+}
+{% endschema %}

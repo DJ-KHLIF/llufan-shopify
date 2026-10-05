@@ -1,0 +1,133 @@
+{%- comment -%}
+  Section vidéo — style relevé sur la référence, dans un navigateur, le 5 oct. 2026.
+
+  Ce qui a été MESURÉ sur la référence (accueil, section vidéo) :
+    • bande pleine largeur, collée aux sections voisines (aucun espacement) ;
+    • hauteur = clamp(25rem, 100vw, 36rem) — 400 px sur téléphone, 576 px
+      dès que la fenêtre dépasse 576 px de large (relevé à 9 largeurs :
+      1920/1440/1280/1024/820/600 → 576 px, 480 → 480 px, 390/320 → 400 px) ;
+    • la vidéo REMPLIT la bande : elle est recadrée (object-fit: cover), donc
+      les bords sont rognés plutôt que de laisser des bandes noires ;
+    • rayon 0 : la bande est bord à bord, sans arrondi ;
+    • lecture seule : autoplay, muette, en boucle, SANS commandes, et le
+      lecteur ne capte pas les clics (pointer-events: none) ;
+    • texte posé PAR-DESSUS la vidéo, centré, blanc, largeur maximale 48rem.
+
+  Deux usages, au choix dans l'éditeur :
+    • lecture automatique (par défaut, = comportement de la référence) : la
+      bande ci-dessus ;
+    • lecteur classique (case décochée) : un lecteur 16/9 avec commandes, dans
+      la colonne de contenu — c'est un ajout de notre part, pour le jour où la
+      boutique voudra une vidéo que l'on regarde vraiment (avec le son).
+
+  Tant qu'aucune vidéo n'est fournie, la section ne s'affiche pas dans la
+  vitrine : sans cela, elle produirait une grande bande vide sur l'accueil.
+  Dans l'éditeur, l'emplacement reste visible avec son texte d'attente.
+{%- endcomment -%}
+{%- liquid
+  assign lien = section.settings.video_url | strip
+  assign auto = section.settings.autoplay
+  assign source = ''
+  assign code = ''
+  if lien != blank
+    if lien contains 'youtu.be/'
+      assign source = 'youtube'
+      assign code = lien | split: 'youtu.be/' | last | split: '?' | first | split: '&' | first | split: '/' | first
+    elsif lien contains 'youtube.com'
+      assign source = 'youtube'
+      if lien contains '/watch'
+        assign code = lien | split: 'v=' | last | split: '&' | first
+      elsif lien contains '/shorts/'
+        assign code = lien | split: '/shorts/' | last | split: '?' | first
+      elsif lien contains '/live/'
+        assign code = lien | split: '/live/' | last | split: '?' | first
+      elsif lien contains '/embed/'
+        assign code = lien | split: '/embed/' | last | split: '?' | first
+      endif
+    elsif lien contains 'vimeo.com'
+      assign source = 'vimeo'
+      assign code = lien | split: 'vimeo.com/' | last | split: '?' | first | split: '/' | first
+    endif
+  endif
+
+  assign src = lien
+  if source == 'youtube' and code != blank
+    if auto
+      assign src = 'https://www.youtube.com/embed/' | append: code | append: '?playsinline=1&autoplay=1&mute=1&loop=1&playlist=' | append: code | append: '&controls=0&rel=0&modestbranding=1'
+    else
+      assign src = 'https://www.youtube.com/embed/' | append: code | append: '?playsinline=1&rel=0'
+    endif
+  elsif source == 'vimeo' and code != blank
+    if auto
+      assign src = 'https://player.vimeo.com/video/' | append: code | append: '?autoplay=1&muted=1&loop=1&background=1'
+    else
+      assign src = 'https://player.vimeo.com/video/' | append: code
+    endif
+  endif
+
+  assign video_absente = false
+  if lien == blank and section.settings.video == blank
+    assign video_absente = true
+  endif
+-%}
+{%- if video_absente and request.design_mode == false -%}
+  {%- comment -%}Rien à afficher : la section disparaît de la vitrine.{%- endcomment -%}
+{%- elsif auto -%}
+  {%- comment -%}
+    Bande vidéo : plein largeur, hauteur mesurée sur la référence, vidéo
+    recadrée pour remplir, texte de recouvrement s'il y en a un.
+  {%- endcomment -%}
+  <div class="video-section__bande">
+    {%- if lien != blank -%}
+      <iframe class="video-section__media" src="{{ src }}" title="{{ section.settings.heading | default: shop.name | escape }}"
+              allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen
+              tabindex="-1" aria-hidden="true" loading="lazy"></iframe>
+    {%- elsif section.settings.video != blank -%}
+      {{ section.settings.video | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, controls: false, preload: 'auto', class: 'video-section__media' }}
+    {%- else -%}
+      <div class="video-section__placeholder">{{ 'sections.video.placeholder' | t }}</div>
+    {%- endif -%}
+    {%- if section.settings.heading != blank -%}
+      <div class="video-section__recouvrement">
+        <p class="video-section__titre">{{ section.settings.heading }}</p>
+      </div>
+    {%- endif -%}
+  </div>
+  {%- if request.design_mode -%}
+    {%- comment -%}
+      Note visible seulement dans l'éditeur : sur la vitrine, la bande doit
+      rester exactement comme la référence, sans texte ajouté.
+    {%- endcomment -%}
+    <p class="video-section__note">{{ 'sections.video.autoplay_note' | t }}</p>
+  {%- endif -%}
+{%- else -%}
+  {%- comment -%}Lecteur classique : ajout de notre part, hors style de la référence.{%- endcomment -%}
+  <div class="section-spacing color-scheme color-scheme--scheme-1">
+    <div class="container">
+      <div class="video-section__embed">
+        {%- if lien != blank -%}
+          <iframe src="{{ src }}" title="{{ section.settings.heading | default: shop.name | escape }}"
+                  allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+        {%- elsif section.settings.video != blank -%}
+          {{ section.settings.video | video_tag: controls: true, playsinline: true }}
+        {%- else -%}
+          <div class="video-section__placeholder">{{ 'sections.video.placeholder' | t }}</div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Vidéo",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Texte sur la vidéo (facultatif)", "info": "Posé au centre, par-dessus la vidéo, comme sur la référence. Laissez vide pour une bande vidéo seule." },
+    { "type": "video_url", "id": "video_url", "label": "Lien de la vidéo (YouTube ou Vimeo)", "accept": ["youtube", "vimeo"], "info": "Formes acceptées : youtube.com/watch?v=…, youtu.be/…, YouTube Shorts, ou vimeo.com/… — Conseil : une vidéo horizontale (16/9) remplit la bande bord à bord ; une vidéo verticale sera centrée avec des bandes noires de chaque côté (c'est ce que fait la référence)." },
+    { "type": "video", "id": "video", "label": "Fichier vidéo hébergé par Shopify" },
+    { "type": "checkbox", "id": "autoplay", "label": "Bande vidéo : lecture automatique en boucle, sans son", "info": "Comportement de la référence de design : bande pleine largeur, vidéo recadrée qui démarre seule, en sourdine, sans commandes et en boucle. Décochez pour un lecteur 16/9 classique (commandes visibles, son disponible).", "default": true }
+  ],
+  "presets": [ { "name": "Vidéo" } ]
+}
+{% endschema %}

@@ -1,0 +1,60 @@
+{
+  "sections": {
+    "banner": {
+      "type": "collection-banner",
+      "settings": {
+        "image": null,
+        "show_description": true
+      }
+    },
+    "grid": {
+      "type": "main-collection",
+      "settings": {
+        "show_toolbar": true,
+        "products_per_page": 24
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "item",
+          "settings": {
+            "question": "Comment se passe le paiement ?",
+            "answer": "<p>Vous payez à la livraison, en espèces, au moment de recevoir votre colis. Aucun paiement en ligne n'est demandé.</p>"
+          }
+        },
+        "q2": {
+          "type": "item",
+          "settings": {
+            "question": "Livrez-vous partout en Algérie ?",
+            "answer": "<p>Oui, dans les 69 wilayas, à domicile ou en stop-desk.</p>"
+          }
+        },
+        "q3": {
+          "type": "item",
+          "settings": {
+            "question": "Comment sont calculés les frais de livraison ?",
+            "answer": "<p>Les frais dépendent de la wilaya et du mode choisi. Le tarif s'affiche dans le formulaire de commande dès que vous sélectionnez votre wilaya et votre commune.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3"
+      ],
+      "settings": {
+        "eyebrow": "",
+        "heading": "Questions fréquentes",
+        "contact_label": "",
+        "contact_link": ""
+      }
+    }
+  },
+  "order": [
+    "banner",
+    "grid",
+    "faq"
+  ]
+}

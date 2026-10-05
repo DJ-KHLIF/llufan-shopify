@@ -1,0 +1,63 @@
+{%- comment -%}
+  Tiroir panier — structure observée : panneau latéral droit, titre « Panier »,
+  état vide centré, lignes de commande, sous-total et bouton de commande.
+{%- endcomment -%}
+<cart-drawer class="drawer color-scheme color-scheme--scheme-1" id="cart-drawer" aria-hidden="true">
+  <div class="drawer__header">
+    <p class="h4">{{ 'cart.title' | t }}</p>
+    <button type="button" class="tap-area" data-drawer-close aria-label="{{ 'accessibility.close' | t }}">{% render 'icons', icon: 'close', size: 14 %}</button>
+  </div>
+  <div class="drawer__body">
+    {%- if cart.item_count == 0 -%}
+      <div class="drawer__empty">
+        <p class="h5">{{ 'cart.empty' | t }}</p>
+        <a href="{{ routes.all_products_collection_url }}" class="button button--outline">{{ 'cart.continue_shopping' | t }}</a>
+      </div>
+    {%- else -%}
+      <div class="line-items">
+        {%- for item in cart.items -%}
+          {%- assign line_index = forloop.index -%}
+          {% render 'cart-line-item', item: item, line_index: line_index %}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+  {%- if cart.item_count > 0 -%}
+    <div class="drawer__footer">
+      <div class="cart-totals">
+        <div class="cart-totals__row cart-totals__row--total">
+          <span>{{ 'cart.subtotal' | t }}</span>
+          <span>{{ cart.total_price | money }}</span>
+        </div>
+        <p class="text-subdued" style="font-size:var(--text-xs)">{{ 'cart.taxes_and_shipping_note' | t }}</p>
+      </div>
+      <form action="{{ routes.cart_url }}" method="post">
+        {%- if section.settings.show_checkout_button -%}
+          <button type="submit" name="checkout" class="button button--full">{{ 'cart.checkout' | t }}</button>
+        {%- else -%}
+          <a href="{{ routes.cart_url }}#commander" class="button button--navy button--full">{{ section.settings.cta_label | default: 'Commander' }}</a>
+        {%- endif -%}
+      </form>
+      <a href="{{ routes.cart_url }}" class="text-center" style="font-size:var(--text-sm);text-decoration:underline">{{ 'cart.view_cart' | t }}</a>
+    </div>
+  {%- endif -%}
+</cart-drawer>
+
+{% schema %}{
+  "name": "Tiroir panier",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_checkout_button",
+      "label": "Bouton de passage en caisse Shopify",
+      "default": false,
+      "info": "Décoché : le tiroir renvoie vers la page panier, où se trouve le formulaire de commande (paiement à la livraison)."
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Libellé du bouton du tiroir",
+      "default": "Commander"
+    }
+  ]
+}{% endschema %}

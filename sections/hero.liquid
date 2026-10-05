@@ -1,0 +1,103 @@
+{%- comment -%}
+  Héros — diaporama reproduit d'après la référence : diapositives superposées
+  (fondu), défilement automatique réglable (5 s par défaut, valeur relevée),
+  balayage au doigt, bouton circulaire de défilement à cheval sur le bord
+  inférieur. Les séquences d'animation sont dans theme.js :
+  entrée — diapositive en fondu .8 s, image en fondu avec passage de
+  l'échelle 1.2 à 1, contenu en fondu et translation 30 → 0 px ;
+  sortie — contenu en fondu et translation 0 → 20 px, puis image.
+{%- endcomment -%}
+<slideshow-carousel
+  id="slideshow-{{ section.id }}"
+  class="slideshow color-scheme color-scheme--scheme-3"
+  allow-swipe
+  data-autoplay="{{ section.settings.autoplay }}"
+  data-speed="{{ section.settings.speed }}"
+  style="--hero-height: {{ section.settings.height }}vh; --slideshow-progress-duration: {{ section.settings.speed | times: 1000 }}ms">
+  {%- if section.blocks.size > 0 -%}
+    {%- for block in section.blocks -%}
+      <div class="slideshow__slide{% if forloop.first %} is-selected{% endif %}" media-type="image" {{ block.shopify_attributes }}>
+        {%- comment -%}
+          Priorité de chargement : seule la PREMIÈRE diapositive est prioritaire
+          (c'est elle qui décide de la vitesse perçue — le « LCP »). Les
+          suivantes attendent : tout charger d'avance faisait télécharger
+          plusieurs grandes images en même temps, au détriment de l'affichage.
+        {%- endcomment -%}
+        {%- assign chargement = 'lazy' -%}
+        {%- assign priorite = 'auto' -%}
+        {%- if forloop.first -%}{%- assign chargement = 'eager' -%}{%- assign priorite = 'high' -%}{%- endif -%}
+        {%- if block.settings.image != blank -%}
+          {%- assign slide_image = block.settings.image -%}
+          {{ slide_image | image_url: width: 3200 | image_tag: class: 'slideshow__slide-media', loading: chargement, fetchpriority: priorite, widths: '600, 900, 1200, 1600, 2000, 2600, 3200', sizes: '100vw', alt: slide_image.alt | default: '' }}
+        {%- elsif settings.mode_demo -%}
+          {%- assign numero_visuel = forloop.index | minus: 1 | modulo: 2 | plus: 1 -%}
+          <img src="{{ 'demo-hero-' | append: numero_visuel | append: '.jpg' | asset_img_url: '1600x' }}" class="slideshow__slide-media" alt="" width="1600" height="720" loading="{{ chargement }}"{% if forloop.first %} fetchpriority="high"{% endif %}>
+        {%- elsif forloop.first -%}
+          {%- comment -%}
+            Première diapositive sans visuel choisi : la photo du coussin Nomad
+            fournie par LLUFAN sert de visuel par défaut (remplaçable à tout
+            moment par un envoi dans l'éditeur). Les diapositives suivantes
+            restent vides tant qu'aucun visuel n'est fourni.
+          {%- endcomment -%}
+          <img src="{{ 'llufan-nomad-coussin.jpg' | asset_img_url: '1200x' }}" class="slideshow__slide-media" width="1200" height="896" alt="" loading="{{ chargement }}"{% if forloop.first %} fetchpriority="high"{% endif %}>
+        {%- else -%}
+          <div class="hero__placeholder" style="height: var(--hero-height)">{{ 'sections.hero.image_placeholder' | t }}</div>
+        {%- endif -%}
+        {%- if section.settings.overlay -%}<div class="hero__overlay"></div>{%- endif -%}
+        <div class="container">
+          <div class="slideshow__slide-content">
+            {%- if block.settings.kicker != blank -%}<p class="hero__kicker">{{ block.settings.kicker }}</p>{%- endif -%}
+            {%- if block.settings.heading != blank -%}<h2 class="hero__title h1">{{ block.settings.heading }}</h2>{%- endif -%}
+            {%- if block.settings.button_label != blank -%}
+              {%- capture lien_bouton -%}{%- render 'lien', valeur: block.settings.button_link -%}{%- endcapture -%}
+              {%- assign destination = lien_bouton | strip | default: routes.all_products_collection_url -%}
+              <a href="{{ destination }}" class="button button--coral">{{ block.settings.button_label }}</a>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    {%- endfor -%}
+  {%- else -%}
+    <div class="slideshow__slide is-selected">
+      <div class="hero__placeholder" style="height: var(--hero-height)">{{ 'sections.hero.image_placeholder' | t }}</div>
+      <div class="container"><div class="slideshow__slide-content"></div></div>
+    </div>
+  {%- endif -%}
+
+  {%- if section.settings.show_scroll_button -%}
+    <div class="hero__scroll">
+      <a href="#section-after-hero" class="circle-button hover:animate-icon-block" aria-label="{{ 'accessibility.scroll_down' | t }}">
+        {% render 'icons', icon: 'chevron-down', size: 16 %}
+      </a>
+    </div>
+  {%- endif -%}
+</slideshow-carousel>
+<span id="section-after-hero"></span>
+
+{% schema %}
+{
+  "name": "Héros (diaporama)",
+  "tag": "section",
+  "settings": [
+    { "type": "range", "id": "height", "min": 45, "max": 100, "step": 1, "unit": "vh", "label": "Hauteur", "default": 78 },
+    { "type": "checkbox", "id": "autoplay", "label": "Défilement automatique", "default": true },
+    { "type": "range", "id": "speed", "min": 3, "max": 10, "step": 1, "unit": "s", "label": "Intervalle entre les diapositives", "default": 5 },
+    { "type": "checkbox", "id": "overlay", "label": "Voile sombre sur l'image", "default": false, "info": "La référence n'en applique pas ; à activer si le texte manque de contraste sur le visuel LLUFAN." },
+    { "type": "checkbox", "id": "show_scroll_button", "label": "Bouton de défilement", "default": true }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Diapositive",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Visuel (LLUFAN à fournir)" },
+        { "type": "text", "id": "kicker", "label": "Sur-titre" },
+        { "type": "text", "id": "heading", "label": "Titre" },
+        { "type": "text", "id": "button_label", "label": "Libellé du bouton" },
+        { "type": "url", "id": "button_link", "label": "Lien du bouton" }
+      ]
+    }
+  ],
+  "presets": [ { "name": "Héros (diaporama)", "blocks": [ { "type": "slide" }, { "type": "slide" }, { "type": "slide" } ] } ]
+}
+{% endschema %}

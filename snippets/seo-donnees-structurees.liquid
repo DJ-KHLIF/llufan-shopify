@@ -1,0 +1,142 @@
+{%- comment -%}
+  Données structurées (JSON-LD) : ce que Google lit pour comprendre la page.
+
+  Ce qui est décrit :
+    • la boutique (Organization) — sur toutes les pages : nom, adresse du site,
+      logo, et les moyens de contact saisis dans l'éditeur ;
+    • le site et sa recherche interne (WebSite) — sur l'accueil ;
+    • le fil d'Ariane (BreadcrumbList) — fiche produit, collection, article ;
+    • le produit (Product) avec une offre par variante : prix, devise,
+      disponibilité.
+
+  Ce qui n'est VOLONTAIREMENT pas décrit :
+    • aucune note ni nombre d'avis (aggregateRating) : les avis livrés avec la
+      démonstration sont fictifs, et publier une note inventée auprès de Google
+      serait une fausse information — exactement ce qu'il ne faut pas faire ;
+    • aucune politique de retour ni frais de livraison (hasMerchantReturnPolicy,
+      shippingDetails) : ces engagements ne sont pas encore arrêtés ;
+    • aucun prix barré ni promotion.
+
+  À chaque fois, la valeur est affichée telle que Shopify la connaît : les prix
+  sont en centimes, d'où la division par 100 (jamais `money_without_currency`,
+  qui ajoute des espaces et casse le nombre lu par Google).
+{%- endcomment -%}
+{%- liquid
+  assign adresse_site = shop.url
+  # Construite à part : une accolade à l'intérieur d'une sortie {{ }} est
+  # source d'erreur de lecture du gabarit.
+  assign cible_recherche = '?q={search_term_string}'
+  assign tel_contact = settings.whatsapp_number | remove: ' ' | remove: '-' | remove: '.'
+  if tel_contact != blank
+    assign premier = tel_contact | slice: 0
+    if premier == '0'
+      assign tel_contact = tel_contact | remove_first: '0' | prepend: '+213'
+    endif
+  endif
+-%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": {{ shop.name | json }},
+  "url": {{ adresse_site | json }},
+  "logo": {{ 'llufan-logo-navy.png' | asset_img_url: '600x' | prepend: 'https:' | json }}
+  {%- if settings.contact_email != blank or tel_contact != blank -%},
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "customer service"
+    {%- if tel_contact != blank -%},
+    "telephone": {{ tel_contact | json }}
+    {%- endif -%}
+    {%- if settings.contact_email != blank -%},
+    "email": {{ settings.contact_email | json }}
+    {%- endif -%}
+    {%- if localization.available_languages.size > 0 -%},
+    "availableLanguage": [{%- for langue in localization.available_languages -%}{{ langue.iso_code | json }}{% unless forloop.last %},{% endunless %}{%- endfor -%}]
+    {%- endif -%}
+  }
+  {%- endif -%}
+  {%- assign reseaux = '' -%}
+  {%- if settings.social_facebook != blank -%}{%- assign reseaux = reseaux | append: settings.social_facebook | append: '|' -%}{%- endif -%}
+  {%- if settings.social_instagram != blank -%}{%- assign reseaux = reseaux | append: settings.social_instagram | append: '|' -%}{%- endif -%}
+  {%- if settings.social_tiktok != blank -%}{%- assign reseaux = reseaux | append: settings.social_tiktok | append: '|' -%}{%- endif -%}
+  {%- if reseaux != '' -%},
+  "sameAs": [{%- assign liste = reseaux | split: '|' -%}{%- for lien in liste -%}{{ lien | json }}{% unless forloop.last %},{% endunless %}{%- endfor -%}]
+  {%- endif -%}
+}
+</script>
+{%- if template.name == 'index' -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": {{ shop.name | json }},
+  "url": {{ adresse_site | json }},
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {{ routes.search_url | prepend: adresse_site | append: cible_recherche | json }},
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+{%- endif -%}
+{%- assign fil = '' -%}
+{%- if template.name == 'product' and product -%}
+  {%- assign fil = product.title -%}
+{%- elsif template.name == 'article' and article -%}
+  {%- assign fil = article.title -%}
+{%- elsif template.name == 'page' and page -%}
+  {%- assign fil = page.title -%}
+{%- endif -%}
+{%- if fil != '' -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": {{ 'general.accueil' | t | json }}, "item": {{ adresse_site | json }} }
+    {%- if template.name == 'product' and collection -%},
+    { "@type": "ListItem", "position": 2, "name": {{ collection.title | json }}, "item": {{ adresse_site | append: collection.url | json }} },
+    { "@type": "ListItem", "position": 3, "name": {{ product.title | json }}, "item": {{ adresse_site | append: product.url | json }} }
+    {%- elsif template.name == 'product' -%},
+    { "@type": "ListItem", "position": 2, "name": {{ product.title | json }}, "item": {{ adresse_site | append: product.url | json }} }
+    {%- else -%},
+    { "@type": "ListItem", "position": 2, "name": {{ fil | json }}, "item": {{ canonical_url | json }} }
+    {%- endif -%}
+  ]
+}
+</script>
+{%- endif -%}
+{%- if template.name == 'product' and product -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": {{ product.title | json }},
+  "url": {{ adresse_site | append: product.url | json }}
+  {%- if product.featured_media -%},
+  "image": [{%- for media in product.media limit: 5 -%}{{ media.preview_image | image_url: width: 1200 | prepend: 'https:' | json }}{% unless forloop.last %},{% endunless %}{%- endfor -%}]
+  {%- endif -%},
+  "description": {{ product.description | strip_html | strip_newlines | truncate: 900 | json }}
+  {%- if product.selected_or_first_available_variant.sku != blank -%},
+  "sku": {{ product.selected_or_first_available_variant.sku | json }}
+  {%- endif -%},
+  "brand": { "@type": "Brand", "name": {{ product.vendor | default: shop.name | json }} },
+  "offers": [
+    {%- for variante in product.variants -%}
+    {
+      "@type": "Offer",
+      "url": {{ adresse_site | append: variante.url | json }},
+      {%- if variante.sku != blank %}
+      "sku": {{ variante.sku | json }},
+      {%- endif %}
+      "price": {{ variante.price | divided_by: 100.0 | json }},
+      "priceCurrency": {{ cart.currency.iso_code | json }},
+      "availability": "https://schema.org/{% if variante.available %}InStock{% else %}OutOfStock{% endif %}",
+      "itemCondition": "https://schema.org/NewCondition"
+    }{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  ]
+}
+</script>
+{%- endif -%}

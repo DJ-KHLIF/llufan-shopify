@@ -1,0 +1,111 @@
+{
+  "sections": {
+    "club": {
+      "type": "club-maman",
+      "settings": {
+        "eyebrow": "Espace d'échange",
+        "heading": "Club Maman",
+        "intro": "<p>Le Club Maman est l'espace d'échange de LLUFAN : poser une question, partager une astuce, lire l'expérience d'autres mamans.</p><p>Ici on parle du quotidien — le projet bébé, la grossesse, l'allaitement, les premiers mois — sans jugement et sans conseil médical.</p><p><em>Texte de démonstration.</em></p>",
+        "espaces_titre": "Nos espaces d'échange",
+        "discussions_titre": "Discussions",
+        "discussions_vide": "<p>Aucune discussion pour le moment. Elles s'afficheront ici dès que le Club Maman ouvrira ses portes.</p>",
+        "ressources_titre": "Ressources pour les mamans",
+        "ressources_texte": "<p>Nos réponses aux questions les plus fréquentes : commande, paiement à la livraison, délais, entretien des produits.</p><p><em>Emplacement de démonstration : guides, articles ou vidéos viendront ici.</em></p>",
+        "ressources_bouton": "Voir la FAQ",
+        "ressources_lien": "pages/faq",
+        "rejoindre_titre": "Rejoindre le Club Maman",
+        "rejoindre_texte": "<p>Laissez votre e-mail pour être prévenue de l'ouverture des discussions et recevoir les conseils LLUFAN.</p><p><em>Texte de démonstration.</em></p>",
+        "rejoindre_newsletter": true,
+        "rejoindre_bouton": "Je m'inscris",
+        "rejoindre_confirmation": "Merci, votre inscription est enregistrée.",
+        "rejoindre_note": "Inscription de démonstration : indiquez ici la finalité (conseils, nouveautés) et renvoyez vers la politique de confidentialité.",
+        "rejoindre_compte": true,
+        "rejoindre_compte_label": "Créer mon compte",
+        "rejoindre_whatsapp": true
+      },
+      "blocks": {
+        "e1": {
+          "type": "espace",
+          "settings": {
+            "icone": "flower",
+            "titre": "Projet bébé",
+            "texte": "Vous préparez l'arrivée de bébé : listes, chambre, premiers achats et questions pratiques.",
+            "lien": ""
+          }
+        },
+        "e2": {
+          "type": "espace",
+          "settings": {
+            "icone": "heart",
+            "titre": "Grossesse",
+            "texte": "Confort, sommeil, positions, préparation : échangez sur les mois qui précèdent la naissance.",
+            "lien": ""
+          }
+        },
+        "e3": {
+          "type": "espace",
+          "settings": {
+            "icone": "sparkle",
+            "titre": "Allaitement",
+            "texte": "Positions, matériel, rythme des tétées : les astuces de celles qui sont passées par là.",
+            "lien": ""
+          }
+        },
+        "e4": {
+          "type": "espace",
+          "settings": {
+            "icone": "star",
+            "titre": "Après la naissance",
+            "texte": "Le quotidien avec bébé : nuits, rythme, organisation, et le droit de souffler un peu.",
+            "lien": ""
+          }
+        },
+        "d1": {
+          "type": "discussion",
+          "settings": {
+            "titre": "Quelle position pour allaiter la nuit ?",
+            "extrait": "Discussion de démonstration : bébé a cinq semaines et je cherche une position qui me permette de me reposer un peu…",
+            "autrice": "Amina",
+            "reponses": 12,
+            "likes": 8,
+            "lien": ""
+          }
+        },
+        "d2": {
+          "type": "discussion",
+          "settings": {
+            "titre": "Préparer sa valise pour la maternité",
+            "extrait": "Discussion de démonstration : voici ma liste, dites-moi ce que j'ai oublié.",
+            "autrice": "Lila",
+            "reponses": 7,
+            "likes": 15,
+            "lien": ""
+          }
+        },
+        "d3": {
+          "type": "discussion",
+          "settings": {
+            "titre": "Les nuits hachées, comment vous tenez ?",
+            "extrait": "Discussion de démonstration : je ne sais pas si c'est normal à trois semaines…",
+            "autrice": "Nour",
+            "reponses": 21,
+            "likes": 30,
+            "lien": ""
+          }
+        }
+      },
+      "block_order": [
+        "e1",
+        "e2",
+        "e3",
+        "e4",
+        "d1",
+        "d2",
+        "d3"
+      ]
+    }
+  },
+  "order": [
+    "club"
+  ]
+}

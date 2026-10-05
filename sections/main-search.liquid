@@ -1,0 +1,44 @@
+{%- comment -%}Résultats de recherche — barre de recherche, filtres, grille{%- endcomment -%}
+<div class="section-spacing color-scheme color-scheme--scheme-1">
+  <div class="container">
+    <div class="v-stack gap-8">
+      <div class="section-header">
+        <h1 class="h2">{{ 'search.title' | t }}</h1>
+        <form class="search-form" action="{{ routes.search_url }}" method="get" role="search" style="max-width:34rem;width:100%">
+          <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'search.placeholder' | t }}" aria-label="{{ 'accessibility.search' | t }}">
+          <input type="hidden" name="type" value="product">
+          <button type="submit" aria-label="{{ 'accessibility.search' | t }}">{% render 'icons', icon: 'search', size: 20 %}</button>
+        </form>
+        {%- if search.performed -%}
+          <p class="text-subdued">{{ 'search.results' | t: count: search.results_count, terms: search.terms }}</p>
+        {%- endif -%}
+      </div>
+      {%- if search.performed -%}
+        {%- if search.results_count > 0 -%}
+          {%- paginate search.results by 24 -%}
+            <div class="product-list">
+              {%- for item in search.results -%}
+                {%- if item.object_type == 'product' -%}
+                  {% render 'product-card', product: item, badge_blocks: badge_blocks %}
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+            {%- if paginate.pages > 1 -%}
+              <nav class="pagination">{{ paginate | default_pagination }}</nav>
+            {%- endif -%}
+          {%- endpaginate -%}
+        {%- else -%}
+          <p class="text-center text-subdued">{{ 'search.no_results' | t }}</p>
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Recherche",
+  "tag": "section",
+  "settings": []
+}
+{% endschema %}

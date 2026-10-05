@@ -1,0 +1,94 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "settings": {}
+    },
+    "info": {
+      "type": "information",
+      "blocks": {
+        "b1": {
+          "type": "bloc",
+          "settings": {
+            "icone": "tag",
+            "titre": "1. Objet",
+            "texte": "<p><em>[Objet des conditions de vente et champ d'application à compléter.]</em></p>",
+            "lien_label": "",
+            "lien": ""
+          }
+        },
+        "b2": {
+          "type": "bloc",
+          "settings": {
+            "icone": "payment",
+            "titre": "2. Prix et devise",
+            "texte": "<p>Tous les prix sont affichés en dinars algériens (DZD), frais de livraison en sus selon la wilaya.</p>",
+            "lien_label": "",
+            "lien": ""
+          }
+        },
+        "b3": {
+          "type": "bloc",
+          "settings": {
+            "icone": "locker",
+            "titre": "3. Commande et paiement",
+            "texte": "<p>La commande se fait sur le site, sans paiement en ligne : le règlement se fait en espèces à la livraison (COD).</p>",
+            "lien_label": "Pages paiement",
+            "lien": "pages/paiement"
+          }
+        },
+        "b4": {
+          "type": "bloc",
+          "settings": {
+            "icone": "shipping",
+            "titre": "4. Livraison",
+            "texte": "<p>Livraison dans les 69 wilayas, à domicile ou en stop-desk. <em>[Délais et transporteurs à compléter.]</em></p>",
+            "lien_label": "Page livraison",
+            "lien": "pages/livraison"
+          }
+        },
+        "b5": {
+          "type": "bloc",
+          "settings": {
+            "icone": "heart",
+            "titre": "5. Échanges et retours",
+            "texte": "<p><em>[Conditions d'échange et de retour à compléter.]</em></p>",
+            "lien_label": "Échanges et retours",
+            "lien": "pages/politique-de-retour"
+          }
+        },
+        "b6": {
+          "type": "bloc",
+          "settings": {
+            "icone": "whatsapp",
+            "titre": "6. Service client",
+            "texte": "<p>Notre service client répond sur WhatsApp et par e-mail, avant et après la commande.</p>",
+            "lien_label": "Page contact",
+            "lien": "pages/contact"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5",
+        "b6"
+      ],
+      "settings": {
+        "bandeau_demo": "Contenu de démonstration — à remplacer avant la mise en ligne.",
+        "eyebrow": "Informations",
+        "heading": "Conditions générales de vente",
+        "intro": "<p><em>Gabarit de démonstration : ce texte présente la structure attendue et doit être validé avant la mise en ligne.</em></p>",
+        "note": "<p><em>Gabarit de démonstration, sans valeur juridique.</em></p>",
+        "cta_label": "",
+        "cta_lien": ""
+      }
+    }
+  },
+  "order": [
+    "main",
+    "info"
+  ]
+}

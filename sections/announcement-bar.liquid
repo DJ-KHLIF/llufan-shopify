@@ -1,0 +1,63 @@
+{%- comment -%}
+  « hide_on_purchase » : vrai sur la page panier (passage à l'achat) quand le
+  réglage « Masquer l'en-tête au passage à l'achat » est actif. Le bandeau, le
+  pré-bandeau et l'en-tête disparaissent alors ensemble.
+{%- endcomment -%}
+{%- assign hide_on_purchase = false -%}
+{%- if settings.hide_header_on_purchase and template.name == 'cart' -%}{%- assign hide_on_purchase = true -%}{%- endif -%}
+{%- comment -%}
+  Bandeau d'annonce — reprend la structure observée : barre bleu foncé collante,
+  messages rotatifs centrés, flèches de part et d'autre.
+  Les messages restent vides tant que le marchand ne les a pas saisis.
+{%- endcomment -%}
+{%- if section.blocks.size > 0 and hide_on_purchase != true -%}
+  <style>
+    :root { --announcement-bar-is-sticky: {% if section.settings.sticky %}1{% else %}0{% endif %}; }
+    #shopify-section-{{ section.id }} { --announcement-bar-font-size: 0.72rem; {% if section.settings.sticky %}position: sticky; top: 0; z-index: 5;{% endif %} }
+  </style>
+  <aside class="shopify-section shopify-section--announcement-bar color-scheme color-scheme--scheme-{{ section.settings.color_scheme }}">
+    <div class="announcement-bar">
+      <div class="announcement-bar__inner announcement-bar__inner--sans-fleches">
+        <announcement-bar-carousel class="announcement-bar__carousel" data-autoplay="{{ section.settings.autoplay }}" data-speed="{{ section.settings.speed | times: 1000 }}">
+          {%- for block in section.blocks -%}
+            {%- if block.settings.text != blank -%}
+              {%- capture lien_message -%}{%- render 'lien', valeur: block.settings.link -%}{%- endcapture -%}
+              {%- assign lien_message = lien_message | strip -%}
+              {%- if lien_message != blank -%}
+                <a href="{{ lien_message }}" class="announcement-bar__link prose heading{% if forloop.first %} is-selected{% endif %}" {{ block.shopify_attributes }}>{{ block.settings.text }}</a>
+              {%- else -%}
+                <p class="prose heading{% if forloop.first %} is-selected{% endif %}" {{ block.shopify_attributes }}>{{ block.settings.text }}</p>
+              {%- endif -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </announcement-bar-carousel>
+      </div>
+    </div>
+  </aside>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Bandeau d'annonce",
+  "tag": "aside",
+  "class": "shopify-section--announcement-bar",
+  "enabled_on": { "groups": ["header"] },
+  "settings": [
+    { "type": "select", "id": "color_scheme", "label": "Palette", "options": [ { "value": "1", "label": "Claire" }, { "value": "2", "label": "Bleu foncé" } ], "default": "2" },
+    { "type": "checkbox", "id": "sticky", "label": "Bandeau collant", "default": false, "info": "Sur la page d'atterrissage LLUFAN, le bandeau et le pré-bandeau défilent avec la page ; seul l'en-tête reste collé." },
+    { "type": "checkbox", "id": "autoplay", "label": "Défilement automatique", "default": true },
+    { "type": "range", "id": "speed", "min": 2, "max": 10, "step": 0.5, "unit": "s", "label": "Intervalle", "default": 3.5 }
+  ],
+  "blocks": [
+    {
+      "type": "message",
+      "name": "Message",
+      "settings": [
+        { "type": "text", "id": "text", "label": "Texte", "info": "Laisser vide tant que le message n'est pas validé par LLUFAN (aucun texte n'est fourni par défaut)." },
+        { "type": "url", "id": "link", "label": "Lien" }
+      ]
+    }
+  ],
+  "presets": [ { "name": "Bandeau d'annonce", "blocks": [ { "type": "message" }, { "type": "message" } ] } ]
+}
+{% endschema %}

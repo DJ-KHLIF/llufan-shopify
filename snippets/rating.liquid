@@ -1,0 +1,20 @@
+{%- comment -%}
+  Note d'avis : lit rating / rating_count (balises meta de l'application d'avis).
+  Aucune note n'est affichée si la boutique n'a pas d'avis — rien n'est inventé.
+{%- endcomment -%}
+{%- assign rating_value = rating | default: product.metafields.reviews.rating.value -%}
+{%- assign rating_count = rating_count | default: product.metafields.reviews.rating_count -%}
+{%- if rating_value and rating_count and rating_count > 0 -%}
+  {%- assign rounded = rating_value | times: 2 | round | divided_by: 2.0 -%}
+  <div class="rating{% if class %} {{ class }}{% endif %}">
+    <div class="rating__stars" role="img" aria-label="{{ 'products.reviews.rating' | t }} {{ rating_value }} / 5">
+      {%- for i in (1..5) -%}
+        {%- assign diff = rounded | minus: i -%}
+        {%- if diff >= 0 -%}{% render 'icons', icon: 'star', size: 14 %}
+        {%- elsif diff > -1 -%}{% render 'icons', icon: 'star-half', size: 14 %}
+        {%- else -%}{% render 'icons', icon: 'star-empty', size: 14 %}{%- endif -%}
+      {%- endfor -%}
+    </div>
+    <span class="rating__value">({{ rating_value }})</span>
+  </div>
+{%- endif -%}

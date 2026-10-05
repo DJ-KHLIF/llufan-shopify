@@ -1,0 +1,39 @@
+{%- comment -%}Page contact — formulaire natif Shopify{%- endcomment -%}
+<div class="section-spacing color-scheme color-scheme--scheme-1">
+  <div class="container container--md">
+    <div class="section-stack">
+      <div class="section-header">
+        <h1 class="h1">{{ page.title }}</h1>
+        {%- if page.content != blank -%}<div class="prose">{{ page.content }}</div>{%- endif -%}
+      </div>
+      {%- comment -%}
+        WhatsApp d'abord : c'est le moyen de contact que LLUFAN met en avant.
+        Le numéro et le lien viennent des réglages du thème (snippet whatsapp).
+      {%- endcomment -%}
+      <div class="contact-whatsapp">
+        {%- render 'whatsapp', mode: 'bouton', style: 'coral' -%}
+        {%- render 'courriel', avec_icone: true -%}
+      </div>
+
+      {%- form 'contact', class: 'v-stack gap-4' -%}
+        {%- if form.posted_successfully? -%}<p class="text-subdued">{{ 'contact.success' | t }}</p>{%- endif -%}
+        {%- if form.errors -%}<p class="product-form__error">{{ form.errors | default_errors }}</p>{%- endif -%}
+        <div class="h-stack gap-4 wrap">
+          <label class="field" style="flex:1"><span class="field__label">{{ 'contact.name' | t }}</span><input class="input" type="text" name="contact[name]" value="{{ form.name }}"></label>
+          <label class="field" style="flex:1"><span class="field__label">{{ 'contact.email' | t }}</span><input class="input" type="email" name="contact[email]" value="{{ form.email }}" required></label>
+        </div>
+        <label class="field"><span class="field__label">{{ 'contact.subject' | t }}</span><input class="input" type="text" name="contact[subject]" value="{{ form.subject }}"></label>
+        <label class="field"><span class="field__label">{{ 'contact.message' | t }}</span><textarea class="textarea" name="contact[body]" rows="6" required>{{ form.body }}</textarea></label>
+        <button type="submit" class="button button--navy">{{ 'contact.send' | t }}</button>
+      {%- endform -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Contact",
+  "tag": "section",
+  "settings": []
+}
+{% endschema %}

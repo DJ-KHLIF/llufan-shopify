@@ -1,0 +1,58 @@
+{%- comment -%}
+  Produits consultés récemment — historique local (navigateur du client),
+  comme sur la référence. Les informations stockées proviennent des fiches
+  produit réellement visitées.
+{%- endcomment -%}
+<div class="section-spacing color-scheme color-scheme--scheme-1" data-recently-viewed hidden>
+  <div class="container">
+    <div class="section-stack">
+      <div class="section-header">{%- if section.settings.heading != blank -%}<h2 class="h2">{{ section.settings.heading }}</h2>{%- endif -%}</div>
+      <div class="product-list product-list--carousel-tel" data-recently-viewed-list></div>
+    </div>
+  </div>
+</div>
+<script>
+  (() => {
+    const KEY = 'llufan:recently-viewed';
+    const container = document.querySelector('[data-recently-viewed]');
+    const list = document.querySelector('[data-recently-viewed-list]');
+    if (!container || !list) return;
+
+    const read = () => { try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { return []; } };
+    const write = (items) => { try { localStorage.setItem(KEY, JSON.stringify(items.slice(0, 12))); } catch (e) {} };
+
+    const info = document.querySelector('[data-product-info]');
+    let items = read();
+    if (info) {
+      const entry = JSON.parse(info.dataset.productInfo);
+      items = [entry, ...items.filter((i) => i.url !== entry.url)];
+      write(items);
+    }
+    const others = items.filter((i) => !info || i.url !== JSON.parse(info.dataset.productInfo).url).slice(0, 4);
+    if (!others.length) return;
+    others.forEach((item) => {
+      const card = document.createElement('div');
+      card.className = 'product-card';
+      card.innerHTML = `
+        <div class="product-card__figure">
+          <a class="product-card__media" href="${item.url}">
+            ${item.image ? `<img class="product-card__image product-card__image--square" src="${item.image}" alt="${item.title}" loading="lazy" width="600" height="600">` : ''}
+          </a>
+        </div>
+        <div class="product-card__info">
+          <a class="product-card__title h6" href="${item.url}">${item.title}</a>
+          <span class="product-card__price">${item.price || ''}</span>
+        </div>`;
+      list.append(card);
+    });
+    container.hidden = false;
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Consultés récemment",
+  "tag": "section",
+  "settings": [ { "type": "text", "id": "heading", "label": "Titre" } ]
+}
+{% endschema %}

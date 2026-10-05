@@ -1,0 +1,72 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "settings": {}
+    },
+    "info": {
+      "type": "information",
+      "blocks": {
+        "b1": {
+          "type": "bloc",
+          "settings": {
+            "icone": "mail",
+            "titre": "1. Nous contacter",
+            "texte": "<p>Écrivez-nous sur WhatsApp ou par e-mail en précisant votre numéro de commande et le produit concerné.</p>",
+            "lien_label": "Page contact",
+            "lien": "pages/contact"
+          }
+        },
+        "b2": {
+          "type": "bloc",
+          "settings": {
+            "icone": "tag",
+            "titre": "2. Délai",
+            "texte": "<p>La demande est à faire sous 7 jours après la réception du colis. <em>(Durée de démonstration, à valider.)</em></p>",
+            "lien_label": "",
+            "lien": ""
+          }
+        },
+        "b3": {
+          "type": "bloc",
+          "settings": {
+            "icone": "heart",
+            "titre": "3. État du produit",
+            "texte": "<p>L'article doit être non utilisé et dans son emballage d'origine.</p>",
+            "lien_label": "",
+            "lien": ""
+          }
+        },
+        "b4": {
+          "type": "bloc",
+          "settings": {
+            "icone": "shipping",
+            "titre": "4. Frais de retour",
+            "texte": "<p><em>Emplacement à compléter : qui prend en charge les frais de retour (à décider par LLUFAN).</em></p>",
+            "lien_label": "",
+            "lien": ""
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4"
+      ],
+      "settings": {
+        "bandeau_demo": "Contenu de démonstration — à remplacer avant la mise en ligne.",
+        "eyebrow": "Aide",
+        "heading": "Échanges et retours",
+        "intro": "<p>Un article ne convient pas ? Voici comment faire, étape par étape.</p><p><em>Gabarit de démonstration : les conditions définitives seront fixées par LLUFAN.</em></p>",
+        "note": "<p><em>Page de démonstration. Remplacer par la politique de retour validée par LLUFAN.</em></p>",
+        "cta_label": "Nous contacter",
+        "cta_lien": "pages/contact"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "info"
+  ]
+}

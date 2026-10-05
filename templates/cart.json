@@ -1,0 +1,18 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-cart",
+      "settings": {
+        "show_checkout_button": false
+      }
+    },
+    "commande": {
+      "type": "commande-livraison",
+      "settings": {}
+    }
+  },
+  "order": [
+    "main",
+    "commande"
+  ]
+}

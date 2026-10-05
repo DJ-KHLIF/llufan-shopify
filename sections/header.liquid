@@ -1,0 +1,211 @@
+{%- comment -%}
+  « hide_on_purchase » : les trois sections de l'en-tête de page disparaissent
+  ensemble sur la page panier (passage à l'achat), quand le réglage du thème
+  « Masquer l'en-tête au passage à l'achat » est actif.
+{%- endcomment -%}
+{%- assign hide_on_purchase = false -%}
+{%- if settings.hide_header_on_purchase and template.name == 'cart' -%}{%- assign hide_on_purchase = true -%}{%- endif -%}
+{%- comment -%}
+  En-tête — composition de la page d'atterrissage LLUFAN : une seule rangée
+  (menu hamburger à gauche sur mobile, logo centré, icônes à droite), puis la
+  navigation principale sur une ligne séparée par un filet, centrée, avec un
+  soulignement corail animé au survol. Fond blanc translucide flouté, ombre
+  portée dès que la page défile, sélecteur de langue en pastille dépliante.
+{%- endcomment -%}
+<style>
+  :root { --header-is-sticky: {% if section.settings.sticky and hide_on_purchase != true %}1{% else %}0{% endif %}; }
+  #shopify-section-{{ section.id }} {
+    --header-logo-height: {{ section.settings.logo_height_mobile }}px;
+    {% if section.settings.sticky %}position: sticky; top: var(--announcement-bar-height, 0px);{% endif %}
+    z-index: 4;
+  }
+  @media screen and (min-width: 900px) {
+    #shopify-section-{{ section.id }} { --header-logo-height: {{ section.settings.logo_height }}px; }
+  }
+</style>
+{%- unless hide_on_purchase -%}
+<header class="header color-scheme color-scheme--scheme-1" data-header-behavior="{{ section.settings.behavior }}">
+  <div class="container">
+    <div class="header__row">
+      <button type="button" class="header__burger tap-area" data-drawer-open="header-menu-drawer" aria-label="{{ 'accessibility.menu' | t }}">
+        {% render 'icons', icon: 'hamburger', size: 22 %}
+      </button>
+      {%- comment -%}
+        Le logo n'est un titre de niveau 1 que sur l'accueil : sur les autres
+        pages, le titre de la page est déjà un h1 et deux h1 vides fausseraient
+        le plan du document (repéré au contrôle d'accessibilité).
+      {%- endcomment -%}
+      {%- if request.page_type == 'index' -%}<h1 class="header__logo">{%- else -%}<div class="header__logo">{%- endif -%}
+        <a href="{{ routes.root_url }}" aria-label="{{ settings.brand_name | default: shop.name }}">
+          {%- if section.settings.logo != blank -%}
+            {{ section.settings.logo | image_url: width: 600 | image_tag: class: 'header__logo-image', alt: shop.name }}
+          {%- elsif settings.logo != blank -%}
+            {{ settings.logo | image_url: width: 600 | image_tag: class: 'header__logo-image', alt: shop.name }}
+          {%- else -%}
+            {%- comment -%}
+              Logo LLUFAN livré avec le thème, dans la variante « encre » (#1F3462)
+              de la charte, pour les fonds clairs. Le marchand peut le remplacer
+              en déposant son propre logo dans l'éditeur.
+            {%- endcomment -%}
+            <img src="{{ 'llufan-logo-navy.png' | asset_url }}" class="header__logo-image" width="1699" height="450" alt="{{ settings.brand_name | default: shop.name }}">
+          {%- endif -%}
+        </a>
+      {%- if request.page_type == 'index' -%}</h1>{%- else -%}</div>{%- endif -%}
+      <div class="header__icons">
+        {%- comment -%}
+          Bascule de langue : l'en-tête n'affiche QUE la langue vers laquelle on
+          bascule — « العربية » quand la page est en français, « Français »
+          quand elle est en arabe. Un clic change la langue tout de suite.
+          On ne montre jamais les deux langues en même temps.
+        {%- endcomment -%}
+        {%- if settings.show_language_selector and localization.available_languages.size > 1 -%}
+          {%- assign iso_courant = localization.language.iso_code -%}
+          {%- assign langue_cible = nil -%}
+          {%- for language in localization.available_languages -%}
+            {%- if language.iso_code != iso_courant and langue_cible == nil -%}
+              {%- assign langue_cible = language -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {%- if langue_cible -%}
+            {%- form 'localization', id: 'header-language', class: 'header__langue' -%}
+              <input type="hidden" name="language_code" value="{{ langue_cible.iso_code }}">
+              <button type="submit" class="header__langue-bouton" lang="{{ langue_cible.iso_code }}" aria-label="{{ 'general.language' | t }} : {{ langue_cible.endonym_name }}">{{ langue_cible.endonym_name | capitalize }}</button>
+            {%- endform -%}
+          {%- endif -%}
+        {%- endif -%}
+        {%- if settings.show_country_selector and localization.available_countries.size > 1 -%}
+          <details class="header__locale header__country">
+            <summary>
+              <span>{{ localization.country.name }} ({{ localization.country.currency.iso_code }})</span>
+              {% render 'icons', icon: 'chevron-down', size: 12 %}
+            </summary>
+            <div class="header__locale-popover">
+              {%- form 'localization', id: 'header-country', class: 'header__locale-form' -%}
+                <select class="header__country-select" name="country_code" onchange="this.form.submit()" aria-label="{{ 'general.country' | t }}">
+                  {%- for country in localization.available_countries -%}
+                    <option value="{{ country.iso_code }}" {% if country.iso_code == localization.country.iso_code %}selected{% endif %}>{{ country.name }} ({{ country.currency.iso_code }} {{ country.currency.symbol }})</option>
+                  {%- endfor -%}
+                </select>
+              {%- endform -%}
+            </div>
+          </details>
+        {%- endif -%}
+        {%- if section.settings.show_account -%}
+          <a href="{{ routes.account_url }}" class="tap-area header__icone header__icone--compte" aria-label="{{ 'accessibility.account' | t }}">{% render 'icons', icon: 'account', size: 22 %}</a>
+        {%- endif -%}
+        <button type="button" class="tap-area header__icone header__icone--recherche" data-drawer-open="search-drawer" aria-label="{{ 'accessibility.search' | t }}">{% render 'icons', icon: 'search', size: 22 %}</button>
+        <a href="{{ routes.cart_url }}" class="tap-area header__cart" data-drawer-open="cart-drawer" aria-label="{{ 'accessibility.cart' | t }}">
+          {% render 'icons', icon: 'bag', size: 22 %}
+          <span class="header__cart-count{% if cart.item_count > 0 %} is-visible{% endif %}" data-cart-count data-cart-dot>{{ cart.item_count }}</span>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="header__subnav-row md-max:hidden">
+    <div class="container">
+      <nav class="header__subnav" aria-label="{{ 'accessibility.primary_nav' | t }}">
+        {%- for link in section.settings.menu.links -%}
+          {%- if link.links.size > 0 -%}
+            <div class="header__subnav-item" data-dropdown>
+              <button type="button" aria-expanded="false" aria-controls="dropdown-{{ section.id }}-{{ forloop.index }}">
+                {{ link.title }} {% render 'icons', icon: 'chevron-down', size: 12 %}
+              </button>
+              <ul class="header__dropdown-menu" id="dropdown-{{ section.id }}-{{ forloop.index }}">
+                {%- for child in link.links -%}
+                  <li><a href="{{ child.url }}">{{ child.title }}</a></li>
+                {%- endfor -%}
+              </ul>
+            </div>
+          {%- else -%}
+            <a href="{{ link.url }}">{{ link.title }}</a>
+          {%- endif -%}
+        {%- endfor -%}
+      </nav>
+      {%- if section.settings.pill_label != blank -%}
+        {%- comment -%}
+          Destination de la pastille : le lien saisi, sinon la page « club-maman »
+          si elle existe. Aucune destination inventée : tant que ni l'un ni l'autre
+          n'existe, la pastille s'affiche sans être cliquable.
+        {%- endcomment -%}
+        {%- capture lien_pastille_resolu -%}{%- render 'lien', valeur: section.settings.pill_link -%}{%- endcapture -%}
+        {%- assign lien_pastille = lien_pastille_resolu | strip -%}
+        {%- if lien_pastille == blank and pages['club-maman'] != blank -%}{%- assign lien_pastille = pages['club-maman'].url -%}{%- endif -%}
+        {%- if lien_pastille != blank -%}
+          <a class="header__pill" href="{{ lien_pastille }}">{{ section.settings.pill_label }}</a>
+        {%- else -%}
+          <span class="header__pill">{{ section.settings.pill_label }}</span>
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+  </div>
+</header>
+
+<!-- Tiroir de navigation (mobile) -->
+<div class="drawer drawer--menu color-scheme color-scheme--scheme-1" id="header-menu-drawer" aria-hidden="true">
+  <div class="drawer__header">
+    <p class="h4">{{ 'accessibility.menu' | t }}</p>
+    <button type="button" class="tap-area" data-drawer-close aria-label="{{ 'accessibility.close' | t }}">{% render 'icons', icon: 'close', size: 14 %}</button>
+  </div>
+  <div class="drawer__body drawer__stagger">
+    {%- for link in section.settings.menu.links -%}
+      {%- if link.links.size > 0 -%}
+        <details class="drawer-header__accordion">
+          <summary>{{ link.title }} {% render 'icons', icon: 'chevron-right', size: 14 %}</summary>
+          <div class="drawer-header__submenu">
+            {%- for child in link.links -%}<a href="{{ child.url }}">{{ child.title }}</a>{%- endfor -%}
+          </div>
+        </details>
+      {%- else -%}
+        <a class="drawer-header__accordion" style="display:flex;justify-content:space-between;padding-block:.9rem;border-bottom:1px solid rgb(var(--border-color) / .6)" href="{{ link.url }}">{{ link.title }}</a>
+      {%- endif -%}
+    {%- endfor -%}
+    {%- comment -%}
+      Recherche et compte : sur les téléphones de moins de 480 px, leurs icônes
+      quittent l'en-tête pour laisser la place au logo et au panier — elles sont
+      donc ici, à portée de pouce.
+    {%- endcomment -%}
+    <a class="drawer-header__accordion" style="display:flex;justify-content:space-between;align-items:center;padding-block:.9rem;border-bottom:1px solid rgb(var(--border-color) / .6)" href="{{ routes.search_url }}">{{ 'search.title' | t }} {% render 'icons', icon: 'search', size: 18 %}</a>
+    <a class="drawer-header__accordion" style="display:flex;justify-content:space-between;align-items:center;padding-block:.9rem;border-bottom:1px solid rgb(var(--border-color) / .6)" href="{{ routes.account_url }}">{{ 'customers.login' | t }} {% render 'icons', icon: 'account', size: 18 %}</a>
+  </div>
+</div>
+
+<!-- Tiroir de recherche -->
+<div class="drawer drawer--start color-scheme color-scheme--scheme-1" id="search-drawer" aria-hidden="true">
+  <div class="drawer__header">
+    <p class="h4">{{ 'accessibility.search' | t }}</p>
+    <button type="button" class="tap-area" data-drawer-close aria-label="{{ 'accessibility.close' | t }}">{% render 'icons', icon: 'close', size: 14 %}</button>
+  </div>
+  <div class="drawer__body">
+    <form class="search-form" action="{{ routes.search_url }}" method="get" role="search">
+      <input type="search" name="q" placeholder="{{ 'search.placeholder' | t }}" aria-label="{{ 'accessibility.search' | t }}">
+      <button type="submit" aria-label="{{ 'accessibility.search' | t }}">{% render 'icons', icon: 'search', size: 20 %}</button>
+    </form>
+  </div>
+</div>
+
+{%- endunless -%}
+
+{% schema %}
+{
+  "name": "En-tête",
+  "tag": "header",
+  "class": "shopify-section--header",
+  "enabled_on": { "groups": ["header"] },
+  "settings": [
+    { "type": "image_picker", "id": "logo", "label": "Logo", "info": "Laisser vide pour utiliser le logo LLUFAN livré avec le thème (variante encre de la charte)." },
+    { "type": "range", "id": "logo_height", "min": 18, "max": 60, "step": 1, "unit": "px", "label": "Hauteur du logo (ordinateur)", "default": 30 },
+    { "type": "range", "id": "logo_height_mobile", "min": 16, "max": 48, "step": 1, "unit": "px", "label": "Hauteur du logo (mobile)", "default": 26 },
+    { "type": "link_list", "id": "menu", "label": "Menu principal (ligne sous le logo)", "default": "main-menu" },
+    { "type": "checkbox", "id": "sticky", "label": "En-tête collant", "default": true },
+    { "type": "select", "id": "behavior", "label": "Comportement au défilement", "options": [
+      { "value": "shadow", "label": "Reste visible, ombre portée (page d'atterrissage)" },
+      { "value": "auto_hide", "label": "Se masque vers le bas, réapparaît vers le haut" },
+      { "value": "static", "label": "Aucun" }
+    ], "default": "shadow" },
+    { "type": "header", "content": "Pastille (facultatif)" },
+    { "type": "text", "id": "pill_label", "label": "Texte de la pastille", "info": "Texte LLUFAN à fournir ; laisser vide pour masquer la pastille." },
+    { "type": "url", "id": "pill_link", "label": "Lien de la pastille" },
+    { "type": "checkbox", "id": "show_account", "label": "Afficher le lien « Compte »", "default": true, "info": "À décocher si les comptes clients sont fermés : l'icône mènerait sinon à une page inaccessible." }
+  ]
+}
+{% endschema %}

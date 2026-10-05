@@ -1,0 +1,79 @@
+{%- comment -%}
+  Filtres de collection — repris du parcours observé : bouton « Filtrer » qui
+  ouvre un tiroir, et sélecteur de tri « Trier par » en popover.
+  Les valeurs affichées proviennent des filtres réellement configurés sur la boutique.
+{%- endcomment -%}
+<div class="collection-toolbar">
+  <div class="collection-toolbar__buttons">
+    {%- if results.filters.size > 0 -%}
+      <button type="button" class="collection-toolbar__button" data-drawer-open="facets-drawer" aria-controls="facets-drawer">
+        {% render 'icons', icon: 'filter', size: 16 %}
+        {{ 'collections.filters.filter' | t }}
+        {%- if results.filters.size > 0 -%}<span class="sr-only">({{ 'collections.filters.count' | t: count: results.filters.size }})</span>{%- endif -%}
+      </button>
+    {%- endif -%}
+    <div class="popover">
+      <button type="button" class="collection-toolbar__button" data-popover-toggle aria-expanded="false" aria-controls="sort-popover">
+        {% render 'icons', icon: 'sort', size: 16 %}
+        {{ 'collections.sorting.title' | t }}
+      </button>
+      <div class="popover__panel popover--bottom-end" id="sort-popover" hidden>
+        <p class="h4">{{ 'collections.sorting.title' | t }}</p>
+        <form>
+          <input type="hidden" name="q" value="{{ results.query }}">
+          <select class="footer__select w-full" name="sort_by" data-sort-select aria-label="{{ 'collections.sorting.title' | t }}">
+            {%- for option in results.sort_options -%}
+              <option value="{{ option.value }}" {% if option.value == results.sort_by %}selected{% endif %}>{{ option.name }}</option>
+            {%- endfor -%}
+          </select>
+        </form>
+      </div>
+    </div>
+    {%- if terms != blank -%}
+      <span class="collection-toolbar__count">{{ 'collections.results' | t: count: results.results_count }}{% if terms %} : « {{ terms }} »{% endif %}</span>
+    {%- endif -%}
+  </div>
+  <p class="collection-toolbar__count md-max:hidden">{{ 'collections.products_count' | t: count: results.results_count }}</p>
+</div>
+
+{%- if results.filters.size > 0 -%}
+  <div class="drawer drawer--start facets-drawer" id="facets-drawer" aria-hidden="true">
+    <div class="drawer__header">
+      <p class="h4">{{ 'collections.filters.filter' | t }}</p>
+      <button type="button" class="tap-area" data-drawer-close aria-label="{{ 'accessibility.close' | t }}">{% render 'icons', icon: 'close', size: 14 %}</button>
+    </div>
+    <div class="drawer__body">
+      <form id="facets-form" data-facets-form method="get" action="{{ results.url }}">
+        {%- for filter in results.filters -%}
+          <div class="facets__group">
+            <p class="facets__title">{{ filter.label }}</p>
+            <div class="facets__values">
+              {%- case filter.type -%}
+                {%- when 'list' -%}
+                  {%- for value in filter.values -%}
+                    <label class="facets__value">
+                      <input type="checkbox" name="{{ value.param_name }}" value="{{ value.value }}" {% if value.active %}checked{% endif %} {% if value.count == 0 and value.active == false %}disabled{% endif %}>
+                      <span>{{ value.label }} ({{ value.count }})</span>
+                    </label>
+                  {%- endfor -%}
+                {%- when 'price_range' -%}
+                  <div class="h-stack gap-2">
+                    <label class="field"><span class="field__label">{{ 'collections.filters.from' | t }}</span>
+                      <input class="input" type="number" name="{{ filter.min_value.param_name }}" value="{{ filter.min_value.value }}" min="0" max="{{ filter.range_max | divided_by: 100 | ceil }}">
+                    </label>
+                    <label class="field"><span class="field__label">{{ 'collections.filters.to' | t }}</span>
+                      <input class="input" type="number" name="{{ filter.max_value.param_name }}" value="{{ filter.max_value.value }}" min="0" max="{{ filter.range_max | divided_by: 100 | ceil }}">
+                    </label>
+                  </div>
+              {%- endcase -%}
+            </div>
+          </div>
+        {%- endfor -%}
+        <div class="facets__actions">
+          <button type="submit" class="button button--full">{{ 'collections.filters.apply' | t }}</button>
+          <a class="button button--outline" href="{{ results.url }}">{{ 'collections.filters.clear' | t }}</a>
+        </div>
+      </form>
+    </div>
+  </div>
+{%- endif -%}

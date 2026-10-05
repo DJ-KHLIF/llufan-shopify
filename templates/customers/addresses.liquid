@@ -1,0 +1,33 @@
+<div class="section-spacing color-scheme color-scheme--scheme-1">
+  <div class="container container--md">
+    <div class="v-stack gap-6">
+      <div class="section-header"><h1 class="h2">{{ 'customers.addresses' | t }}</h1></div>
+      {%- paginate customer.addresses by 6 -%}
+        <div class="v-stack gap-6">
+          {%- for address in customer.addresses -%}
+            <div class="v-stack gap-2">
+              {{ address | format_address }}
+              <div class="h-stack gap-4">
+                <a href="{{ address.url }}" class="link-faded" style="text-decoration:underline">{{ 'customers.submit' | t }}</a>
+                <form method="post" action="{{ address.url }}"><input type="hidden" name="_method" value="delete"><button type="submit" class="link-faded" style="text-decoration:underline">{{ 'cart.remove' | t }}</button></form>
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+      {%- endpaginate -%}
+      <div>
+        {%- form 'customer_address', customer.new_address, class: 'v-stack gap-4' -%}
+          <h2 class="h4">{{ 'customers.addresses' | t }}</h2>
+          <div class="h-stack gap-4 wrap">
+            <label class="field" style="flex:1"><span class="field__label">{{ 'customers.first_name' | t }}</span><input class="input" type="text" name="address[first_name]"></label>
+            <label class="field" style="flex:1"><span class="field__label">{{ 'customers.last_name' | t }}</span><input class="input" type="text" name="address[last_name]"></label>
+          </div>
+          <label class="field"><span class="field__label">{{ 'customers.address' | t }}</span><input class="input" type="text" name="address[address1]"></label>
+          <label class="field"><span class="field__label">{{ 'customers.city' | t }}</span><input class="input" type="text" name="address[city]"></label>
+          <label class="field"><span class="field__label">{{ 'general.country' | t }}</span><input class="input" type="text" name="address[country]"></label>
+          <button type="submit" class="button button--navy">{{ 'customers.submit' | t }}</button>
+        {%- endform -%}
+      </div>
+    </div>
+  </div>
+</div>

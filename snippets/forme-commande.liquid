@@ -1,0 +1,163 @@
+{%- comment -%}
+  Formulaire de commande — paiement à la livraison
+  ---------------------------------------------------------------------------
+  Un seul composant, utilisé à deux endroits :
+    • « produit » : bloc de la fiche produit, juste sous les boutons d'achat
+      → le client commande sans passer par le panier (2 étapes au lieu de 4) ;
+    • « panier » : section de la page panier, pour les clients qui ont mis
+      plusieurs articles de côté.
+
+  La wilaya choisie détermine les communes proposées, le tarif (à domicile ou
+  stop-desk) puis le total. Aucun tarif n'est écrit en dur : tout vient de
+  `assets/llufan-livraison-dz.json`.
+
+  Paramètres attendus :
+    mode          « produit » ou « panier »
+    cle           identifiant unique (section.id ou block.id)
+    titre         titre du formulaire
+    cta           libellé du bouton d'envoi
+    barre_mobile  afficher la barre « Commander » en mobile
+    sous_total    total en centimes (panier) — la fiche produit le calcule côté JS
+{%- endcomment -%}
+
+{%- assign mode = mode | default: 'panier' -%}
+{%- assign cle = cle | default: 'commande' -%}
+{%- assign defaut_titre = 'commande.titre_defaut' | t -%}
+{%- assign titre = titre | default: defaut_titre -%}
+{%- assign defaut_cta = 'commande.cta_defaut' | t -%}
+{%- assign cta = cta | default: defaut_cta -%}
+{%- assign barre_mobile = barre_mobile | default: true -%}
+
+{%- if mode == 'produit' -%}
+  {%- assign reference = product.selected_or_first_available_variant.price -%}
+  <script type="application/json" data-llufan-variantes>
+    [{%- for variante in product.variants -%}
+      {"id": {{ variante.id }}, "titre": {{ variante.title | json }}, "prix": {{ variante.price }}, "dispo": {{ variante.available }}}{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}]
+  </script>
+{%- else -%}
+  {%- assign reference = cart.total_price -%}
+  {%- capture lignes_du_panier -%}
+    {%- for item in cart.items -%}
+      {{ item.quantity }} × {{ item.product.title }}{% if item.variant.title != 'Default Title' %} — {{ item.variant.title }}{% endif %} : {{ item.final_line_price | money }}
+    {%- endfor -%}
+  {%- endcapture -%}
+{%- endif -%}
+
+<span id="commander" class="commande__ancre" aria-hidden="true"></span>
+<div
+  class="commande-wrapper"
+  id="commande-{{ cle }}"
+  data-commande-{{ cle }}
+  data-llufan-commande
+  data-mode-section="{{ mode }}"
+  data-src="{{ 'llufan-livraison-dz.json' | asset_url }}"
+  data-devise="{{ devise | default: 'DA' | escape }}"
+  data-sous-total="{{ reference }}"
+  data-produit="{{ product.title | escape }}"
+  data-lignes="{{ lignes_du_panier | strip | escape }}"
+  data-mode=""
+  data-libelle-a-calculer="{{ 'commande.a_calculer' | t | escape }}"
+  data-libelle-choisir="{{ 'commande.choisir' | t | escape }}"
+  data-libelle-choix-incomplet="{{ 'commande.choix_incomplet' | t | escape }}"
+  data-libelle-recap-nom="{{ 'commande.recap_nom' | t | escape }}"
+  data-libelle-recap-telephone="{{ 'commande.recap_telephone' | t | escape }}"
+  data-libelle-recap-wilaya="{{ 'commande.recap_wilaya' | t | escape }}"
+  data-libelle-recap-commune="{{ 'commande.recap_commune' | t | escape }}"
+  data-libelle-recap-type="{{ 'commande.recap_type' | t | escape }}"
+  data-libelle-recap-sous-total="{{ 'commande.recap_sous_total' | t | escape }}"
+  data-libelle-recap-frais="{{ 'commande.recap_frais' | t | escape }}"
+  data-libelle-recap-total="{{ 'commande.recap_total' | t | escape }}"
+>
+  <div class="commande-encart{% if mode == 'produit' %} commande-encart--produit{% endif %}">
+    {%- if titre != blank -%}
+      <p class="commande__titre">{{ titre }}</p>
+    {%- endif -%}
+
+    {%- form 'contact', class: 'commande', id: 'commande-formulaire-' | append: cle -%}
+      {%- if form.posted_successfully? -%}
+        <p class="commande__confirmation" data-llufan-confirmation role="status">{{ 'commande.confirmation' | t }}</p>
+      {%- else -%}
+        <p class="commande__confirmation" data-llufan-confirmation role="status" hidden>{{ 'commande.confirmation' | t }}</p>
+      {%- endif -%}
+
+      {%- if form.errors -%}
+        <p class="commande__avertissement" role="alert">{{ form.errors | default_errors }}</p>
+      {%- endif -%}
+      <p class="commande__avertissement" data-llufan-avertissement role="alert" hidden></p>
+
+      <input type="hidden" name="contact[email]" value="{{ shop.email | escape }}">
+      <input type="hidden" name="contact[subject]" value="Commande — paiement à la livraison">
+      <textarea name="contact[body]" data-llufan-recapitulatif hidden></textarea>
+
+      <div class="commande__champs">
+        <label class="field">
+          <span class="field__label">{{ 'commande.nom' | t }} *</span>
+          <input class="input" type="text" name="contact[Nom complet]" autocomplete="name" placeholder="{{ 'commande.nom_placeholder' | t }}" required>
+        </label>
+
+        <label class="field">
+          <span class="field__label">{{ 'commande.telephone' | t }} *</span>
+          <input class="input" type="tel" name="contact[Téléphone]" inputmode="tel" autocomplete="tel" placeholder="05 / 06 / 07 …"
+                 pattern="[0-9+][0-9+ ]{8,17}" title="{{ 'commande.telephone_aide' | t }}" required>
+        </label>
+
+        <label class="field">
+          <span class="field__label">{{ 'commande.wilaya' | t }} *</span>
+          <select class="select" name="contact[Wilaya]" data-llufan-wilaya required>
+            <option value="">{{ 'commande.choisir' | t }}</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span class="field__label">{{ 'commande.commune' | t }} *</span>
+          <select class="select" name="contact[Commune]" data-llufan-commune required disabled>
+            <option value="">{{ 'commande.wilaya_dabord' | t }}</option>
+          </select>
+        </label>
+      </div>
+
+      <fieldset class="commande__livraison" data-llufan-type>
+        <legend class="field__label">{{ 'commande.livraison' | t }}</legend>
+        <label class="commande__option" data-llufan-type-item>
+          <input type="radio" name="contact[Type de livraison]" value="domicile" checked>
+          <span>{{ 'commande.domicile' | t }}</span>
+          <span class="commande__option-prix" data-llufan-prix-domicile>—</span>
+        </label>
+        <label class="commande__option" data-llufan-type-item>
+          <input type="radio" name="contact[Type de livraison]" value="stop-desk">
+          <span>{{ 'commande.stop_desk' | t }}</span>
+          <span class="commande__option-prix" data-llufan-prix-stop-desk>—</span>
+        </label>
+      </fieldset>
+
+      <div class="commande__totaux">
+        <div class="commande__total-ligne"><span>{{ 'commande.sous_total' | t }}</span><span data-llufan-sous-total>{{ reference | money }}</span></div>
+        <div class="commande__total-ligne"><span>{{ 'commande.frais' | t }}</span><span data-llufan-frais>{{ 'commande.a_calculer' | t }}</span></div>
+        <div class="commande__total-ligne commande__total-ligne--total"><span>{{ 'commande.total' | t }}</span><span data-llufan-total>—</span></div>
+      </div>
+
+      <button type="submit" class="button button--coral button--lg commande__bouton" data-llufan-bouton>{{ cta }}</button>
+
+      <div class="commande__reassurance">
+        <span>{{ 'commande.sans_paiement' | t }}</span>
+        <span>{{ 'commande.commande_protegee' | t }}</span>
+      </div>
+    {%- endform -%}
+
+    <div class="commande__infos">
+      <p>{{ 'commande.delai' | t }}</p>
+      <p class="text-subdued">{{ 'commande.mentions' | t }}</p>
+    </div>
+  </div>
+
+  {%- if barre_mobile -%}
+    <div class="commande__barre-espace" aria-hidden="true"></div>
+    <div class="commande__barre">
+      <span class="commande__barre-montant" data-llufan-sticky-total>—</span>
+      <a href="#commande-{{ cle }}" class="button button--coral" data-llufan-sticky>{{ 'commande.barre_cta' | t }}</a>
+    </div>
+  {%- endif -%}
+</div>
+
+<script src="{{ 'llufan-livraison.js' | asset_url }}" defer></script>

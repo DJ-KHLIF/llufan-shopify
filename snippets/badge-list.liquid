@@ -1,0 +1,16 @@
+{%- comment -%}
+  Badges produit. Les libellés et couleurs proviennent de réglages de section
+  (aucun badge n'est créé automatiquement pour ne pas inventer de mention).
+{%- endcomment -%}
+{%- assign blocks = section.blocks | where: 'type', 'badge' -%}
+{%- if blocks.size > 0 -%}
+  <div class="badge-list">
+    {%- for block in blocks -%}
+      {%- assign applies = false -%}
+      {%- if block.settings.products == blank or block.settings.products contains product.id -%}{%- assign applies = true -%}{%- endif -%}
+      {%- if applies and block.settings.label != blank -%}
+        <span class="badge badge--{{ block.settings.color }}" {{ block.shopify_attributes }}>{{ block.settings.label }}</span>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+{%- endif -%}

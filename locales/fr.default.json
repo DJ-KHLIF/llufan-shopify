@@ -1,0 +1,189 @@
+{
+  "general": {
+    "accueil": "Accueil",
+    "page": "Page",
+    "country": "Pays",
+    "language": "Langue",
+    "pagination": "Pagination",
+    "search": {
+      "title": "Recherche"
+    },
+    "404": {
+      "title": "Cette page est introuvable",
+      "subtext": "Le lien est peut-être erroné ou la page a été déplacée.",
+      "link": "Voir tous les produits"
+    }
+  },
+  "accessibility": {
+    "skip_to_content": "Aller au contenu",
+    "close": "Fermer",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "menu": "Menu",
+    "search": "Recherche",
+    "cart": "Panier",
+    "account": "Compte",
+    "primary_nav": "Navigation principale",
+    "go_to_item": "Aller à l'élément",
+    "scroll_down": "Aller à la section suivante"
+  },
+  "products": {
+    "product": {
+      "sold_out": "Épuisé",
+      "add_to_cart": "Ajouter au panier",
+      "adding": "Ajout en cours…",
+      "choose": "Choisir",
+      "quantity": "Quantité",
+      "decrease_quantity": "Diminuer la quantité",
+      "increase_quantity": "Augmenter la quantité",
+      "in_stock": "En stock",
+      "out_of_stock": "Épuisé",
+      "media": "Élément",
+      "share": "Partager",
+      "on_sale": "Promotion",
+      "play_video": "Lire la vidéo"
+    },
+    "reviews": {
+      "rating": "Note"
+    }
+  },
+  "collections": {
+    "products_count": {
+      "one": "{{ count }} produit",
+      "other": "{{ count }} produits"
+    },
+    "results": {
+      "one": "{{ count }} résultat pour",
+      "other": "{{ count }} résultats pour"
+    },
+    "empty": "Aucun produit dans cette collection pour le moment.",
+    "filters": {
+      "filter": "Filtrer",
+      "count": "{{ count }} filtres",
+      "from": "De",
+      "to": "À",
+      "apply": "Appliquer",
+      "clear": "Tout effacer"
+    },
+    "sorting": {
+      "title": "Trier par"
+    }
+  },
+  "cart": {
+    "title": "Panier",
+    "empty": "Votre panier est vide",
+    "continue_shopping": "Continuer mes achats",
+    "subtotal": "Sous-total",
+    "taxes_and_shipping_note": "Frais et taxes calculés au moment de la commande.",
+    "checkout": "Passer la commande",
+    "view_cart": "Voir le panier",
+    "note": "Note de commande",
+    "update": "Mettre à jour",
+    "remove": "Retirer"
+  },
+  "search": {
+    "title": "Recherche",
+    "placeholder": "Rechercher",
+    "results": {
+      "one": "{{ count }} résultat pour « {{ terms }} »",
+      "other": "{{ count }} résultats pour « {{ terms }} »"
+    },
+    "no_results": "Aucun résultat. Essayez un autre terme."
+  },
+  "newsletter": {
+    "email": "Adresse e-mail",
+    "subscribe": "S'inscrire"
+  },
+  "contact": {
+    "name": "Nom",
+    "email": "E-mail",
+    "subject": "Objet",
+    "message": "Message",
+    "send": "Envoyer",
+    "success": "Merci, votre message a bien été envoyé."
+  },
+  "sections": {
+    "hero": {
+      "image_placeholder": "Visuel LLUFAN à fournir"
+    },
+    "video": {
+      "placeholder": "Vidéo LLUFAN à fournir",
+      "autoplay_note": "La vidéo se lance automatiquement, sans son — comme sur la référence de design."
+    },
+    "collection_banner": {
+      "image_placeholder": "Visuel LLUFAN à fournir"
+    }
+  },
+  "onboarding": {
+    "product_title": "Titre de produit (exemple de la mise en page)"
+  },
+  "customers": {
+    "login": "Connexion",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "sign_in": "Se connecter",
+    "register": "Créer un compte",
+    "account": "Mon compte",
+    "orders": "Mes commandes",
+    "logout": "Se déconnecter",
+    "addresses": "Mes adresses",
+    "first_name": "Prénom",
+    "last_name": "Nom",
+    "submit": "Valider",
+    "order": "Commande",
+    "date": "Date",
+    "total": "Total",
+    "status": "Statut",
+    "no_orders": "Vous n'avez pas encore de commande.",
+    "reset_password": "Réinitialiser le mot de passe",
+    "address": "Adresse",
+    "city": "Ville"
+  },
+  "club": {
+    "reponses": "réponses",
+    "likes": "likes",
+    "email": "Votre e-mail"
+  },
+  "gift_cards": {
+    "issued": {
+      "title": "Votre carte cadeau LLUFAN",
+      "subtext": "Utilisez le code ci-dessous lors de votre prochaine commande.",
+      "expired": "Cette carte cadeau a expiré.",
+      "shop_link": "Continuer mes achats"
+    }
+  },
+  "commande": {
+    "titre_defaut": "Commander — Paiement à la livraison",
+    "cta_defaut": "Commander maintenant",
+    "confirmation": "Merci ! Commande enregistrée. On vous rappelle pour confirmer.",
+    "nom": "Nom complet",
+    "nom_placeholder": "Nom et prénom",
+    "telephone": "Téléphone",
+    "telephone_aide": "Numéro de téléphone (chiffres, espaces, +)",
+    "wilaya": "Wilaya",
+    "commune": "Commune",
+    "choisir": "Choisir…",
+    "wilaya_dabord": "Wilaya d'abord…",
+    "livraison": "Livraison",
+    "domicile": "À domicile",
+    "stop_desk": "Stop-desk",
+    "sous_total": "Sous-total",
+    "frais": "Livraison",
+    "a_calculer": "À calculer",
+    "total": "Total",
+    "sans_paiement": "Sans paiement en ligne",
+    "commande_protegee": "Commande protégée",
+    "delai": "Livraison 2 à 5 jours ouvrés",
+    "mentions": "Partout en Algérie · Paiement à la livraison",
+    "barre_cta": "Commander",
+    "choix_incomplet": "Veuillez choisir la wilaya et la commune.",
+    "recap_nom": "Nom complet",
+    "recap_telephone": "Téléphone",
+    "recap_wilaya": "Wilaya",
+    "recap_commune": "Commune",
+    "recap_type": "Type de livraison",
+    "recap_sous_total": "Sous-total",
+    "recap_frais": "Frais de livraison",
+    "recap_total": "TOTAL"
+  }
+}

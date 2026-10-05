@@ -1,0 +1,81 @@
+{%- comment -%}
+  « Votre moment, votre univers » — titre serif centré puis grille de grandes
+  cartes collection (2 colonnes), visuel plein cadre, voile dégradé, badge
+  facultatif, titre et bouton en bas à gauche.
+{%- endcomment -%}
+<div class="section-spacing color-scheme color-scheme--scheme-4">
+  <div class="container">
+    <div class="section-stack">
+      {%- if section.settings.heading != blank -%}
+        <div class="v-stack gap-4 text-center justify-self-center">
+          <h2 class="h2--serif">{{ section.settings.heading }}</h2>
+        </div>
+      {%- endif -%}
+      <div class="collection-cards">
+        {%- for block in section.blocks -%}
+          {%- assign col = block.settings.collection -%}
+          {%- comment -%}
+            Destination : la collection choisie, sinon le lien manuel, sinon le
+            catalogue. La carte reste donc toujours cliquable et n'emmène jamais
+            vers un lien mort.
+          {%- endcomment -%}
+          {%- capture lien_carte -%}{%- render 'lien', valeur: block.settings.link -%}{%- endcapture -%}
+          {%- assign destination = col.url | default: lien_carte | strip | default: routes.all_products_collection_url -%}
+          <a class="collection-card" href="{{ destination }}" {{ block.shopify_attributes }}>
+            {%- assign card_image = block.settings.image | default: col.featured_image -%}
+            {%- if card_image != blank -%}
+              {{ card_image | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '400, 600, 800, 1200, 1600', sizes: '(min-width: 700px) 50vw, 100vw', alt: card_image.alt | default: '' }}
+            {%- elsif settings.mode_demo -%}
+              {%- assign numero_univers = forloop.index | minus: 1 | modulo: 4 | plus: 1 -%}
+              <img src="{{ 'demo-univers-' | append: numero_univers | append: '.jpg' | asset_img_url: '1000x' }}" alt="" width="1000" height="750" loading="lazy">
+            {%- else -%}
+              {{ 'collection-1' | placeholder_svg_tag: 'collection-card__placeholder' }}
+            {%- endif -%}
+            <span class="collection-card__overlay"></span>
+            {%- if block.settings.badge != blank -%}
+              <span class="collection-card__badge badge badge--{{ block.settings.badge_color }}">{{ block.settings.badge }}</span>
+            {%- endif -%}
+            <div class="collection-card__content">
+              <span class="collection-card__title">{{ col.title | default: block.settings.title }}</span>
+              {%- if block.settings.button_label != blank -%}
+                <span class="button button--navy">{{ block.settings.button_label }}</span>
+              {%- endif -%}
+            </div>
+          </a>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Cartes de collection",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Titre de section" }
+  ],
+  "blocks": [
+    {
+      "type": "collection_card",
+      "name": "Carte",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Collection" },
+        { "type": "image_picker", "id": "image", "label": "Visuel (sinon image de la collection)" },
+        { "type": "text", "id": "title", "label": "Titre (si aucune collection)" },
+        { "type": "url", "id": "link", "label": "Lien (si aucune collection)" },
+        { "type": "text", "id": "badge", "label": "Badge (facultatif)" },
+        { "type": "select", "id": "badge_color", "label": "Couleur du badge", "options": [
+          { "value": "peach", "label": "Pêche" },
+          { "value": "coral", "label": "Corail" },
+          { "value": "navy", "label": "Bleu foncé" },
+          { "value": "sage", "label": "Sauge" },
+          { "value": "lilac", "label": "Lilas" }
+        ], "default": "coral" },
+        { "type": "text", "id": "button_label", "label": "Libellé du bouton" }
+      ]
+    }
+  ],
+  "presets": [ { "name": "Cartes de collection", "blocks": [ { "type": "collection_card" }, { "type": "collection_card" }, { "type": "collection_card" }, { "type": "collection_card" } ] } ]
+}
+{% endschema %}

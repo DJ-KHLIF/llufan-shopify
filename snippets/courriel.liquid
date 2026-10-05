@@ -1,0 +1,29 @@
+{%- comment -%}
+  Adresse e-mail de contact — source unique
+  ---------------------------------------------------------------------------
+  L'adresse vient du réglage « Adresse e-mail de contact » (« Contact et
+  identité LLUFAN »). Corriger l'adresse à cet endroit met à jour tous les
+  liens mailto du site.
+
+  Usage :
+    {% render 'courriel', mode: 'adresse' %}   → contact@llufan.com
+    {% render 'courriel', mode: 'lien' %}      → mailto:contact@llufan.com
+    {% render 'courriel', mode: 'texte', avec_icone: true %}
+
+  Rien n'est rendu si l'adresse n'est pas renseignée.
+{%- endcomment -%}
+
+{%- assign adresse = settings.contact_email | default: '' | strip -%}
+{%- if adresse != blank -%}
+  {%- case mode -%}
+    {%- when 'adresse' -%}
+      {{- adresse -}}
+    {%- when 'lien' -%}
+      mailto:{{ adresse }}
+    {%- else -%}
+      <a href="mailto:{{ adresse }}" class="footer__contact-lien">
+        {%- if avec_icone -%}<span class="footer__contact-icone">{% render 'icons', icon: 'mail', size: 18 %}</span>{%- endif -%}
+        <span>{{ adresse }}</span>
+      </a>
+  {%- endcase -%}
+{%- endif -%}

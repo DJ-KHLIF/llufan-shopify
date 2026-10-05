@@ -1,0 +1,27 @@
+<div class="section-spacing color-scheme color-scheme--scheme-1">
+  <div class="container container--md">
+    <div class="v-stack gap-6">
+      <div class="section-header"><h1 class="h2">{{ 'customers.order' | t }} {{ order.name }}</h1></div>
+      <p class="text-subdued text-center">{{ order.created_at | date: '%d/%m/%Y' }} &middot; {{ order.financial_status_label }}</p>
+      <div class="line-items">
+        {%- for line_item in order.line_items -%}
+          <div class="line-item">
+            <div class="line-item__image">
+              {%- if line_item.image -%}{{ line_item.image | image_url: width: 200 | image_tag: loading: 'lazy', alt: line_item.title }}{%- endif -%}
+            </div>
+            <div class="v-stack gap-1">
+              <span class="line-item__title">{{ line_item.title }}</span>
+              <span class="line-item__properties">{{ 'products.product.quantity' | t }} : {{ line_item.quantity }}</span>
+            </div>
+            <span class="line-item__price">{{ line_item.final_line_price | money }}</span>
+          </div>
+        {%- endfor -%}
+      </div>
+      <div class="cart-totals">
+        <div class="cart-totals__row"><span>{{ 'cart.subtotal' | t }}</span><span>{{ order.subtotal_price | money }}</span></div>
+        <div class="cart-totals__row cart-totals__row--total"><span>{{ 'customers.total' | t }}</span><span>{{ order.total_price | money }}</span></div>
+      </div>
+      <div><a class="button button--outline" href="{{ routes.account_url }}">{{ 'customers.account' | t }}</a></div>
+    </div>
+  </div>
+</div>

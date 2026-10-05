@@ -1,0 +1,55 @@
+{%- comment -%}
+  Lien WhatsApp — source unique
+  ---------------------------------------------------------------------------
+  Le numéro, le libellé et le message prérempli viennent des réglages du thème
+  (« Contact et identité LLUFAN »), jamais du code. Le lien wa.me est calculé à
+  partir du numéro : le numéro affiché et le lien restent donc toujours
+  synchronisés, même après une correction.
+
+  Usage :
+    {% render 'whatsapp', mode: 'lien' %}                  → https://wa.me/213…
+    {% render 'whatsapp', mode: 'numero' %}                → le numéro, tel que saisi
+    {% render 'whatsapp', mode: 'texte' %}                 → lien cliquable, numéro affiché
+    {% render 'whatsapp', mode: 'bouton', style: 'coral' %} → bouton complet
+
+  Rien n'est rendu si le numéro n'est pas renseigné.
+{%- endcomment -%}
+
+{%- assign numero = settings.whatsapp_number | default: '' | strip -%}
+{%- if numero != blank -%}
+  {%- assign chiffres = numero | remove: ' ' | remove: '-' | remove: '.' | remove: '(' | remove: ')' | remove: '+' -%}
+  {%- assign debut = chiffres | slice: 0, 2 -%}
+  {%- assign premier = chiffres | slice: 0, 1 -%}
+  {%- if debut == '00' -%}
+    {%- assign international = chiffres | slice: 2, 20 -%}
+  {%- elsif premier == '0' -%}
+    {%- assign suite = chiffres | slice: 1, 20 -%}
+    {%- assign international = '213' | append: suite -%}
+  {%- else -%}
+    {%- assign international = chiffres -%}
+  {%- endif -%}
+  {%- assign lien = 'https://wa.me/' | append: international -%}
+  {%- if settings.whatsapp_message != blank -%}
+    {%- comment -%}Encodage du message seul : l'encoder après coup abîmerait aussi l'adresse.{%- endcomment -%}
+    {%- assign message_encode = settings.whatsapp_message | url_encode -%}
+    {%- assign lien = lien | append: '?text=' | append: message_encode -%}
+  {%- endif -%}
+
+  {%- case mode -%}
+    {%- when 'numero' -%}
+      {{- numero -}}
+    {%- when 'lien' -%}
+      {{- lien -}}
+    {%- when 'bouton' -%}
+      <a href="{{ lien }}" class="button button--{{ style | default: 'outline-light' }} whatsapp-bouton" target="_blank" rel="noopener">
+        {%- render 'icons', icon: 'whatsapp', size: 18 -%}
+        <span>{{ label | default: settings.whatsapp_label }}</span>
+      </a>
+    {%- else -%}
+      <a href="{{ lien }}" class="footer__contact-lien" target="_blank" rel="noopener">
+        <span class="footer__contact-icone">{% render 'icons', icon: 'whatsapp', size: 18 %}</span>
+        <span>{{ settings.whatsapp_label }}</span>
+        <strong>{{ numero }}</strong>
+      </a>
+  {%- endcase -%}
+{%- endif -%}

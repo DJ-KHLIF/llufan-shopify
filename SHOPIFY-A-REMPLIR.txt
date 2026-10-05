@@ -1,0 +1,89 @@
+À REMPLIR DANS SHOPIFY — la liste exacte que le thème attend
+========================================================================
+
+POURQUOI TOUT AFFICHE « PAGE INTROUVABLE » AUJOURD'HUI
+------------------------------------------------------------------------
+  Un thème, c'est la décoration ; le contenu vit DANS Shopify : produits,
+  collections, pages, menu. Tant qu'ils n'existent pas, chaque modèle qui
+  en a besoin retombe sur la page 404. C'est le comportement normal de
+  Shopify — votre thème, lui, est complet et sans défaut (21 modèles,
+  tous distincts, vérifiés fichier par fichier).
+
+  Autrement dit : à partir de maintenant, remplir = voir le thème s'allumer.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. LES 10 PAGES          (Contenu → Pages → Ajouter une page)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Le thème a un design dédié pour chacune : l'ADRESSE (le « handle ») doit
+  correspondre exactement. Créez la page, c'est tout — la mise en page est
+  déjà dans le thème.
+
+      Titre de la page        Adresse à vérifier
+      ---------------------   -------------------------
+      La marque               la-marque
+      FAQ                     faq
+      Livraison               livraison
+      Paiement                paiement
+      Contact                 contact
+      Club Maman              club-maman
+      CGV                     cgv
+      Confidentialité         confidentialite
+      Mentions légales        mentions-legales
+      Politique de retour     politique-de-retour
+
+  ▸ Shopify propose l'adresse automatiquement à partir du titre.
+    Pour la vérifier : dans la page, dépliez « Modifier le référencement
+    du site web » → champ « Adresse ».
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2. LES 5 COLLECTIONS     (Contenu → Collections → Créer une collection)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      maternite · allaitement · bebe · nouveautes · accessoires
+
+  (Le thème attend ces cinq-là : les rubriques du menu et les sections de
+   la page d'accueil s'y rattachent.)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3. LES PRODUITS          (Contenu → Produits → Importer)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Fichier : LLUFAN-DEMO-produits.csv
+  https://github.com/DJ-KHLIF/llufan.com/raw/main/contenus/LLUFAN-DEMO-produits.csv
+
+  ▸ il crée tous les produits de démonstration d'un coup (prix, textes,
+    variantes) ;
+  ▸ il n'y a PAS de photos dans le fichier : vous ajouterez les vôtres
+    dans chaque fiche, comme prévu ;
+  ▸ ensuite, rattachez chaque produit à sa collection.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+4. LE MENU               (Boutique en ligne → Navigation → « Menu principal »)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  L'en-tête du thème lit le menu nommé « main-menu » (le menu principal).
+  Ajoutez-y, dans cet ordre :
+
+      Maternité · Allaitement · Bébé · Nouveautés · Accessoires
+      puis : La marque, FAQ, Livraison, Contact, Club Maman
+
+  ▸ s'il manque des liens, l'en-tête restera vide : c'est le seul endroit
+    où les rubriques se déclarent.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+5. LE CONTRÔLE QUI TRANCHE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Dans l'éditeur du thème, menu en haut au centre (il affiche « Page 404 »)
+  → choisissez « Page d'accueil ».
+  Vous devez voir l'en-tête, le diaporama, la vidéo, les témoignages.
+  Si vous y voyez encore « page introuvable », envoyez-moi une capture :
+  ça voudrait dire autre chose, et je chercherais ailleurs.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+6. QUAND TOUT EST EN PLACE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  • rafraîchissez l'éditeur : chaque modèle s'affiche avec son vrai design ;
+  • bouton « Publier » (en haut à droite) : le thème devient celui de
+    la boutique ;
+  • résultat visible à :   https://vawqklk-ww.myshopify.com
+    (si Shopify demande un mot de passe : Boutique en ligne → Préférences →
+     décochez « Activer la protection par mot de passe ») ;
+  • pour comparer, la version déjà remplie et cliquable :
+       https://dj-khlif.github.io/llufan.com/

@@ -1,0 +1,73 @@
+{%- comment -%}
+  Balises de partage (Open Graph et Twitter).
+
+  Pourquoi : sans elles, un lien LLUFAN partagé sur WhatsApp, Facebook ou
+  Messenger s'affiche comme une simple adresse, sans titre ni image. Or c'est
+  souvent par là qu'une cliente découvre une boutique en Algérie.
+
+  Ce que le greffon fait :
+    • le titre, la description et l'adresse de la page en cours ;
+    • l'image : celle du produit, de l'article ou de la collection ouverte —
+      sinon l'image choisie dans l'éditeur (réglage « Image de partage ») —
+      sinon le logo de la boutique. Il y a donc toujours une image ;
+    • les autres langues du site (og:locale:alternate), pour que la version
+      partagée indique qu'une version arabe existe ;
+    • le prix et la devise sur une fiche produit.
+
+  Aucun contenu n'est inventé : tout vient de la page, de la boutique ou des
+  réglages saisis dans l'éditeur.
+{%- endcomment -%}
+{%- liquid
+  assign partage_titre = page_title | default: shop.name
+  assign partage_description = page_description | default: shop.description | default: shop.name
+  assign partage_type = 'website'
+  assign partage_image = settings.partage_image
+
+  if template.name == 'product' and product
+    assign partage_type = 'product'
+    assign partage_image = product.featured_media.preview_image | default: partage_image
+  elsif template.name == 'article' and article
+    assign partage_type = 'article'
+    assign partage_image = article.image | default: partage_image
+  elsif template.name == 'collection' and collection.image
+    assign partage_image = collection.image
+  endif
+-%}
+<meta property="og:site_name" content="{{ shop.name | escape }}">
+<meta property="og:type" content="{{ partage_type }}">
+<meta property="og:title" content="{{ partage_titre | escape }}">
+<meta property="og:description" content="{{ partage_description | strip_html | escape }}">
+<meta property="og:url" content="{{ canonical_url }}">
+<meta property="og:locale" content="{{ request.locale.iso_code | replace: '-', '_' }}">
+{%- if localization.available_languages.size > 1 -%}
+  {%- for langue in localization.available_languages -%}
+    {%- if langue.iso_code != request.locale.iso_code -%}
+<meta property="og:locale:alternate" content="{{ langue.iso_code | replace: '-', '_' }}">
+    {%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
+{%- if partage_image != blank -%}
+  {%- assign partage_image_url = partage_image | image_url: width: 1200 -%}
+<meta property="og:image" content="https:{{ partage_image_url }}">
+<meta property="og:image:secure_url" content="https:{{ partage_image_url }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:alt" content="{{ partage_image.alt | default: partage_titre | escape }}">
+{%- else -%}
+  {%- comment -%}
+    Dernier recours : le logo. Une image de secours vaut mieux qu'un lien nu —
+    et il suffit de choisir une image dans l'éditeur pour la remplacer.
+  {%- endcomment -%}
+<meta property="og:image" content="https:{{ 'llufan-logo-navy.png' | asset_img_url: '1200x' }}">
+<meta property="og:image:alt" content="{{ shop.name | escape }}">
+{%- endif -%}
+{%- if partage_type == 'product' and product -%}
+<meta property="product:price:amount" content="{{ product.price | divided_by: 100.0 }}">
+<meta property="product:price:currency" content="{{ cart.currency.iso_code }}">
+<meta property="product:availability" content="{% if product.available %}in stock{% else %}out of stock{% endif %}">
+{%- endif -%}
+{%- if partage_type == 'article' and article -%}
+<meta property="article:published_time" content="{{ article.published_at | date: '%Y-%m-%dT%H:%M:%S%z' }}">
+{%- endif -%}
+<meta name="twitter:card" content="{% if partage_image != blank %}summary_large_image{% else %}summary{% endif %}">
+<meta name="twitter:title" content="{{ partage_titre | escape }}">
+<meta name="twitter:description" content="{{ partage_description | strip_html | escape }}">

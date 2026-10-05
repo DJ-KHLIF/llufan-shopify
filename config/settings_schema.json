@@ -1,0 +1,453 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "LLUFAN",
+    "theme_version": "1.0.0",
+    "theme_author": "LLUFAN",
+    "theme_documentation_url": "https://shopify.dev/docs/storefronts/themes",
+    "theme_support_url": "https://shopify.dev/docs/storefronts/themes"
+  },
+  {
+    "name": "Identité",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon"
+      },
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo (utilisé par défaut dans l'en-tête)"
+      },
+      {
+        "type": "color",
+        "id": "hero_placeholder_color",
+        "label": "Fond des visuels manquants",
+        "default": "#E7E2DD"
+      },
+      {
+        "type": "checkbox",
+        "id": "mode_demo",
+        "label": "Mode démonstration (visuels fictifs)",
+        "default": false,
+        "info": "Utilise les visuels de démonstration livrés avec le thème partout où aucun visuel n'a encore été choisi (diaporama, cartes d'univers, bandeau de collection, bloc éditorial). À décocher avant la mise en ligne : les visuels LLUFAN choisis dans les sections reprennent alors la main."
+      },
+      {
+        "type": "image_picker",
+        "id": "partage_image",
+        "label": "Image de partage",
+        "info": "L'image qui s'affiche quand on partage un lien LLUFAN (WhatsApp, Facebook, Messenger). Sans elle, on utilise le visuel de la page ouverte, puis le logo. Format conseillé : 1200 × 630 px."
+      }
+    ]
+  },
+  {
+    "name": "Couleurs",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Scheme 1 — fond clair (défaut)"
+      },
+      {
+        "type": "color",
+        "id": "scheme_1_background",
+        "label": "Fond",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "scheme_1_text",
+        "label": "Texte",
+        "default": "#1F3462"
+      },
+      {
+        "type": "color",
+        "id": "scheme_1_button_background",
+        "label": "Fond des boutons",
+        "default": "#183264"
+      },
+      {
+        "type": "color",
+        "id": "scheme_1_button_text",
+        "label": "Texte des boutons",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "scheme_1_border",
+        "label": "Bordures",
+        "default": "#DDE1E7"
+      },
+      {
+        "type": "header",
+        "content": "Scheme 2 — fond bleu foncé"
+      },
+      {
+        "type": "color",
+        "id": "scheme_2_background",
+        "label": "Fond",
+        "default": "#1F3462"
+      },
+      {
+        "type": "color",
+        "id": "scheme_2_text",
+        "label": "Texte",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "scheme_2_button_background",
+        "label": "Fond des boutons",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "scheme_2_button_text",
+        "label": "Texte des boutons",
+        "default": "#1F3462"
+      },
+      {
+        "type": "color",
+        "id": "scheme_2_border",
+        "label": "Bordures",
+        "default": "#41527A"
+      },
+      {
+        "type": "header",
+        "content": "Scheme 3 — par-dessus une image"
+      },
+      {
+        "type": "color",
+        "id": "scheme_3_text",
+        "label": "Texte",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "scheme_3_button_background",
+        "label": "Fond des boutons",
+        "default": "#183264"
+      },
+      {
+        "type": "color",
+        "id": "scheme_3_button_text",
+        "label": "Texte des boutons",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "header",
+        "content": "Couleurs d'accent"
+      },
+      {
+        "type": "color",
+        "id": "color_accent_coral",
+        "label": "Corail (CTA principal)",
+        "default": "#EB735B"
+      },
+      {
+        "type": "color",
+        "id": "color_accent_soft",
+        "label": "Corail doux (bandeau haut, pastille)",
+        "default": "#F19B84"
+      },
+      {
+        "type": "color",
+        "id": "color_accent_peach",
+        "label": "Pêche (badges)",
+        "default": "#FAC0AA"
+      },
+      {
+        "type": "color",
+        "id": "color_accent_gold",
+        "label": "Or (étoiles d'avis)",
+        "default": "#FAC075"
+      },
+      {
+        "type": "color",
+        "id": "color_badge_sage",
+        "label": "Vert sauge (badges)",
+        "default": "#A9CBB6"
+      },
+      {
+        "type": "color",
+        "id": "color_badge_lilac",
+        "label": "Lilas (badges)",
+        "default": "#DCC8ED"
+      }
+    ]
+  },
+  {
+    "name": "Typographie",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Le thème utilise deux familles embarquées : Jost (titres en capitales, boutons, navigation) et Fraunces (texte courant et titres serif), en remplacement des polices de la référence de design. Aucune police propriétaire externe n'est utilisée."
+      },
+      {
+        "type": "range",
+        "id": "heading_size_factor",
+        "min": 0.8,
+        "max": 1.3,
+        "step": 0.05,
+        "label": "Échelle des titres",
+        "default": 1
+      },
+      {
+        "type": "range",
+        "id": "body_size",
+        "min": 0.75,
+        "max": 1.125,
+        "step": 0.0625,
+        "label": "Taille du texte courant (rem)",
+        "default": 0.875
+      },
+      {
+        "type": "checkbox",
+        "id": "heading_uppercase",
+        "label": "Titres en capitales",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Mise en page",
+    "settings": [
+      {
+        "type": "range",
+        "id": "container_max_width",
+        "min": 1100,
+        "max": 1600,
+        "step": 20,
+        "label": "Largeur maximale du contenu (px)",
+        "default": 1360
+      },
+      {
+        "type": "range",
+        "id": "section_vertical_spacing",
+        "min": 20,
+        "max": 80,
+        "step": 4,
+        "label": "Espacement vertical des sections (px)",
+        "default": 40
+      },
+      {
+        "type": "range",
+        "id": "container_gutter",
+        "min": 12,
+        "max": 32,
+        "step": 2,
+        "label": "Marge latérale (px)",
+        "default": 20
+      },
+      {
+        "type": "checkbox",
+        "id": "show_breadcrumbs",
+        "label": "Afficher le fil d'Ariane",
+        "default": false
+      }
+    ]
+  },
+  {
+    "name": "Cartes produit",
+    "settings": [
+      {
+        "type": "select",
+        "id": "card_image_ratio",
+        "label": "Format des images",
+        "options": [
+          {
+            "value": "square",
+            "label": "Carré (1:1)"
+          },
+          {
+            "value": "portrait",
+            "label": "Portrait (4:5)"
+          },
+          {
+            "value": "natural",
+            "label": "Naturel"
+          }
+        ],
+        "default": "square"
+      },
+      {
+        "type": "checkbox",
+        "id": "card_show_second_image",
+        "label": "Afficher la seconde image au survol",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "card_show_rating",
+        "label": "Afficher la note",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "card_show_quick_add",
+        "label": "Afficher l'ajout rapide",
+        "default": false
+      }
+    ]
+  },
+  {
+    "name": "Panier",
+    "settings": [
+      {
+        "type": "select",
+        "id": "cart_type",
+        "label": "Type de panier",
+        "options": [
+          {
+            "value": "drawer",
+            "label": "Tiroir latéral"
+          },
+          {
+            "value": "page",
+            "label": "Page panier"
+          }
+        ],
+        "default": "drawer"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_show_note",
+        "label": "Autoriser une note de commande",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "hide_header_on_purchase",
+        "default": true,
+        "label": "Masquer l'en-tête au passage à l'achat",
+        "info": "Sur la page panier, le bandeau, le pré-bandeau et l'en-tête disparaissent : le client ne voit plus que le tunnel d'achat. Le reste du site garde son en-tête visible en permanence, y compris au défilement."
+      }
+    ]
+  },
+  {
+    "name": "Avis clients",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "La note et les avis proviennent d'une application d'avis installée sur la boutique (balise meta attendue : rating / rating_count). Si aucun avis n'existe, la mention n'est pas affichée — aucun avis n'est généré par le thème."
+      },
+      {
+        "type": "checkbox",
+        "id": "show_rating",
+        "label": "Afficher la note lorsqu'elle existe",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_reviews_app",
+        "label": "Afficher les avis détaillés sur la fiche produit",
+        "default": false
+      }
+    ]
+  },
+  {
+    "name": "Contact et identité LLUFAN",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Ces informations servent au pied de page, aux pages de contact et à tout bouton de contact du site. Elles ne sont saisies qu'ici : corriger le numéro ou l'adresse e-mail à cet endroit met tout le site à jour, et le lien WhatsApp se recalcule automatiquement."
+      },
+      {
+        "type": "text",
+        "id": "brand_name",
+        "label": "Nom de la marque",
+        "default": "LLUFAN"
+      },
+      {
+        "type": "text",
+        "id": "brand_tagline",
+        "label": "Phrase de présentation de la marque",
+        "default": "Une marque algérienne dédiée au confort de la maman et du bébé."
+      },
+      {
+        "type": "text",
+        "id": "whatsapp_number",
+        "label": "Numéro WhatsApp",
+        "default": "0772 415 120",
+        "info": "Affiché tel que saisi. Le lien wa.me est calculé à partir de ce numéro (le 0 initial devient 213)."
+      },
+      {
+        "type": "text",
+        "id": "whatsapp_label",
+        "label": "Libellé du contact WhatsApp",
+        "default": "Contactez-nous sur WhatsApp"
+      },
+      {
+        "type": "text",
+        "id": "whatsapp_message",
+        "label": "Message prérempli (facultatif)",
+        "info": "Laisser vide : la conversation s'ouvre sans texte prérempli."
+      },
+      {
+        "type": "text",
+        "id": "contact_email",
+        "label": "Adresse e-mail de contact",
+        "default": "contact@llufan.com"
+      }
+    ]
+  },
+  {
+    "name": "Réseaux sociaux",
+    "settings": [
+      {
+        "type": "url",
+        "id": "social_facebook",
+        "label": "Facebook"
+      },
+      {
+        "type": "url",
+        "id": "social_instagram",
+        "label": "Instagram"
+      },
+      {
+        "type": "url",
+        "id": "social_tiktok",
+        "label": "TikTok"
+      }
+    ]
+  },
+  {
+    "name": "Sélecteurs et mentions légales",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "auto_language",
+        "label": "Choisir la langue d'après celle du navigateur",
+        "info": "Une visiteuse dont le système est en arabe arrive directement sur la version arabe (et inversement). Un choix fait à la main dans le sélecteur de langue est mémorisé et n'est plus modifié. Nécessite au moins deux langues actives dans Paramètres → Langues.",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_country_selector",
+        "label": "Afficher le sélecteur de pays",
+        "default": false,
+        "info": "À activer uniquement lorsque la livraison internationale est configurée dans Shopify (Paramètres > Marchés)."
+      },
+      {
+        "type": "checkbox",
+        "id": "show_language_selector",
+        "label": "Afficher le sélecteur de langue",
+        "default": false,
+        "info": "À activer uniquement lorsque plusieurs langues sont publiées."
+      },
+      {
+        "type": "checkbox",
+        "id": "show_payment_icons",
+        "label": "Afficher les icônes de paiement",
+        "default": false,
+        "info": "Le thème peut afficher les icônes des moyens de paiement actifs de la boutique. Désactivé par défaut : à n'activer que lorsque les moyens de paiement réels sont configurés."
+      },
+      {
+        "type": "checkbox",
+        "id": "show_powered_by_shopify",
+        "label": "Afficher \"Propulsé par Shopify\"",
+        "default": true
+      }
+    ]
+  }
+]

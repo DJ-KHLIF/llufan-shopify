@@ -1,0 +1,37 @@
+{%- comment -%}
+  Commande — paiement à la livraison (page panier)
+  Rend le composant `snippets/forme-commande.liquid` en mode « panier ». Sur la
+  fiche produit, le même composant est placé directement sous les boutons
+  d'achat (bloc « Commande »), pour supprimer l'étape du panier.
+{%- endcomment -%}
+
+{%- if cart.item_count > 0 -%}
+  <div class="section-spacing color-scheme color-scheme--scheme-1">
+    <div class="container container--md">
+      <div class="section-stack">
+        {%- render 'forme-commande',
+          mode: 'panier',
+          cle: section.id,
+          titre: section.settings.heading,
+          cta: section.settings.cta,
+          barre_mobile: section.settings.barre_mobile,
+          devise: section.settings.devise -%}
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Commande (paiement à la livraison)",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Titre", "default": "Commander — Paiement à la livraison" },
+    { "type": "text", "id": "cta", "label": "Bouton", "default": "Commander maintenant" },
+    { "type": "checkbox", "id": "barre_mobile", "label": "Afficher la barre « Commander » en mobile", "default": true },
+    { "type": "text", "id": "devise", "label": "Devise affichée", "default": "DA" }
+  ],
+  "presets": [ { "name": "Commande (paiement à la livraison)" } ],
+  "enabled_on": { "templates": ["cart"] }
+}
+{% endschema %}

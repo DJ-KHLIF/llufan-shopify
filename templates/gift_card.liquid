@@ -1,0 +1,12 @@
+{%- comment -%}Carte cadeau{%- endcomment -%}
+<div class="section-spacing color-scheme color-scheme--scheme-1">
+  <div class="container container--narrow text-center v-stack gap-6 items-center">
+    <h1 class="h1--serif">{{ 'gift_cards.issued.title' | t }}</h1>
+    <p class="h3">{{ gift_card.balance | money }}</p>
+    {%- if gift_card.enabled == false or gift_card.expired -%}
+      <p class="text-subdued">{{ 'gift_cards.issued.expired' | t }}</p>
+    {%- endif -%}
+    <div class="prose"><p>{{ 'gift_cards.issued.subtext' | t }}</p><p class="h5">{{ gift_card.code | format_code }}</p></div>
+    <a href="{{ shop.url }}" class="button">{{ 'gift_cards.issued.shop_link' | t }}</a>
+  </div>
+</div>

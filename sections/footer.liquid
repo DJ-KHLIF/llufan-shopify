@@ -1,0 +1,269 @@
+{%- comment -%}
+  Pied de page LLUFAN
+  ---------------------------------------------------------------------------
+  Composition : identité (logo blanc + nom + phrase) → trois colonnes de
+  navigation → contact (WhatsApp et e-mail) → réseaux sociaux → mentions
+  légales → ligne de copyright.
+
+  Le numéro WhatsApp et l'adresse e-mail ne sont pas écrits ici : ils viennent
+  des réglages « Contact et identité LLUFAN » (snippets whatsapp.liquid et
+  courriel.liquid), de sorte qu'une correction se fait à un seul endroit.
+
+  Règle appliquée aux liens : un lien n'est affiché que si son adresse est
+  renseignée dans l'éditeur (donc que la page existe). Une colonne sans aucun
+  lien renseigné n'est pas affichée. Aucun lien ne mène à une page inexistante.
+{%- endcomment -%}
+
+{%- assign nom_marque = settings.brand_name | default: shop.name -%}
+{%- assign annee = 'now' | date: '%Y' -%}
+
+<div class="footer color-scheme color-scheme--scheme-2">
+  <div class="container">
+    <div class="footer__inner">
+
+      <div class="footer__blocks">
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+
+            {%- when 'brand' -%}
+              <div class="footer__block footer__block--marque" {{ block.shopify_attributes }}>
+                <a href="{{ routes.root_url }}" class="footer__marque" aria-label="{{ nom_marque }}">
+                  {%- if block.settings.logo != blank -%}
+                    {{ block.settings.logo | image_url: width: 600 | image_tag: class: 'footer__logo', alt: nom_marque, loading: 'lazy' }}
+                  {%- else -%}
+                    <img src="{{ 'llufan-logo-footer.png' | asset_url }}" class="footer__logo" width="700" height="687" loading="lazy" alt="{{ nom_marque }}">
+                  {%- endif -%}
+                </a>
+                {%- assign phrase = block.settings.tagline | default: settings.brand_tagline -%}
+                {%- if phrase != blank -%}
+                  <p class="footer__marque-phrase">{{ phrase }}</p>
+                {%- endif -%}
+                {%- if block.settings.text != blank -%}
+                  <div class="prose footer__marque-texte">{{ block.settings.text }}</div>
+                {%- endif -%}
+              </div>
+
+            {%- when 'menu' -%}
+              {%- assign visibles = 0 -%}
+              {%- for i in (1..6) -%}
+                {%- assign cle_lien = 'link_' | append: i -%}
+                {%- capture lien_compte -%}{%- render 'lien', valeur: block.settings[cle_lien] -%}{%- endcapture -%}
+                {%- if block.settings[cle_lien] != blank and lien_compte != blank -%}{%- assign visibles = visibles | plus: 1 -%}{%- endif -%}
+              {%- endfor -%}
+              {%- if visibles > 0 -%}
+                <div class="footer__block" {{ block.shopify_attributes }}>
+                  <div class="footer__colonne footer__desktop-only">
+                    <p class="footer__block-title">{{ block.settings.title }}</p>
+                    <div class="footer__block-links">
+                      {%- for i in (1..6) -%}
+                        {%- assign cle_label = 'label_' | append: i -%}
+                        {%- assign cle_lien = 'link_' | append: i -%}
+                        {%- capture lien_colonne -%}{%- render 'lien', valeur: block.settings[cle_lien] -%}{%- endcapture -%}
+                        {%- assign lien_colonne = lien_colonne | strip -%}
+                        {%- if block.settings[cle_label] != blank and lien_colonne != blank -%}
+                          <a href="{{ lien_colonne }}">{{ block.settings[cle_label] }}</a>
+                        {%- endif -%}
+                      {%- endfor -%}
+                    </div>
+                  </div>
+                  <details class="footer__colonne footer__mobile-only">
+                    <summary class="footer__block-title">{{ block.settings.title }}</summary>
+                    <div class="footer__block-links">
+                      {%- for i in (1..6) -%}
+                        {%- assign cle_label = 'label_' | append: i -%}
+                        {%- assign cle_lien = 'link_' | append: i -%}
+                        {%- capture lien_colonne -%}{%- render 'lien', valeur: block.settings[cle_lien] -%}{%- endcapture -%}
+                        {%- assign lien_colonne = lien_colonne | strip -%}
+                        {%- if block.settings[cle_label] != blank and lien_colonne != blank -%}
+                          <a href="{{ lien_colonne }}">{{ block.settings[cle_label] }}</a>
+                        {%- endif -%}
+                      {%- endfor -%}
+                    </div>
+                  </details>
+                </div>
+              {%- endif -%}
+
+            {%- when 'contact' -%}
+              <div class="footer__block footer__block--contact" {{ block.shopify_attributes }}>
+                <p class="footer__block-title">{{ block.settings.title | default: 'Contact' }}</p>
+                <div class="footer__contact">
+                  {%- assign etiquette_whatsapp = block.settings.whatsapp_label | default: settings.whatsapp_label -%}
+                  {%- render 'whatsapp', label: etiquette_whatsapp -%}
+                  {%- render 'courriel', avec_icone: true -%}
+                </div>
+                {%- if block.settings.note != blank -%}
+                  <p class="footer__contact-note">{{ block.settings.note }}</p>
+                {%- endif -%}
+              </div>
+
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
+
+      {%- comment -%}
+        Rangée secondaire : les engagements de la marque puis les réseaux sociaux.
+        Volontairement sous la navigation et le contact, dans un ton plus discret.
+      {%- endcomment -%}
+      <div class="footer__secondaire">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'reassurance' -%}
+            <div class="footer__block--reassurance" {{ block.shopify_attributes }}>
+              {%- comment -%}Titre conservé pour la structure de la page, sans occuper de place à l'écran.{%- endcomment -%}
+              <p class="footer__reassurance-titre sr-only">{{ block.settings.title }}</p>
+              <ul class="footer__reassurance">
+                {%- for i in (1..3) -%}
+                  {%- assign cle = 'line_' | append: i -%}
+                  {%- if block.settings[cle] != blank -%}<li>{{ block.settings[cle] }}</li>{%- endif -%}
+                {%- endfor -%}
+              </ul>
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+
+        {%- assign reseaux = 0 -%}
+        {%- if settings.social_facebook != blank -%}{%- assign reseaux = reseaux | plus: 1 -%}{%- endif -%}
+        {%- if settings.social_instagram != blank -%}{%- assign reseaux = reseaux | plus: 1 -%}{%- endif -%}
+        {%- if settings.social_tiktok != blank -%}{%- assign reseaux = reseaux | plus: 1 -%}{%- endif -%}
+        {%- if reseaux > 0 -%}
+          <div class="footer__reseaux">
+            {%- if settings.social_facebook != blank -%}<a href="{{ settings.social_facebook }}" aria-label="Facebook" target="_blank" rel="noopener">{% render 'icons', icon: 'facebook', size: 20 %}</a>{%- endif -%}
+            {%- if settings.social_instagram != blank -%}<a href="{{ settings.social_instagram }}" aria-label="Instagram" target="_blank" rel="noopener">{% render 'icons', icon: 'instagram', size: 20 %}</a>{%- endif -%}
+            {%- if settings.social_tiktok != blank -%}<a href="{{ settings.social_tiktok }}" aria-label="TikTok" target="_blank" rel="noopener">{% render 'icons', icon: 'tiktok', size: 20 %}</a>{%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="footer__aside">
+        <div class="footer__legal">
+          {%- capture lien_legal -%}{%- render 'lien', valeur: section.settings.legal_mentions -%}{%- endcapture -%}
+          {%- if lien_legal != blank -%}<a href="{{ lien_legal | strip }}">{{ section.settings.legal_mentions_label }}</a>{%- endif -%}
+          {%- capture lien_legal -%}{%- render 'lien', valeur: section.settings.legal_cgv -%}{%- endcapture -%}
+          {%- if lien_legal != blank -%}<a href="{{ lien_legal | strip }}">{{ section.settings.legal_cgv_label }}</a>{%- endif -%}
+          {%- capture lien_legal -%}{%- render 'lien', valeur: section.settings.legal_confidentialite -%}{%- endcapture -%}
+          {%- if lien_legal != blank -%}<a href="{{ lien_legal | strip }}">{{ section.settings.legal_confidentialite_label }}</a>{%- endif -%}
+          {%- capture lien_legal -%}{%- render 'lien', valeur: section.settings.legal_retours -%}{%- endcapture -%}
+          {%- if lien_legal != blank -%}<a href="{{ lien_legal | strip }}">{{ section.settings.legal_retours_label }}</a>{%- endif -%}
+        </div>
+
+        <div class="footer__copyright">
+          <span>&copy; {{ annee }} {{ nom_marque }}{% if section.settings.copyright_text != blank %}. {{ section.settings.copyright_text }}{% endif %}</span>
+          {%- if section.settings.copyright_line != blank -%}<span>{{ section.settings.copyright_line }}</span>{%- endif -%}
+        </div>
+
+        <div class="footer__locales">
+          {%- if settings.show_country_selector and localization.available_countries.size > 1 -%}
+            {%- form 'localization', id: 'footer-localization', class: 'footer__selector' -%}
+              <span class="sr-only">{{ 'general.country' | t }}</span>
+              <select class="footer__select" name="country_code" onchange="this.form.submit()">
+                {%- for country in localization.available_countries -%}
+                  <option value="{{ country.iso_code }}" {% if country.iso_code == localization.country.iso_code %}selected{% endif %}>{{ country.name }} ({{ country.currency.iso_code }} {{ country.currency.symbol }})</option>
+                {%- endfor -%}
+              </select>
+            {%- endform -%}
+          {%- endif -%}
+          {%- if settings.show_language_selector and localization.available_languages.size > 1 -%}
+            {%- form 'localization', id: 'footer-language', class: 'footer__selector' -%}
+              <span class="sr-only">{{ 'general.language' | t }}</span>
+              <select class="footer__select" name="language_code" onchange="this.form.submit()">
+                {%- for language in localization.available_languages -%}
+                  <option value="{{ language.iso_code }}" {% if language.iso_code == localization.language.iso_code %}selected{% endif %}>{{ language.endonym_name | capitalize }}</option>
+                {%- endfor -%}
+              </select>
+            {%- endform -%}
+          {%- endif -%}
+          {%- if settings.show_payment_icons -%}
+            <div class="footer__payment-icons">
+              {%- for type in shop.enabled_payment_types -%}{{ type | payment_type_svg_tag }}{%- endfor -%}
+            </div>
+          {%- endif -%}
+          {%- if settings.show_powered_by_shopify -%}<span class="footer__shopify">{{ powered_by_link }}</span>{%- endif -%}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Pied de page",
+  "tag": "footer",
+  "class": "shopify-section--footer",
+  "enabled_on": { "groups": ["footer"] },
+  "settings": [
+    { "type": "text", "id": "copyright_text", "label": "Mention après l'année et le nom", "default": "Tous droits réservés." },
+    { "type": "text", "id": "copyright_line", "label": "Ligne sous le copyright", "default": "Algérie · llufan.com" },
+    { "type": "header", "content": "Mentions légales" },
+    { "type": "paragraph", "content": "Chaque lien n'apparaît que si son adresse est renseignée : créez la page dans Shopify, puis collez son adresse ici. Aucun lien ne mène à une page inexistante." },
+    { "type": "text", "id": "legal_mentions_label", "label": "Libellé 1", "default": "Mentions légales" },
+    { "type": "url", "id": "legal_mentions", "label": "Adresse 1" },
+    { "type": "text", "id": "legal_cgv_label", "label": "Libellé 2", "default": "Conditions générales de vente" },
+    { "type": "url", "id": "legal_cgv", "label": "Adresse 2" },
+    { "type": "text", "id": "legal_confidentialite_label", "label": "Libellé 3", "default": "Politique de confidentialité" },
+    { "type": "url", "id": "legal_confidentialite", "label": "Adresse 3" },
+    { "type": "text", "id": "legal_retours_label", "label": "Libellé 4", "default": "Politique de retour / échange" },
+    { "type": "url", "id": "legal_retours", "label": "Adresse 4" }
+  ],
+  "blocks": [
+    {
+      "type": "brand",
+      "name": "Marque",
+      "limit": 1,
+      "settings": [
+        { "type": "image_picker", "id": "logo", "label": "Logo", "info": "Laisser vide pour utiliser le logo LLUFAN blanc livré avec le thème." },
+        { "type": "text", "id": "tagline", "label": "Phrase de présentation", "info": "Laisser vide pour reprendre celle des réglages du thème." },
+        { "type": "richtext", "id": "text", "label": "Texte complémentaire (facultatif)" }
+      ]
+    },
+    {
+      "type": "menu",
+      "name": "Colonne de navigation",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Titre de la colonne" },
+        { "type": "paragraph", "content": "Un lien ne s'affiche que si son adresse est renseignée. Choisissez la page ou la collection dans le sélecteur d'adresse." },
+        { "type": "text", "id": "label_1", "label": "Lien 1" }, { "type": "url", "id": "link_1", "label": "Adresse 1" },
+        { "type": "text", "id": "label_2", "label": "Lien 2" }, { "type": "url", "id": "link_2", "label": "Adresse 2" },
+        { "type": "text", "id": "label_3", "label": "Lien 3" }, { "type": "url", "id": "link_3", "label": "Adresse 3" },
+        { "type": "text", "id": "label_4", "label": "Lien 4" }, { "type": "url", "id": "link_4", "label": "Adresse 4" },
+        { "type": "text", "id": "label_5", "label": "Lien 5" }, { "type": "url", "id": "link_5", "label": "Adresse 5" },
+        { "type": "text", "id": "label_6", "label": "Lien 6" }, { "type": "url", "id": "link_6", "label": "Adresse 6" }
+      ]
+    },
+    {
+      "type": "contact",
+      "name": "Contact (WhatsApp et e-mail)",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "title", "label": "Titre", "default": "Contact" },
+        { "type": "text", "id": "whatsapp_label", "label": "Libellé du contact WhatsApp", "info": "Laisser vide pour reprendre celui des réglages du thème." },
+        { "type": "paragraph", "content": "Le numéro WhatsApp et l'adresse e-mail se modifient dans les réglages du thème, rubrique « Contact et identité LLUFAN » : ils sont repris partout automatiquement." },
+        { "type": "text", "id": "note", "label": "Petite précision (facultatif)" }
+      ]
+    },
+    {
+      "type": "reassurance",
+      "name": "Réassurance",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "title", "label": "Titre", "default": "Nos engagements" },
+        { "type": "text", "id": "line_1", "label": "Ligne 1", "default": "Livraison partout en Algérie" },
+        { "type": "text", "id": "line_2", "label": "Ligne 2", "default": "Paiement à la livraison" },
+        { "type": "text", "id": "line_3", "label": "Ligne 3", "default": "Service client LLUFAN" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Pied de page",
+      "blocks": [
+        { "type": "brand" },
+        { "type": "menu", "settings": { "title": "LLUFAN" } },
+        { "type": "menu", "settings": { "title": "Nos univers" } },
+        { "type": "menu", "settings": { "title": "Aide" } },
+        { "type": "contact" },
+        { "type": "reassurance" }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,89 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "settings": {}
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": {
+          "type": "item",
+          "settings": {
+            "question": "Comment se passe le paiement ?",
+            "answer": "<p>Vous payez à la livraison, en espèces, au moment de recevoir votre colis. Aucun paiement en ligne n'est demandé.</p>"
+          }
+        },
+        "q2": {
+          "type": "item",
+          "settings": {
+            "question": "Livrez-vous partout en Algérie ?",
+            "answer": "<p>Oui, dans les 69 wilayas, à domicile ou en stop-desk.</p>"
+          }
+        },
+        "q3": {
+          "type": "item",
+          "settings": {
+            "question": "Comment sont calculés les frais de livraison ?",
+            "answer": "<p>Les frais dépendent de la wilaya et du mode choisi. Le tarif s'affiche dans le formulaire de commande dès que vous sélectionnez votre wilaya et votre commune.</p>"
+          }
+        },
+        "q4": {
+          "type": "item",
+          "settings": {
+            "question": "Quels sont les délais de livraison ?",
+            "answer": "<p>2 à 5 jours ouvrés selon la wilaya. <em>(Délai de démonstration, à confirmer selon le transporteur.)</em></p>"
+          }
+        },
+        "q5": {
+          "type": "item",
+          "settings": {
+            "question": "Puis-je échanger un article ?",
+            "answer": "<p>Un échange est possible sous 7 jours, article non utilisé et dans son emballage d'origine. <em>(Conditions de démonstration.)</em></p>"
+          }
+        },
+        "q6": {
+          "type": "item",
+          "settings": {
+            "question": "Les produits sont-ils lavables ?",
+            "answer": "<p>Les textiles se lavent en machine à 30 °C, sauf indication contraire sur la fiche du produit.</p>"
+          }
+        },
+        "q7": {
+          "type": "item",
+          "settings": {
+            "question": "Puis-je commander sans créer de compte ?",
+            "answer": "<p>Oui. La commande se fait directement depuis la fiche produit : nom, téléphone, wilaya et commune suffisent.</p>"
+          }
+        },
+        "q8": {
+          "type": "item",
+          "settings": {
+            "question": "Comment vous contacter ?",
+            "answer": "<p>Notre service client répond sur WhatsApp et par e-mail : les coordonnées sont dans le pied de page et sur la page Contact.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5",
+        "q6",
+        "q7",
+        "q8"
+      ],
+      "settings": {
+        "eyebrow": "Aide",
+        "heading": "Questions fréquentes",
+        "contact_label": "Une autre question ? Écrivez-nous",
+        "contact_link": "pages/contact"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "faq"
+  ]
+}

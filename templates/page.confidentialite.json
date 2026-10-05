@@ -1,0 +1,83 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "settings": {}
+    },
+    "info": {
+      "type": "information",
+      "blocks": {
+        "b1": {
+          "type": "bloc",
+          "settings": {
+            "icone": "account",
+            "titre": "1. Données collectées",
+            "texte": "<p>Les informations saisies dans le formulaire de commande : nom, numéro de téléphone, wilaya, commune, mode de livraison, contenu du panier.</p>",
+            "lien_label": "",
+            "lien": ""
+          }
+        },
+        "b2": {
+          "type": "bloc",
+          "settings": {
+            "icone": "tag",
+            "titre": "2. Utilisation",
+            "texte": "<p>Ces données servent uniquement à traiter la commande, organiser la livraison et assurer le service client.</p>",
+            "lien_label": "",
+            "lien": ""
+          }
+        },
+        "b3": {
+          "type": "bloc",
+          "settings": {
+            "icone": "locker",
+            "titre": "3. Conservation",
+            "texte": "<p><em>[Durée de conservation à définir.]</em></p>",
+            "lien_label": "",
+            "lien": ""
+          }
+        },
+        "b4": {
+          "type": "bloc",
+          "settings": {
+            "icone": "shipping",
+            "titre": "4. Destinataires",
+            "texte": "<p>Les informations strictement nécessaires sont transmises au transporteur chargé de la livraison.</p>",
+            "lien_label": "",
+            "lien": ""
+          }
+        },
+        "b5": {
+          "type": "bloc",
+          "settings": {
+            "icone": "heart",
+            "titre": "5. Vos droits",
+            "texte": "<p>Vous pouvez demander l'accès, la rectification ou la suppression de vos données en nous contactant.</p>",
+            "lien_label": "Page contact",
+            "lien": "pages/contact"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5"
+      ],
+      "settings": {
+        "bandeau_demo": "Contenu de démonstration — à remplacer avant la mise en ligne.",
+        "eyebrow": "Informations",
+        "heading": "Politique de confidentialité",
+        "intro": "<p><em>Gabarit de démonstration : à compléter selon les traitements réellement effectués.</em></p>",
+        "note": "<p><em>Gabarit de démonstration, sans valeur juridique.</em></p>",
+        "cta_label": "",
+        "cta_lien": ""
+      }
+    }
+  },
+  "order": [
+    "main",
+    "info"
+  ]
+}

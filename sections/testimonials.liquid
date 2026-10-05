@@ -1,0 +1,62 @@
+{%- comment -%}
+  « Elles en parlent » — bandeau bleu foncé : titre en capitales, note en étoiles,
+  citation serif centrée, nom, points de pagination (structure observée).
+  Aucun avis n'est inventé : les citations proviennent des blocs saisis par LLUFAN.
+{%- endcomment -%}
+<style>#shopify-section-{{ section.id }} { --testimonials-font-size: {{ section.settings.text_size }}px; }</style>
+<div class="section-spacing color-scheme color-scheme--scheme-2">
+  <div class="container">
+    <div class="section-stack testimonials">
+      <div class="section-header">
+        <div class="prose">{%- if section.settings.heading != blank -%}<h2 class="h2">{{ section.settings.heading }}</h2>{%- endif -%}</div>
+      </div>
+      <testimonial-carousel class="testimonial-list" id="testimonials-{{ section.id }}" allow-swipe data-autoplay="{{ section.settings.autoplay }}" data-speed="{{ section.settings.speed }}">
+        {%- for block in section.blocks -%}
+          <div class="testimonial{% if forloop.first %} is-selected{% endif %}" {{ block.shopify_attributes }}>
+            {%- if block.settings.stars > 0 -%}
+              <div class="testimonial__rating" role="img" aria-label="{{ block.settings.stars }} / 5">
+                {%- for i in (1..block.settings.stars) -%}{% render 'icons', icon: 'star', size: 20 %}{%- endfor -%}
+              </div>
+            {%- endif -%}
+            {%- if block.settings.quote != blank -%}
+              <blockquote class="testimonial__quote">{{ block.settings.quote }}</blockquote>
+            {%- endif -%}
+            {%- if block.settings.author != blank -%}
+              <p class="testimonial__author">{{ block.settings.author }}</p>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </testimonial-carousel>
+      <carousel-navigation class="page-dots" data-carousel-dots="testimonials-{{ section.id }}">
+        {%- for block in section.blocks -%}
+          <button type="button" aria-current="{% if forloop.first %}true{% else %}false{% endif %}" aria-label="{{ 'accessibility.go_to_item' | t }} {{ forloop.index }}"></button>
+        {%- endfor -%}
+      </carousel-navigation>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Avis clients (section)",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Titre" },
+    { "type": "range", "id": "text_size", "min": 14, "max": 26, "step": 1, "unit": "px", "label": "Taille de la citation", "default": 18 },
+    { "type": "checkbox", "id": "autoplay", "label": "Défilement automatique", "default": true },
+    { "type": "range", "id": "speed", "min": 4, "max": 12, "step": 1, "unit": "s", "label": "Intervalle", "default": 5 }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Avis",
+      "settings": [
+        { "type": "range", "id": "stars", "min": 0, "max": 5, "step": 1, "label": "Étoiles", "default": 5 },
+        { "type": "textarea", "id": "quote", "label": "Citation", "info": "N'utiliser que des avis clients authentiques." },
+        { "type": "text", "id": "author", "label": "Nom du client" }
+      ]
+    }
+  ],
+  "presets": [ { "name": "Avis clients (section)", "blocks": [ { "type": "testimonial" }, { "type": "testimonial" }, { "type": "testimonial" } ] } ]
+}
+{% endschema %}

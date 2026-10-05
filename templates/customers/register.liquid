@@ -1,0 +1,18 @@
+<div class="section-spacing color-scheme color-scheme--scheme-1">
+  <div class="container container--narrow">
+    <div class="v-stack gap-6">
+      <div class="section-header"><h1 class="h2">{{ 'customers.register' | t }}</h1></div>
+      {%- form 'create_customer', class: 'v-stack gap-4' -%}
+        {%- if form.errors -%}<p class="product-form__error">{{ form.errors | default_errors }}</p>{%- endif -%}
+        <div class="h-stack gap-4 wrap">
+          <label class="field" style="flex:1"><span class="field__label">{{ 'customers.first_name' | t }}</span><input class="input" type="text" name="customer[first_name]" autocomplete="given-name"></label>
+          <label class="field" style="flex:1"><span class="field__label">{{ 'customers.last_name' | t }}</span><input class="input" type="text" name="customer[last_name]" autocomplete="family-name"></label>
+        </div>
+        <label class="field"><span class="field__label">{{ 'customers.email' | t }}</span><input class="input" type="email" name="customer[email]" autocomplete="email" required></label>
+        <label class="field"><span class="field__label">{{ 'customers.password' | t }}</span><input class="input" type="password" name="customer[password]" autocomplete="new-password" required></label>
+        <button type="submit" class="button button--navy">{{ 'customers.submit' | t }}</button>
+        <a href="{{ routes.account_login_url }}" class="text-center">{{ 'customers.login' | t }}</a>
+      {%- endform -%}
+    </div>
+  </div>
+</div>

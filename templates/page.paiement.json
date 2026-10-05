@@ -1,0 +1,72 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "settings": {}
+    },
+    "info": {
+      "type": "information",
+      "blocks": {
+        "b1": {
+          "type": "bloc",
+          "settings": {
+            "icone": "payment",
+            "titre": "Aucun paiement en ligne",
+            "texte": "<p>Le site ne demande ni carte bancaire ni virement. La commande est confirmée par téléphone ou par WhatsApp.</p>",
+            "lien_label": "",
+            "lien": ""
+          }
+        },
+        "b2": {
+          "type": "bloc",
+          "settings": {
+            "icone": "locker",
+            "titre": "Commande vérifiée",
+            "texte": "<p>Avant l'expédition, nous vérifions le récapitulatif, l'adresse et le numéro de téléphone.</p>",
+            "lien_label": "",
+            "lien": ""
+          }
+        },
+        "b3": {
+          "type": "bloc",
+          "settings": {
+            "icone": "shipping",
+            "titre": "Vous payez à la réception",
+            "texte": "<p>Le montant est réglé en espèces au livreur, au moment de la remise du colis.</p>",
+            "lien_label": "",
+            "lien": ""
+          }
+        },
+        "b4": {
+          "type": "bloc",
+          "settings": {
+            "icone": "whatsapp",
+            "titre": "Confirmation par WhatsApp",
+            "texte": "<p>Notre équipe vous contacte pour confirmer la wilaya, la commune et le mode de livraison.</p>",
+            "lien_label": "",
+            "lien": ""
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4"
+      ],
+      "settings": {
+        "bandeau_demo": "Contenu de démonstration — à remplacer avant la mise en ligne.",
+        "eyebrow": "Aide",
+        "heading": "Paiement à la livraison",
+        "intro": "<p>Aucune carte bancaire n'est demandée sur le site : vous commandez, nous vous rappelons, et vous payez en espèces quand le colis vous est remis.</p>",
+        "note": "",
+        "cta_label": "Questions fréquentes",
+        "cta_lien": "pages/faq"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "info"
+  ]
+}

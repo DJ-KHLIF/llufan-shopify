@@ -1,0 +1,117 @@
+<!doctype html>
+{%- comment -%}
+  Sens de lecture : calculé d'après la langue active. L'arabe (et les autres
+  langues de droite à gauche) passent en `dir="rtl"`, ce qui retourne toute la
+  mise en page grâce aux propriétés logiques de la feuille de style.
+{%- endcomment -%}
+{%- assign code_langue = request.locale.iso_code | downcase | split: '-' | first -%}
+{%- assign rtl = false -%}
+{%- if code_langue == 'ar' or code_langue == 'he' or code_langue == 'fa' or code_langue == 'ur' -%}
+  {%- assign rtl = true -%}
+{%- endif -%}
+<html lang="{{ request.locale.iso_code }}" dir="{% if rtl %}rtl{% else %}ltr{% endif %}" class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="{{ settings.scheme_1_button_background }}">
+    <link rel="canonical" href="{{ canonical_url }}">
+    {%- comment -%}Versions linguistiques de la page, pour les moteurs de recherche.{%- endcomment -%}
+    {%- if localization.available_languages.size > 1 -%}
+      {%- comment -%}
+        Chemin de la page sans le préfixe de langue : « /ar/produits/x » devient
+        « produits/x ». On le recolle à l'adresse racine de chaque langue.
+      {%- endcomment -%}
+      {%- assign chemin_page = request.path | remove_first: request.locale.root_url | remove_first: '/' -%}
+      {%- for langue in localization.available_languages -%}
+        {%- assign base_langue = langue.root_url | append: '/' | replace: '//', '/' -%}
+        <link rel="alternate" hreflang="{{ langue.iso_code }}" href="{{ shop.url }}{{ base_langue }}{{ chemin_page }}">
+      {%- endfor -%}
+      {%- assign base_defaut = routes.root_url | append: '/' | replace: '//', '/' -%}
+      <link rel="alternate" hreflang="x-default" href="{{ shop.url }}{{ base_defaut }}{{ chemin_page }}">
+    {%- endif -%}
+    <link rel="preload" href="{{ 'jost-latin.woff2' | asset_url }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{ 'fraunces-latin.woff2' | asset_url }}" as="font" type="font/woff2" crossorigin>
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 48 }}">
+    {%- endif -%}
+    <title>
+      {{ page_title }}{% if current_tags %} &ndash; {{ current_tags | join: ', ' }}{% endif %}{% if current_page != 1 %} &ndash; {{ 'general.page' | t }} {{ current_page }}{% endif %}{% unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless %}
+    </title>
+    {%- if page_description -%}<meta name="description" content="{{ page_description | escape }}">{%- endif -%}
+    {%- comment -%}
+      Partage (WhatsApp, Facebook, Messenger) et données structurées : deux
+      greffons, pour que la tête de page reste lisible.
+    {%- endcomment -%}
+    {% render 'seo-partage' %}
+    {% render 'seo-donnees-structurees' %}
+    {%- if settings.auto_language -%}
+      {%- capture langues_json -%}{%- for langue in localization.available_languages -%}{{ langue.iso_code | downcase | split: '-' | first }}: '{{ langue.root_url }}'{%- unless forloop.last -%}, {%- endunless -%}{%- endfor -%}{%- endcapture -%}
+      <script>
+        window.LLUFAN_LANGUES = { {{ langues_json }} };
+        window.LLUFAN_LANGUE_ACTUELLE = '{{ request.locale.iso_code }}';
+      </script>
+      <script src="{{ 'llufan-langue.js' | asset_url }}" defer></script>
+    {%- endif -%}
+    {{ content_for_header }}
+    <style>
+      /* Réglages du thème — valeurs modifiables dans l'éditeur Shopify */
+      :root {
+        --llufan-container: {{ settings.container_max_width }}px;
+        --llufan-body-size: {{ settings.body_size }}rem;
+        --text-heading-size-factor: {{ settings.heading_size_factor }};
+        --heading-text-transform: {% if settings.heading_uppercase %}uppercase{% else %}none{% endif %};
+        --section-vertical-spacing: {{ settings.section_vertical_spacing }}px;
+        --container-gutter: {{ settings.container_gutter }}px;
+        --llufan-coral: {{ settings.color_accent_coral }};
+        --llufan-coral-soft: {{ settings.color_accent_soft }};
+        --llufan-peach: {{ settings.color_accent_peach }};
+        --llufan-gold: {{ settings.color_accent_gold }};
+        --llufan-sage: {{ settings.color_badge_sage }};
+        --llufan-lilac: {{ settings.color_badge_lilac }};
+        --llufan-coral-rgb: {{ settings.color_accent_coral.red | default: 235 }} {{ settings.color_accent_coral.green | default: 115 }} {{ settings.color_accent_coral.blue | default: 91 }};
+        --llufan-coral-soft-rgb: {{ settings.color_accent_soft.red | default: 241 }} {{ settings.color_accent_soft.green | default: 155 }} {{ settings.color_accent_soft.blue | default: 132 }};
+        --llufan-peach-rgb: {{ settings.color_accent_peach.red | default: 250 }} {{ settings.color_accent_peach.green | default: 192 }} {{ settings.color_accent_peach.blue | default: 170 }};
+        --llufan-gold-rgb: {{ settings.color_accent_gold.red | default: 250 }} {{ settings.color_accent_gold.green | default: 192 }} {{ settings.color_accent_gold.blue | default: 117 }};
+        --llufan-sage-rgb: {{ settings.color_badge_sage.red | default: 169 }} {{ settings.color_badge_sage.green | default: 203 }} {{ settings.color_badge_sage.blue | default: 182 }};
+        --llufan-lilac-rgb: {{ settings.color_badge_lilac.red | default: 220 }} {{ settings.color_badge_lilac.green | default: 200 }} {{ settings.color_badge_lilac.blue | default: 237 }};
+      }
+      /* Scheme 1 */
+      .color-scheme--scheme-1 {
+        --page-background: {{ settings.scheme_1_background.red }} {{ settings.scheme_1_background.green }} {{ settings.scheme_1_background.blue }};
+        --text-color: {{ settings.scheme_1_text.red }} {{ settings.scheme_1_text.green }} {{ settings.scheme_1_text.blue }};
+        --accent: {{ settings.scheme_1_text.red }} {{ settings.scheme_1_text.green }} {{ settings.scheme_1_text.blue }};
+        --border-color: {{ settings.scheme_1_border.red }} {{ settings.scheme_1_border.green }} {{ settings.scheme_1_border.blue }};
+        --button-background: {{ settings.scheme_1_button_background.red }} {{ settings.scheme_1_button_background.green }} {{ settings.scheme_1_button_background.blue }};
+        --button-text-color: {{ settings.scheme_1_button_text.red }} {{ settings.scheme_1_button_text.green }} {{ settings.scheme_1_button_text.blue }};
+      }
+      /* Scheme 2 */
+      .color-scheme--scheme-2 {
+        --page-background: {{ settings.scheme_2_background.red }} {{ settings.scheme_2_background.green }} {{ settings.scheme_2_background.blue }};
+        --text-color: {{ settings.scheme_2_text.red }} {{ settings.scheme_2_text.green }} {{ settings.scheme_2_text.blue }};
+        --accent: {{ settings.scheme_2_text.red }} {{ settings.scheme_2_text.green }} {{ settings.scheme_2_text.blue }};
+        --border-color: {{ settings.scheme_2_border.red }} {{ settings.scheme_2_border.green }} {{ settings.scheme_2_border.blue }};
+        --button-background: {{ settings.scheme_2_button_background.red }} {{ settings.scheme_2_button_background.green }} {{ settings.scheme_2_button_background.blue }};
+        --button-text-color: {{ settings.scheme_2_button_text.red }} {{ settings.scheme_2_button_text.green }} {{ settings.scheme_2_button_text.blue }};
+      }
+      body { background: rgb(var(--page-background)); color: rgb(var(--text-color)); }
+    </style>
+    {{ 'theme.css' | asset_url | stylesheet_tag }}
+    <script>document.documentElement.classList.remove('no-js');</script>
+    <script src="{{ 'theme.js' | asset_url }}" defer></script>
+  </head>
+  <body class="features--button-transition features--zoom-image color-scheme color-scheme--scheme-1">
+    <loading-bar class="loading-bar" role="progressbar" aria-hidden="true"></loading-bar>
+    <a class="skip-to-content sr-only" href="#main">{{ 'accessibility.skip_to_content' | t }}</a>
+
+    {% sections 'header-group' %}
+
+    <main id="main" role="main">
+      {{ content_for_layout }}
+    </main>
+
+    {% sections 'footer-group' %}
+
+    {% section 'cart-drawer' %}
+    <div class="page-overlay" role="presentation"></div>
+  </body>
+</html>
