@@ -12,7 +12,7 @@
         "ressources_titre": "Ressources pour les mamans",
         "ressources_texte": "<p>Nos réponses aux questions les plus fréquentes : commande, paiement à la livraison, délais, entretien des produits.</p><p><em>Emplacement de démonstration : guides, articles ou vidéos viendront ici.</em></p>",
         "ressources_bouton": "Voir la FAQ",
-        "ressources_lien": "pages/faq",
+        "ressources_lien": "/pages/faq",
         "rejoindre_titre": "Rejoindre le Club Maman",
         "rejoindre_texte": "<p>Laissez votre e-mail pour être prévenue de l'ouverture des discussions et recevoir les conseils LLUFAN.</p><p><em>Texte de démonstration.</em></p>",
         "rejoindre_newsletter": true,

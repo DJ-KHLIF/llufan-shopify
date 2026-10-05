@@ -9,14 +9,14 @@
           "type": "message",
           "settings": {
             "text": "Paiement à la livraison · 69 wilayas",
-            "link": "pages/paiement"
+            "link": "/pages/paiement"
           }
         },
         "message-2": {
           "type": "message",
           "settings": {
             "text": "Livraison à domicile ou en stop-desk",
-            "link": "pages/livraison"
+            "link": "/pages/livraison"
           }
         }
       },
@@ -47,7 +47,7 @@
           "type": "item",
           "settings": {
             "label": "La marque",
-            "link": "pages/la-marque",
+            "link": "/pages/la-marque",
             "vers_le_club": false,
             "icon": "star"
           }
@@ -56,7 +56,7 @@
           "type": "item",
           "settings": {
             "label": "Pièces détachées",
-            "link": "collections/accessoires",
+            "link": "/collections/accessoires",
             "vers_le_club": false,
             "icon": "tag"
           }
@@ -65,7 +65,7 @@
           "type": "item",
           "settings": {
             "label": "Aide / FAQ",
-            "link": "pages/faq",
+            "link": "/pages/faq",
             "vers_le_club": false,
             "icon": "mail"
           }
@@ -86,7 +86,7 @@
         "menu": "main-menu",
         "sticky": true,
         "pill_label": "CLUB MAMAN",
-        "pill_link": "pages/club-maman",
+        "pill_link": "/pages/club-maman",
         "logo_height": 30,
         "logo_height_mobile": 26,
         "behavior": "shadow",

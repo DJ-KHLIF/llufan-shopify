@@ -24,7 +24,7 @@
             "titre": "Frais de livraison",
             "texte": "<p>Le tarif dépend de la wilaya et du mode de livraison. Il apparaît dès que vous choisissez votre wilaya et votre commune dans le formulaire de commande.</p>",
             "lien_label": "Commander",
-            "lien": "collections/all"
+            "lien": "/collections/all"
           }
         },
         "b3": {
@@ -61,7 +61,7 @@
         "intro": "<p>Nous livrons dans les 69 wilayas, à domicile ou en stop-desk. Les frais sont calculés selon votre wilaya et le mode choisi, et s'affichent automatiquement dans le formulaire de commande.</p>",
         "note": "<p><em>Délais indicatifs de démonstration : 2 à 5 jours ouvrés selon la wilaya (à confirmer selon le transporteur).</em></p>",
         "cta_label": "Questions fréquentes",
-        "cta_lien": "pages/faq"
+        "cta_lien": "/pages/faq"
       }
     }
   },

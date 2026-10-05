@@ -74,7 +74,8 @@
       <p class="commande__titre">{{ titre }}</p>
     {%- endif -%}
 
-    {%- form 'contact', class: 'commande', id: 'commande-formulaire-' | append: cle -%}
+    {%- assign id_formulaire_commande = 'commande-formulaire-' | append: cle -%}
+    {%- form 'contact', class: 'commande', id: id_formulaire_commande -%}
       {%- if form.posted_successfully? -%}
         <p class="commande__confirmation" data-llufan-confirmation role="status">{{ 'commande.confirmation' | t }}</p>
       {%- else -%}

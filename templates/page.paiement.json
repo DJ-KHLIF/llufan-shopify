@@ -61,7 +61,7 @@
         "intro": "<p>Aucune carte bancaire n'est demandée sur le site : vous commandez, nous vous rappelons, et vous payez en espèces quand le colis vous est remis.</p>",
         "note": "",
         "cta_label": "Questions fréquentes",
-        "cta_lien": "pages/faq"
+        "cta_lien": "/pages/faq"
       }
     }
   },

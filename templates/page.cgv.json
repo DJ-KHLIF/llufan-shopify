@@ -34,7 +34,7 @@
             "titre": "3. Commande et paiement",
             "texte": "<p>La commande se fait sur le site, sans paiement en ligne : le règlement se fait en espèces à la livraison (COD).</p>",
             "lien_label": "Pages paiement",
-            "lien": "pages/paiement"
+            "lien": "/pages/paiement"
           }
         },
         "b4": {
@@ -44,7 +44,7 @@
             "titre": "4. Livraison",
             "texte": "<p>Livraison dans les 69 wilayas, à domicile ou en stop-desk. <em>[Délais et transporteurs à compléter.]</em></p>",
             "lien_label": "Page livraison",
-            "lien": "pages/livraison"
+            "lien": "/pages/livraison"
           }
         },
         "b5": {
@@ -54,7 +54,7 @@
             "titre": "5. Échanges et retours",
             "texte": "<p><em>[Conditions d'échange et de retour à compléter.]</em></p>",
             "lien_label": "Échanges et retours",
-            "lien": "pages/politique-de-retour"
+            "lien": "/pages/politique-de-retour"
           }
         },
         "b6": {
@@ -64,7 +64,7 @@
             "titre": "6. Service client",
             "texte": "<p>Notre service client répond sur WhatsApp et par e-mail, avant et après la commande.</p>",
             "lien_label": "Page contact",
-            "lien": "pages/contact"
+            "lien": "/pages/contact"
           }
         }
       },

@@ -14,7 +14,7 @@
             "titre": "1. Nous contacter",
             "texte": "<p>Écrivez-nous sur WhatsApp ou par e-mail en précisant votre numéro de commande et le produit concerné.</p>",
             "lien_label": "Page contact",
-            "lien": "pages/contact"
+            "lien": "/pages/contact"
           }
         },
         "b2": {
@@ -61,7 +61,7 @@
         "intro": "<p>Un article ne convient pas ? Voici comment faire, étape par étape.</p><p><em>Gabarit de démonstration : les conditions définitives seront fixées par LLUFAN.</em></p>",
         "note": "<p><em>Page de démonstration. Remplacer par la politique de retour validée par LLUFAN.</em></p>",
         "cta_label": "Nous contacter",
-        "cta_lien": "pages/contact"
+        "cta_lien": "/pages/contact"
       }
     }
   },

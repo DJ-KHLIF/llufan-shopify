@@ -24,7 +24,7 @@
             "titre": "Contact",
             "texte": "<p>Nos coordonnées (WhatsApp et e-mail) sont indiquées dans le pied de page et sur la page Contact.</p>",
             "lien_label": "Page contact",
-            "lien": "pages/contact"
+            "lien": "/pages/contact"
           }
         },
         "b3": {

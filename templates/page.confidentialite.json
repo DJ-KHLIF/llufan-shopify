@@ -54,7 +54,7 @@
             "titre": "5. Vos droits",
             "texte": "<p>Vous pouvez demander l'accès, la rectification ou la suppression de vos données en nous contactant.</p>",
             "lien_label": "Page contact",
-            "lien": "pages/contact"
+            "lien": "/pages/contact"
           }
         }
       },

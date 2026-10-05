@@ -44,7 +44,7 @@
             "titre": "Un contact humain",
             "texte": "<p>Une équipe joignable sur WhatsApp et par e-mail, avant comme après votre commande.</p>",
             "lien_label": "Nous écrire",
-            "lien": "pages/contact"
+            "lien": "/pages/contact"
           }
         }
       },
@@ -61,7 +61,7 @@
         "intro": "<p>LLUFAN est née d'un constat simple : en Algérie, les mamans cherchent des produits doux, bien pensés, et un interlocuteur qui répond vraiment. Nous imaginons des produits pour la grossesse, l'allaitement et les premiers mois de bébé, avec une attention particulière portée au confort et à la simplicité au quotidien.</p><p><em>Texte de démonstration : cette page sera remplacée par l'histoire, les valeurs et la fabrication telles que LLUFAN souhaite les raconter.</em></p>",
         "note": "",
         "cta_label": "Voir tous nos produits",
-        "cta_lien": "collections/all"
+        "cta_lien": "/collections/all"
       }
     }
   },

@@ -123,7 +123,7 @@
         "heading": "Des produits pensés pour le quotidien",
         "text": "<p>Nous concevons des produits doux, faciles à entretenir et faits pour être utilisés longtemps, de la grossesse aux premiers mois de bébé.</p><p><em>Texte de démonstration.</em></p>",
         "button_label": "Découvrir la marque",
-        "button_link": "pages/la-marque"
+        "button_link": "/pages/la-marque"
       }
     },
     "faq": {

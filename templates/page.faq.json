@@ -78,7 +78,7 @@
         "eyebrow": "Aide",
         "heading": "Questions fréquentes",
         "contact_label": "Une autre question ? Écrivez-nous",
-        "contact_link": "pages/contact"
+        "contact_link": "/pages/contact"
       }
     }
   },

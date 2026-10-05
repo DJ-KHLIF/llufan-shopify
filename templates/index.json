@@ -17,7 +17,7 @@
             "kicker": "Nouveauté",
             "heading": "Le coussin d'allaitement Nomad",
             "button_label": "Découvrir Nomad",
-            "button_link": "products/coussin-allaitement-nomad"
+            "button_link": "/products/coussin-allaitement-nomad"
           }
         },
         "s2": {
@@ -27,7 +27,7 @@
             "kicker": "Confort maman et bébé",
             "heading": "Des matières douces, pensées pour le quotidien",
             "button_label": "Découvrir la marque",
-            "button_link": "pages/la-marque"
+            "button_link": "/pages/la-marque"
           }
         }
       },
@@ -84,7 +84,7 @@
             "collection": "maternite",
             "image": null,
             "title": "Maternité",
-            "link": "collections/maternite",
+            "link": "/collections/maternite",
             "badge": "",
             "badge_color": "coral",
             "button_label": "Découvrir"
@@ -96,7 +96,7 @@
             "collection": "allaitement",
             "image": null,
             "title": "Allaitement",
-            "link": "collections/allaitement",
+            "link": "/collections/allaitement",
             "badge": "",
             "badge_color": "sage",
             "button_label": "Découvrir"
@@ -108,7 +108,7 @@
             "collection": "bebe",
             "image": null,
             "title": "Bébé",
-            "link": "collections/bebe",
+            "link": "/collections/bebe",
             "badge": "",
             "badge_color": "lilac",
             "button_label": "Découvrir"
@@ -120,7 +120,7 @@
             "collection": "nouveautes",
             "image": null,
             "title": "Nouveautés",
-            "link": "collections/nouveautes",
+            "link": "/collections/nouveautes",
             "badge": "Nouveau",
             "badge_color": "lilac",
             "button_label": "Découvrir"
@@ -157,7 +157,7 @@
         "collection": "allaitement",
         "products_count": 8,
         "button_label": "Voir toute la collection",
-        "button_link": "collections/allaitement"
+        "button_link": "/collections/allaitement"
       }
     },
     "video": {
@@ -218,7 +218,7 @@
         "heading": "Chaque détail compte",
         "text": "<p>Une tétée confortable, une sieste qui tient, un objet qu'on garde longtemps : notre travail commence par ces petits moments du quotidien.</p><p><em>Texte de démonstration à remplacer par l'éditorial LLUFAN.</em></p>",
         "button_label": "Découvrir la marque",
-        "button_link": "pages/la-marque"
+        "button_link": "/pages/la-marque"
       }
     }
   },
