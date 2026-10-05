@@ -386,16 +386,43 @@ summary::-webkit-details-marker { display: none; }
 /* --------------------------------------------------------------------------
    4. MISE EN PAGE
    -------------------------------------------------------------------------- */
-.container { width: 100%; max-width: var(--container-xl-max-width); margin-inline: auto; padding-inline: var(--container-gutter); }
-.container--xs { max-width: 42.5rem; }
-.container--md { max-width: var(--container-md-max-width); }
-.container--lg { max-width: var(--container-lg-max-width); }
-.container--narrow { max-width: 56.25rem; }
+/* La largeur maximale compte la gouttière : `box-sizing: border-box` étant
+   global, sans ce « + 2 × gouttière » le contenu se rétrécirait à chaque fois
+   que la marge de page grandit (nous perdions 40 px de contenu à 1440 px de
+   large). Le contenu intérieur reste ainsi à 1360 px, exactement comme la
+   référence, quelle que soit la taille de l'écran. */
+.container { width: 100%; max-width: calc(var(--container-xl-max-width) + 2 * var(--container-gutter)); margin-inline: auto; padding-inline: var(--container-gutter); }
+.container--xs { max-width: calc(42.5rem + 2 * var(--container-gutter)); }
+.container--md { max-width: calc(var(--container-md-max-width) + 2 * var(--container-gutter)); }
+.container--lg { max-width: calc(var(--container-lg-max-width) + 2 * var(--container-gutter)); }
+.container--narrow { max-width: calc(56.25rem + 2 * var(--container-gutter)); }
 .section-spacing { padding-block: var(--section-vertical-spacing); background: rgb(var(--page-background)); color: rgb(var(--text-color)); }
 .section-spacing--tight { padding-block: calc(var(--section-vertical-spacing) * .6); }
 .section-spacing--no-top { padding-block-start: 0; }
 .bordered-section { border-top: 1px solid rgb(var(--border-color) / .6); }
 .section-stack { display: grid; gap: var(--section-stack-gap); }
+
+/* --------------------------------------------------------------------------
+   PALIERS D'ÉCRAN LARGE — les deux valeurs d'« air » relevées sur la référence
+   (doomoo.com, lues dans sa feuille de style) :
+
+       marge de page       20 px  →  32 px dès 700 px  →  48 px dès 1000 px
+       rythme vertical     40 px  →  64 px dès 1000 px
+
+   Sans ces deux paliers, la page reste serrée et collée aux bords sur
+   ordinateur : c'est ce qui faisait « beau mais pas tout à fait comme la
+   référence ». Le palier mobile (≤ 560 px) garde ses 15 px, décidés lors de
+   l'étape « mobile » : plus serré que la référence, jamais plus large.
+   -------------------------------------------------------------------------- */
+@media screen and (min-width: 700px) {
+  :root { --container-gutter: 2rem; }
+}
+@media screen and (min-width: 1000px) {
+  :root {
+    --container-gutter: 3rem;
+    --section-vertical-spacing: 4rem;
+  }
+}
 /* Un élément de grille ne peut pas être plus large que sa colonne : sans
    cette règle, un carrousel horizontal (contenu intrinsèquement large)
    élargit la page sur mobile. */
