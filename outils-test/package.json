@@ -1,0 +1,10 @@
+{
+  "name": "llufan-banc-de-test",
+  "private": true,
+  "description": "Banc local : rend le thème avec liquidjs et teste la fiche produit, le panier et le formulaire COD (simulation) dans Chromium.",
+  "scripts": {
+    "serveur": "node serveur.js .. 4810",
+    "test": "node tests.js 4810"
+  },
+  "dependencies": { "liquidjs": "^10.30.0", "playwright": "^1.63.0" }
+}

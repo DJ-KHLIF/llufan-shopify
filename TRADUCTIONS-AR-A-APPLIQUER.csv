@@ -1,0 +1,35 @@
+Ressource (Translate & Adapt > Thème);Champ;Texte français (source);Arabe saisi sur le thème ACTIF 154641760417;Arabe proposé pour le thème de test 154694680737;Statut
+En-tête (header-group);Bandeau — message 1;Paiement à la livraison · 69 wilayas;الدفع عند الاستلام · 69 ولاية;الدفع عند الاستلام · 69 ولاية;À reprendre — « 69 wilayas » à confirmer (voir décisions)
+En-tête (header-group);Bandeau — message 2;Livraison à domicile ou en stop-desk;توصيل للمنزل أو استلام من المكتب;التوصيل إلى المنزل أو الاستلام من المكتب;Harmonisé avec le formulaire
+En-tête (header-group);Pré-en-tête — élément 1;Espace maman;ركن الأم;ركن الأم;À reprendre tel quel
+En-tête (header-group);Pré-en-tête — élément 2;La marque;العلامة التجارية;العلامة التجارية;À reprendre tel quel
+En-tête (header-group);Pré-en-tête — élément 3;Pièces détachées;قطع غيار;قطع الغيار;À reprendre
+En-tête (header-group);Pré-en-tête — élément 4;Aide / FAQ;المساعدة / الأسئلة الشائعة;المساعدة / الأسئلة الشائعة;À reprendre tel quel
+En-tête (header-group);Pastille (bouton Club Maman);CLUB MAMAN;نادي الأمهات;نادي الأمهات;À reprendre tel quel
+Modèle produit (product.json);Badges — badge 1;Nouveauté;جديد;جديد;À reprendre tel quel
+Modèle produit (product.json);Commande — titre;(vide : titre traduit automatiquement);اطلب الآن — الدفع عند الاستلام;(aucune saisie nécessaire);Plus besoin : clé de langue « commande.titre_defaut »
+Modèle produit (product.json);Accordéons — titres Utilisation / Entretien / Composition;Utilisation / Entretien / Composition;استخدام / مقابلة / تكوين;(aucune saisie nécessaire);Plus besoin : titres standard traduits par le thème. « مقابلة » (= interview) était une erreur
+Modèle produit (product.json);Accordéon Utilisation — contenu;Chaque produit LLUFAN est pensé pour un usage simple au quotidien… (Texte de démonstration.);تم تصميم كل منتج من منتجات LLUFAN ليكون سهل الاستخدام في الحياة اليومية. تتوفر الإرشادات التفصيلية في وصف المنتج. (نص توضيحي.);<p>صُمِّم كل منتج من منتجات LLUFAN ليكون سهل الاستخدام يوميًا. تجدين التفاصيل في وصف المنتج.</p><p><em>نص تجريبي.</em></p>;À saisir
+Modèle produit (product.json);Accordéon Entretien — contenu;Consignes d'entretien à préciser par LLUFAN (texte à compléter avant publication).;(ancien texte : lavage 30 °C — non validé);<p><em>تعليمات العناية سيتم تحديدها من طرف LLUFAN (نص يجب إكماله قبل النشر).</em></p>;À saisir — aucune consigne de lavage inventée
+Modèle produit (product.json);Accordéon Composition — contenu;La composition précise est indiquée sur la fiche de chaque produit… (démonstration);التركيبة الدقيقة موضحة في بطاقة كل منتج.;<p>التركيبة الدقيقة مذكورة في بطاقة كل منتج.</p><p><em>مكان تجريبي: التركيبة المفصلة ومصدر الخامات.</em></p>;À saisir
+Modèle produit (product.json);Réassurance — texte 1;Sans paiement en ligne;بدون دفع إلكتروني;بدون دفع عبر الإنترنت;Harmonisé avec le formulaire
+Modèle produit (product.json);Réassurance — texte 2;Commande protégée;طلب محمي;طلب محمي;À valider : promesse vague (voir décisions)
+Modèle produit (product.json);Réassurance — texte 3;Livraison 2 à 5 jours ouvrés;التوصيل خلال 2 إلى 5 أيام عمل;التوصيل خلال 2 إلى 5 أيام عمل;Délai à confirmer avec le transporteur
+Modèle produit (product.json);Description — titre;Description;الوصف;الوصف;À reprendre tel quel
+Modèle produit (product.json);Bloc éditorial — sur-titre;LLUFAN;لوفان;LLUFAN;Corrigé : le nom de marque ne se traduit pas
+Modèle produit (product.json);Bloc éditorial — titre;Des produits pensés pour le quotidien;منتجات مصممة للحياة اليومية;منتجات مصممة للحياة اليومية;À reprendre tel quel
+Modèle produit (product.json);Bloc éditorial — bouton;Découvrir la marque;اكتشف العلامة التجارية;اكتشفي العلامة;Harmonisé (féminin, comme le reste du site)
+Modèle produit (product.json);FAQ — question 2 (réponse);Oui, dans les 69 wilayas, à domicile ou en stop-desk.;نعم، في الولايات الـ 69، سواء في المنزل أو عبر خدمة الاستلام المباشر (stop-desk).;<p>نعم، في 69 ولاية، مع التوصيل إلى المنزل أو الاستلام من المكتب.</p>;« 69 » à confirmer
+Modèle produit (product.json);Produits associés / Vus récemment — titres;Vous aimerez aussi / Vus récemment;قد يعجبك أيضاً / شوهد مؤخرًا;قد يعجبك أيضًا / شوهد مؤخرًا;À reprendre
+Accueil (index.json);Héros 1 — sur-titre / titre / bouton;Nouveauté / Le coussin d'allaitement Nomad / Découvrir Nomad;جديد / وسادة الرضاعة نوماد / اكتشف Nomad;جديد / وسادة الرضاعة LLUFAN Nomade / اكتشفي Nomade;Nom à arbitrer : « Nomad » (accueil) ou « Nomade » (fiche produit)
+Accueil (index.json);Pictos — texte 1;Livraison dans les 69 wilayas;التوصيل إلى جميع الولايات الـ 58;التوصيل إلى 69 ولاية;Contradiction 58 / 69 corrigée sur 69 — à confirmer
+Accueil (index.json);Univers — carte 3;Bébé;رضيع;الرضيع;La collection « bebe » n'existe pas (voir décisions)
+Accueil (index.json);Avis (section masquée);Avis de démonstration : …;رأي حول المنتج: … (mention « démonstration » perdue);(ne pas traduire : section masquée);Faux avis : ne pas réafficher sans vrais avis clients
+Pied de page (footer-group);Réassurance — texte 1;Livraison dans les 69 wilayas;التوصيل لجميع الولايات الـ 58;التوصيل إلى 69 ولاية;Contradiction 58 / 69 — à confirmer
+Pied de page (footer-group);Colonne LLUFAN — titre;LLUFAN;للوفان;LLUFAN;Corrigé : nom de marque
+Pied de page (footer-group);Colonne Aide — lien 2;Paiement;دفع;الدفع;Corrigé
+Page Livraison (page.livraison.json);Bloc 2 — libellé du lien;Commander;قائد (= « chef »);اطلبي;Erreur de traduction automatique corrigée
+Page Livraison (page.livraison.json);Introduction;… dans les 58/69 wilayas …;… الولايات الـ 58 … (intro) / الـ 69 (bloc 1);(selon décision 58/69);Contradiction dans la même page
+Page FAQ (page.faq.json);Question 6 (réponse);Textiles lavables en machine à 30 °C…;تُغسل المنسوجات في الغسالة على درجة حرارة 30 مئوية…;(à réécrire après validation);Consigne de lavage non validée : à confirmer ou retirer
+Toutes les autres ressources;Pages, collection, Club Maman, CGV, confidentialité, mentions, retours;(textes existants);Traductions présentes sur le thème actif;Reprendre depuis le thème actif;Le thème de test n'a AUCUNE traduction de contenu : sans saisie, l'arabe affiche ces textes en français
+Données boutique (hors thème);Titre et description du produit Nomade, options « Coloris » Bleu/Rose/Gris, menus, pages;LLUFAN Nomade — Coussin d’allaitement compact, etc.;(non vérifié par ressource);À traduire dans Translate & Adapt > Produits / Navigation;Partagé avec la boutique active : modification seulement avec votre accord
