@@ -604,12 +604,28 @@
       this.addEventListener('change', () => this.select());
       this.select(true);
     }
-    get selectedOptions() {
-      return $$('fieldset', this).map((fieldset) => fieldset.querySelector('input:checked')?.value).filter(Boolean);
+    /* Variante choisie. Produit à une seule option (cas du Nomade) : l'identifiant
+       de la variante est porté par le bouton coché (data-variant-id), aucune
+       comparaison de textes — les noms d'options sont traduits en arabe.
+       Sinon : comparaison des valeurs, normalisées (Unicode NFC, espaces). */
+    findVariant() {
+      const fieldsets = $$('fieldset', this);
+      const checked = fieldsets.map((f) => f.querySelector('input:checked'));
+      if (fieldsets.length === 1 && checked[0] && checked[0].dataset.variantId) {
+        return this.variants.find((v) => String(v.id) === checked[0].dataset.variantId) || null;
+      }
+      /* Aucune valeur cochée au chargement : la variante du formulaire fait foi */
+      if (checked.some((c) => !c)) {
+        const id = this.productForm.querySelector('[name="id"]')?.value;
+        return this.variants.find((v) => String(v.id) === String(id)) || null;
+      }
+      const norm = (t) => (t == null ? '' : String(t).normalize('NFC').trim());
+      const options = checked.map((c) => norm(c.value));
+      return this.variants.find((v) => [v.option1, v.option2, v.option3].slice(0, options.length).every((o, i) => norm(o) === options[i])) || null;
     }
     select(initial) {
-      const options = this.selectedOptions;
-      const variant = this.variants.find((v) => [v.option1, v.option2, v.option3].slice(0, options.length).every((o, i) => o === options[i]));
+      const variant = this.findVariant();
+      if (!variant) console.warn('[LLUFAN] variante introuvable pour la sélection', $$('fieldset input:checked', this).map((i) => i.value), this.variants);
       $$('fieldset', this).forEach((fieldset) => {
         $$('.color-swatch, .variant-picker__value', fieldset).forEach((label) => {
           const input = document.getElementById(label.htmlFor) || label.previousElementSibling;

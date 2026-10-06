@@ -7,6 +7,8 @@ const BASE = `http://localhost:${PORT}`;
 const PRODUIT = '/products/nomad-coussin-dallaitement-llufan';
 const ID = { Bleu: '47934041358497', Rose: '47934041391265', Gris: '47934041424033' };
 const resultats = [];
+const COULEUR = { fr: { Bleu: 'Bleu', Rose: 'Rose', Gris: 'Gris' }, ar: { Bleu: 'أزرق', Rose: 'وردة', Gris: 'رمادي' } };
+const TITRE = { fr: 'LLUFAN Nomade — Coussin d’allaitement compact', ar: 'نوماد — وسادة الرضاعة من ليلوفان' };
 const norm = (s) => String(s ?? '').replace(/[   ]/g, ' ').replace(/\s+/g, ' ').trim();
 
 const test = async (nom, fn) => {
@@ -53,12 +55,12 @@ const egal = (a, b, msg) => assert(norm(a) === norm(b), `${msg} : obtenu « ${no
       const p = await nouvellePage(); await reset(p);
       await p.goto(BASE + racine(langue) + PRODUIT);
       for (const c of ['Rose', 'Gris', 'Bleu']) {
-        await p.locator('.variant-picker label', { hasText: c }).click();
+        await p.locator('.variant-picker label', { hasText: COULEUR[langue][c] }).click();
         egal(await p.inputValue('form.shopify-product-form input[name="id"]'), ID[c], `id variante ${c}`);
         const legende = await p.locator('[data-option-value]').first().innerText().catch(() => '');
-        egal(legende, c, 'valeur affichée dans la légende');
+        egal(legende, COULEUR[langue][c], 'valeur affichée dans la légende');
         const r = await recap(p);
-        assert(norm(r).includes(`1 × LLUFAN Nomade — Coussin d’allaitement compact — ${c}`), `récap variante ${c} : ${norm(r)}`);
+        assert(norm(r).includes(`1 × ${TITRE[langue]} — ${COULEUR[langue][c]}`), `récap variante ${c} : ${norm(r)}`);
       }
       const prix = await texte(p, '[data-variant-price]');
       egal(prix, `3 200 ${devise}`, 'prix fiche');
@@ -68,7 +70,7 @@ const egal = (a, b, msg) => assert(norm(a) === norm(b), `${msg} : obtenu « ${no
     await test(`${L} quantités + / − et saisie directe : sous-total immédiat`, async () => {
       const p = await nouvellePage(); await reset(p);
       await p.goto(BASE + racine(langue) + PRODUIT);
-      await p.locator('.variant-picker label', { hasText: 'Gris' }).click();
+      await p.locator('.variant-picker label', { hasText: COULEUR[langue].Gris }).click();
       const plus = p.locator('.product-info [data-quantity-button="plus"]');
       const moins = p.locator('.product-info [data-quantity-button="minus"]');
       await plus.click(); await plus.click();
@@ -173,11 +175,11 @@ const egal = (a, b, msg) => assert(norm(a) === norm(b), `${msg} : obtenu « ${no
     await test(`${L} panier multi-articles : 1 Gris + 2 Bleus = 9 600, domicile 10 000, stop-desk 9 850`, async () => {
       const p = await nouvellePage(); await reset(p);
       await p.goto(BASE + racine(langue) + PRODUIT);
-      await p.locator('.variant-picker label', { hasText: 'Gris' }).click();
+      await p.locator('.variant-picker label', { hasText: COULEUR[langue].Gris }).click();
       await p.locator('.buy-buttons button[type="submit"]').click();
       await p.waitForSelector('#cart-drawer.is-open');
       await p.keyboard.press('Escape');
-      await p.locator('.variant-picker label', { hasText: 'Bleu' }).click();
+      await p.locator('.variant-picker label', { hasText: COULEUR[langue].Bleu }).click();
       await p.fill('.product-info input[name="quantity"]', '2');
       await p.locator('.buy-buttons button[type="submit"]').click();
       await p.waitForSelector('#cart-drawer.is-open');
@@ -192,7 +194,7 @@ const egal = (a, b, msg) => assert(norm(a) === norm(b), `${msg} : obtenu « ${no
       await p.locator('[data-llufan-type] label').nth(1).click();
       egal(await texte(p, '[data-llufan-total]'), `9 850 ${devise}`, 'total stop-desk');
       const r = norm(await recap(p));
-      assert(r.includes('1 × LLUFAN Nomade — Coussin d’allaitement compact — Gris') && r.includes('2 × LLUFAN Nomade — Coussin d’allaitement compact — Bleu'), 'deux lignes dans le récap : ' + r);
+      assert(r.includes(`1 × ${TITRE[langue]} — ${COULEUR[langue].Gris}`) && r.includes(`2 × ${TITRE[langue]} — ${COULEUR[langue].Bleu}`), 'deux lignes dans le récap : ' + r);
       await p.context().close();
     });
 
@@ -202,15 +204,15 @@ const egal = (a, b, msg) => assert(norm(a) === norm(b), `${msg} : obtenu « ${no
       await p.request.post(`${BASE}/cart/add.js`, { data: { id: ID.Bleu, quantity: 2 } });
       await p.goto(BASE + racine(langue) + '/cart');
       await choisirDestination(p, '16 - Alger', 'Bab El Oued');
-      const ligneGris = p.locator('[data-cart-section] .line-item', { hasText: 'Gris' });
+      const ligneGris = p.locator('[data-cart-section] .line-item', { hasText: COULEUR[langue].Gris });
       await ligneGris.locator('[data-action="plus"]').click();
       await p.waitForFunction(() => /12\s?800/.test(document.querySelector('[data-llufan-sous-total]').textContent.replace(/ /g, ' ')));
       egal(await texte(p, '[data-llufan-total]'), `13 200 ${devise}`, 'total après + (domicile)');
-      assert(norm(await recap(p)).includes('2 × LLUFAN Nomade — Coussin d’allaitement compact — Gris'), 'récap après +');
-      egal(await p.locator('[data-cart-section] .line-item', { hasText: 'Gris' }).locator('.quantity-selector__input').innerText(), '2', 'quantité affichée sur la page panier');
-      await p.locator('[data-cart-section] .line-item', { hasText: 'Bleu' }).locator('[data-action="retirer"]').click();
+      assert(norm(await recap(p)).includes(`2 × ${TITRE[langue]} — ${COULEUR[langue].Gris}`), 'récap après +');
+      egal(await p.locator('[data-cart-section] .line-item', { hasText: COULEUR[langue].Gris }).locator('.quantity-selector__input').innerText(), '2', 'quantité affichée sur la page panier');
+      await p.locator('[data-cart-section] .line-item', { hasText: COULEUR[langue].Bleu }).locator('[data-action="retirer"]').click();
       await p.waitForFunction(() => /6\s?400/.test(document.querySelector('[data-llufan-sous-total]').textContent.replace(/ /g, ' ')));
-      assert(!norm(await recap(p)).includes('Bleu'), 'ligne supprimée absente du récap');
+      assert(!norm(await recap(p)).includes(COULEUR[langue].Bleu), 'ligne supprimée absente du récap');
       egal(await p.locator('[data-cart-section] .line-item').count(), '1', 'une ligne restante');
       egal(await p.inputValue('[data-llufan-commune]'), 'Bab El Oued', 'destination conservée');
       await p.locator('[data-cart-section] .line-item [data-action="retirer"]').click();
@@ -234,9 +236,9 @@ const egal = (a, b, msg) => assert(norm(a) === norm(b), `${msg} : obtenu « ${no
       const p = await nouvellePage(); await reset(p);
       await p.request.get(`${BASE}/__test/indisponible?id=${ID.Rose}`);
       await p.goto(BASE + racine(langue) + PRODUIT);
-      assert(await p.locator(`.variant-picker input[value="Rose"]`).isDisabled(), 'Rose désactivée');
+      assert(await p.locator(`.variant-picker input[value="${COULEUR[langue].Rose}"]`).isDisabled(), 'Rose désactivée');
       // forcer la sélection (contournement) : la simulation doit refuser
-      await p.evaluate(() => { const i = document.querySelector('.variant-picker input[value="Rose"]'); i.disabled = false; i.click(); });
+      await p.evaluate((v) => { const i = document.querySelector(`.variant-picker input[value="${v}"]`); i.disabled = false; i.click(); }, COULEUR[langue].Rose);
       egal(await p.locator('.buy-buttons button[type="submit"]').isDisabled(), 'true', 'bouton d’ajout désactivé');
       await p.fill('[data-llufan-champ="nom"]', 'Test'); await p.fill('[data-llufan-champ="telephone"]', '0772000000');
       await choisirDestination(p, '16 - Alger', 'Bab El Oued'); await p.fill('[data-llufan-adresse]', '12 rue des Oliviers');

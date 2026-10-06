@@ -38,29 +38,46 @@ const VARIANTES = [
 ].map((v) => ({ ...v, option2: null, option3: null, options: [v.option1], compare_at_price: null }));
 let indisponible = null; // id de variante rendue indisponible pour un scénario de test
 const variantes = () => VARIANTES.map((v) => ({ ...v, available: v.id !== indisponible }));
-const produit = (selectionId) => {
-  const vs = variantes();
-  const choisie = vs.find((v) => String(v.id) === String(selectionId)) || vs.find((v) => v.available) || vs[0];
+/* Traductions arabes RÉELLES relevées par l'API Admin (6 octobre) :
+   valeurs d'option et option1 des variantes : Bleu→أزرق, Rose→وردة, Gris→رمادي ;
+   option « Coloris » → لون ; titre → نوماد — وسادة الرضاعة من ليلوفان.
+   TRAD=incoherent : les valeurs d'option sont servies en arabe mais le texte
+   d'option des variantes reste en français (hypothèse à couvrir). */
+const AR = { Bleu: 'أزرق', Rose: 'وردة', Gris: 'رمادي' };
+const TRAD = process.env.TRAD || 'coherent';
+const produit = (selectionId, langue = 'fr') => {
+  const ar = langue === 'ar';
+  const nomValeur = (n) => (ar ? AR[n] : n);
+  const nomVariante = (n) => (ar && TRAD === 'coherent' ? AR[n] : n);
+  const vs = variantes().map((v) => ({ ...v, title: nomVariante(v.title), option1: nomVariante(v.option1), options: [nomVariante(v.option1)] }));
+  const brutes = variantes();
+  const idx = brutes.findIndex((v) => String(v.id) === String(selectionId));
+  const iChoisie = idx >= 0 ? idx : Math.max(0, brutes.findIndex((v) => v.available));
+  const choisie = vs[iChoisie];
+  const valeurs = brutes.map((v, i) => Object.assign(new Valeur(nomValeur(v.option1)), { id: 600 + i, available: v.available, selected: i === iChoisie, variant: vs[i] }));
   return {
-    ...PRODUIT, variants: vs, price: choisie.price, url: '/products/' + PRODUIT.handle,
-    selected_or_first_available_variant: choisie,
-    options_with_values: [{ name: 'Coloris', position: 1, selected_value: new Valeur(choisie.option1), values: vs.map((v) => new Valeur(v.option1)) }],
+    ...PRODUIT, title: ar ? 'نوماد — وسادة الرضاعة من ليلوفان' : PRODUIT.title, variants: vs, price: choisie.price, url: (ar ? '/ar' : '') + '/products/' + PRODUIT.handle,
+    selected_or_first_available_variant: choisie, options: [ar ? 'لون' : 'Coloris'],
+    options_with_values: [{ name: ar ? 'لون' : 'Coloris', position: 1, selected_value: valeurs[iChoisie], values: valeurs }],
   };
 };
 
 let panier = []; // [{ key, variant_id, quantity }]
-const vueLigne = (l, i, url) => {
-  const v = VARIANTES.find((x) => x.id === l.variant_id);
+const vueLigne = (l, i, url, langue = 'fr') => {
+  const v0 = VARIANTES.find((x) => x.id === l.variant_id);
+  const ar = langue === 'ar';
+  const v = { ...v0, title: ar ? AR[v0.title] : v0.title };
+  const PRODUIT_L = { ...PRODUIT, title: ar ? 'نوماد — وسادة الرضاعة من ليلوفان' : PRODUIT.title };
   return {
-    key: l.key, id: v.id, quantity: l.quantity, title: `${PRODUIT.title} - ${v.title}`,
-    product: { title: PRODUIT.title, has_only_default_variant: false }, variant: { title: v.title },
-    product_title: PRODUIT.title, variant_title: v.title, product_has_only_default_variant: false,
+    key: l.key, id: v.id, quantity: l.quantity, title: `${PRODUIT_L.title} - ${v.title}`,
+    product: { title: PRODUIT_L.title, has_only_default_variant: false }, variant: { title: v.title },
+    product_title: PRODUIT_L.title, variant_title: v.title, product_has_only_default_variant: false,
     final_line_price: v.price * l.quantity, final_price: v.price, price: v.price, line_price: v.price * l.quantity,
     url: url + '?variant=' + v.id, image: null, properties: {},
   };
 };
 const vuePanier = (racine = '') => {
-  const items = panier.map((l, i) => vueLigne(l, i, racine + '/products/' + PRODUIT.handle));
+  const items = panier.map((l, i) => vueLigne(l, i, racine + '/products/' + PRODUIT.handle, racine === '/ar' ? 'ar' : 'fr'));
   return { items, item_count: items.reduce((s, x) => s + x.quantity, 0), total_price: items.reduce((s, x) => s + x.final_line_price, 0), note: '' };
 };
 
@@ -252,7 +269,7 @@ http.createServer(async (req, res) => {
     if (chemin.startsWith('/recommendations/')) return envoyer(res, 200, 'text/html', '<div></div>');
     if (chemin.startsWith('/products/') && chemin !== '/products/' + PRODUIT.handle) return envoyer(res, 404, 'text/html', '<p>404</p>');
     if (chemin.startsWith('/products/')) {
-      const ctx = ctxDe('product', { product: produit(url.searchParams.get('variant')) });
+      const ctx = ctxDe('product', { product: produit(url.searchParams.get('variant'), langue) });
       return envoyer(res, 200, 'text/html; charset=utf-8', await page(langue, 'product', ctx));
     }
     if (chemin === '/localization' && req.method === 'POST') {

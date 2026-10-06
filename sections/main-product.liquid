@@ -115,15 +115,31 @@
 <div class="variant-picker__values">
   {%- for value in option.values -%}
     {%- assign input_id = section.id | append: '-' | append: option.position | append: '-' | append: forloop.index -%}
+    {%- comment -%}
+      Disponibilité, sélection et variante : lues sur la valeur d'option elle-même
+      (value.available, value.selected, value.variant) et non en comparant des
+      textes. En arabe, Shopify sert les noms traduits (Bleu → أزرق) : une
+      comparaison de textes entre deux sources traduites séparément pouvait
+      échouer et bloquer la couleur et l'ajout au panier. Repli (si l'objet ne
+      fournit pas ces champs) : l'ancienne comparaison, avec l'index corrigé
+      option.position | minus: 1.
+    {%- endcomment -%}
     {%- assign option_index = option.position | minus: 1 -%}
-    {%- assign variant_available = false -%}
-
-    {%- for variant in product.variants -%}
-      {%- if variant.options[option_index] == value and variant.available -%}
-        {%- assign variant_available = true -%}
-        {%- break -%}
-      {%- endif -%}
-    {%- endfor -%}
+    {%- assign variant_available = value.available -%}
+    {%- if variant_available == nil -%}
+      {%- assign variant_available = false -%}
+      {%- for variant in product.variants -%}
+        {%- if variant.options[option_index] == value and variant.available -%}
+          {%- assign variant_available = true -%}
+          {%- break -%}
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endif -%}
+    {%- assign valeur_choisie = value.selected -%}
+    {%- if valeur_choisie == nil -%}
+      {%- assign valeur_choisie = false -%}
+      {%- if option.selected_value == value -%}{%- assign valeur_choisie = true -%}{%- endif -%}
+    {%- endif -%}
 
     <input
       class="sr-only"
@@ -131,7 +147,8 @@
       id="{{ input_id }}"
       name="option-{{ option.position }}"
       value="{{ value | escape }}"
-      {% if option.selected_value == value %}checked{% endif %}
+      {%- if product.options.size == 1 and value.variant %} data-variant-id="{{ value.variant.id }}"{% endif %}
+      {% if valeur_choisie %}checked{% endif %}
       {% if variant_available == false %}disabled{% endif %}
     >
 
