@@ -27,12 +27,23 @@
     <a class="product-card__media" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
       {%- assign primary_class = 'product-card__image product-card__image--primary product-card__image--' | append: ratio -%}
       {%- if product.featured_media -%}
-        {{ product.featured_media | image_url: width: 1200 | image_tag: loading: 'lazy', class: primary_class, widths: '300, 400, 600, 800, 1000, 1200', sizes: '(min-width: 1000px) 25vw, (min-width: 700px) 33vw, 50vw' }}
+        {%- comment -%}
+          Texte alternatif : la description saisie sur la photo, sinon le titre
+          du produit (+ la variante, ex. « Nomade — Bleu »). Repris de main.
+        {%- endcomment -%}
+        {%- assign alt_principale = product.featured_media.alt -%}
+        {%- if alt_principale == blank -%}
+          {%- assign alt_principale = product.title -%}
+          {%- unless product.has_only_default_variant -%}
+            {%- assign alt_principale = product.title | append: ' — ' | append: product.selected_or_first_available_variant.title -%}
+          {%- endunless -%}
+        {%- endif -%}
+        {{ product.featured_media | image_url: width: 1200 | image_tag: loading: 'lazy', class: primary_class, alt: alt_principale, widths: '300, 400, 600, 800, 1000, 1200', sizes: '(min-width: 1000px) 25vw, (min-width: 700px) 33vw, 50vw' }}
       {%- else -%}
         {{ 'product-1' | placeholder_svg_tag: 'product-card__image product-card__placeholder' }}
       {%- endif -%}
       {%- if settings.card_show_second_image and product.media[1] -%}
-        {{ product.media[1] | image_url: width: 1200 | image_tag: loading: 'lazy', class: 'product-card__image product-card__image--secondary', widths: '300, 400, 600, 800, 1000, 1200', sizes: '(min-width: 1000px) 25vw, 50vw' }}
+        {{ product.media[1] | image_url: width: 1200 | image_tag: loading: 'lazy', class: 'product-card__image product-card__image--secondary', alt: product.media[1].alt | default: product.title, widths: '300, 400, 600, 800, 1000, 1200', sizes: '(min-width: 1000px) 25vw, 50vw' }}
       {%- endif -%}
     </a>
     {%- if settings.card_show_quick_add -%}
