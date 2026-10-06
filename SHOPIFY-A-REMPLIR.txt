@@ -12,6 +12,16 @@ POURQUOI TOUT AFFICHE « PAGE INTROUVABLE » AUJOURD'HUI
   Autrement dit : à partir de maintenant, remplir = voir le thème s'allumer.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  0. LA LANGUE ARABE — à faire en premier (30 secondes)
+     ------------------------------------------------------------
+     Paramètres → Langues → Ajouter une langue → العربية → Publier.
+
+     Sans cette étape, la boutique n'a qu'une seule langue : l'en-tête ne
+     peut afficher AUCUNE bascule, et les 133 lignes de traduction arabe
+     n'ont nulle part où aller. Le réglage du thème (« Afficher le
+     sélecteur de langue ») est déjà coché : dès que l'arabe est publié,
+     la pastille « العربية » apparaît dans l'en-tête, à côté du panier.
+
 1. LES 10 PAGES          (Contenu → Pages → Ajouter une page)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   Le thème a un design dédié pour chacune : l'ADRESSE (le « handle ») doit

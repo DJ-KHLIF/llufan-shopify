@@ -432,8 +432,8 @@
         "type": "checkbox",
         "id": "show_language_selector",
         "label": "Afficher le sélecteur de langue",
-        "default": false,
-        "info": "À activer uniquement lorsque plusieurs langues sont publiées."
+        "default": true,
+        "info": "Laissez coché : l'en-tête n'affiche alors que la langue vers laquelle on peut basculer (par exemple « العربية »), et seulement quand plusieurs langues sont publiées dans Paramètres → Langues. Sans ce sélecteur, une visiteuse arrivée en arabe par détection automatique n'aurait aucun moyen de revenir au français."
       },
       {
         "type": "checkbox",

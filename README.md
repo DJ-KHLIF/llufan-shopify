@@ -6,6 +6,18 @@ Les fichiers du thème sont **ici, en clair** : chaque section, chaque modèle, 
 
 ---
 
+## Les deux langues (français / العربية)
+
+Le thème est écrit **entièrement dans les deux langues** — mais Shopify ne peut les afficher que si elles sont publiées :
+
+1. **Paramètres → Langues → Ajouter une langue → العربية → Publier.** C'est l'étape qui compte : tant que la boutique n'a qu'une seule langue, l'en-tête ne peut afficher **aucune** bascule, quel que soit le thème.
+2. La pastille de langue (« **العربية** » en français, « **Français** » en arabe) apparaît alors dans l'en-tête, à côté du panier, et un clic change de langue **tout de suite**. Le réglage du thème est déjà coché : *Thème → Personnaliser → Paramètres du thème → « Sélecteurs et mentions légales » → Afficher le sélecteur de langue*. Pour ne jamais prêter à confusion, l'en-tête n'affiche **que la langue vers laquelle on peut basculer**, jamais les deux.
+3. En arabe, **toute la page passe en écriture de droite à gauche** (82 pages vérifiées).
+
+> Sans le sélecteur, une visiteuse dont le téléphone est en arabe arrive en arabe par détection automatique… et n'a plus aucun moyen de revenir au français. C'est pour cela qu'il est activé par défaut.
+
+---
+
 ## ⬇️ Télécharger la version prête à importer dans Shopify
 
 **2,0 Mo · 104 fichiers · française + arabe**
@@ -45,13 +57,15 @@ Le thème est la décoration ; **le contenu vit dans Shopify**. Après l'import,
 
 ---
 
-## Ce qui a été vérifié (5 octobre 2026)
+## Ce qui a été vérifié (5 et 6 octobre 2026)
 
 - **Import Shopify** : 19 points conformes · 0 avertissement · 0 bloquant → *« le thème peut être importé sans réserve bloquante »* ;
 - **Deux langues** : 123 clés de traduction, toutes présentes ;
 - **Affichage** : ordinateur, tablette et 9 largeurs de téléphone (320 → 480 px) sur 81 pages — 0 débordement, 0 zone tactile trop petite ;
 - **Arabe** : 82/82 pages en écriture de droite à gauche, aucune page mélangée ;
-- **Empreinte du fichier** : `696f3dd293513024714a89b04f6d37d3a9ba9555cad029a3a004803400d51068` (2 056 081 octets) — la même que celle contrôlée après téléchargement.
+- **Empreinte de l'archive** (6 octobre, 07 h 51) : `8b5ff0a4098e2568210bce2fd32f06c76a17418be5630e6eedf2dc1c9158ddbf` (2 056 717 octets) — vérifiée par retéléchargement, octet pour octet ;
+- **Feuille de style surveillée** : `f2bede57e2532754249ecafab86826a9` — le correctif d'espacements de la référence ;
+- **Bascule de langue** : activée par défaut (`show_language_selector`), contrôlée dans l'archive livrée.
 
 ---
 

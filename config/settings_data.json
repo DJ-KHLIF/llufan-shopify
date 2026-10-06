@@ -38,7 +38,7 @@
     "social_instagram": "",
     "social_tiktok": "",
     "show_country_selector": false,
-    "show_language_selector": false,
+    "show_language_selector": true,
     "show_payment_icons": false,
     "show_powered_by_shopify": true,
     "favicon": null,
