@@ -1,4 +1,4 @@
-Ressource (Translate & Adapt > Thème);Champ;Texte français (source);Arabe saisi sur le thème ACTIF 154641760417;Arabe proposé pour le thème de test 154694680737;Statut
+Ressource (Translate & Adapt > Thème);Champ;Texte français (source);Arabe saisi sur le thème ACTIF 154641760417;Arabe proposé pour le thème de test (import du ZIP LLUFAN-refonte-test-1fbb997);Statut
 En-tête (header-group);Bandeau — message 1;Paiement à la livraison · 69 wilayas;الدفع عند الاستلام · 69 ولاية;الدفع عند الاستلام · 69 ولاية;À reprendre — « 69 wilayas » à confirmer (voir décisions)
 En-tête (header-group);Bandeau — message 2;Livraison à domicile ou en stop-desk;توصيل للمنزل أو استلام من المكتب;التوصيل إلى المنزل أو الاستلام من المكتب;Harmonisé avec le formulaire
 En-tête (header-group);Pré-en-tête — élément 1;Espace maman;ركن الأم;ركن الأم;À reprendre tel quel
@@ -31,5 +31,5 @@ Pied de page (footer-group);Colonne Aide — lien 2;Paiement;دفع;الدفع;C
 Page Livraison (page.livraison.json);Bloc 2 — libellé du lien;Commander;قائد (= « chef »);اطلبي;Erreur de traduction automatique corrigée
 Page Livraison (page.livraison.json);Introduction;… dans les 58/69 wilayas …;… الولايات الـ 58 … (intro) / الـ 69 (bloc 1);(selon décision 58/69);Contradiction dans la même page
 Page FAQ (page.faq.json);Question 6 (réponse);Textiles lavables en machine à 30 °C…;تُغسل المنسوجات في الغسالة على درجة حرارة 30 مئوية…;(à réécrire après validation);Consigne de lavage non validée : à confirmer ou retirer
-Toutes les autres ressources;Pages, collection, Club Maman, CGV, confidentialité, mentions, retours;(textes existants);Traductions présentes sur le thème actif;Reprendre depuis le thème actif;Le thème de test n'a AUCUNE traduction de contenu : sans saisie, l'arabe affiche ces textes en français
+Toutes les autres ressources;Pages, collection, Club Maman, CGV, confidentialité, mentions, retours;(textes existants);Traductions présentes sur le thème actif;Reprendre depuis le thème actif;Un thème importé depuis le ZIP n'a AUCUNE traduction de contenu : sans saisie, l'arabe affiche ces textes en français
 Données boutique (hors thème);Titre et description du produit Nomade, options « Coloris » Bleu/Rose/Gris, menus, pages;LLUFAN Nomade — Coussin d’allaitement compact, etc.;(non vérifié par ressource);À traduire dans Translate & Adapt > Produits / Navigation;Partagé avec la boutique active : modification seulement avec votre accord
