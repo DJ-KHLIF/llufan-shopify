@@ -1,6 +1,11 @@
-{%- comment -%}Ligne de panier (tiroir et page panier){%- endcomment -%}
+{%- comment -%}
+  Ligne de panier (tiroir et page panier).
+  Les boutons visent l'article par sa clé (data-key) : theme.js envoie la
+  modification à /cart/change.js puis re-rend le tiroir, la page panier et
+  le formulaire de commande.
+{%- endcomment -%}
 <div class="line-item" data-line="{{ item.key }}">
-  <a class="line-item__image" href="{{ item.url }}">
+  <a class="line-item__image" href="{{ item.url }}" tabindex="-1" aria-hidden="true">
     {%- if item.image -%}
       {{ item.image | image_url: width: 240 | image_tag: loading: 'lazy', alt: item.title }}
     {%- else -%}
@@ -9,29 +14,30 @@
   </a>
   <div class="v-stack gap-1">
     <a class="line-item__title" href="{{ item.url }}">{{ item.product.title }}</a>
-    {%- unless item.variant.title contains 'Default' -%}
+    {%- unless item.product.has_only_default_variant -%}
       <span class="line-item__properties">{{ item.variant.title }}</span>
     {%- endunless -%}
     {%- for property in item.properties -%}
-      {%- if property.last != blank -%}
+      {%- assign premier_caractere = property.first | slice: 0 -%}
+      {%- if property.last != blank and premier_caractere != '_' -%}
         <span class="line-item__properties">{{ property.first }} : {{ property.last }}</span>
       {%- endif -%}
     {%- endfor -%}
     <div class="h-stack gap-4 items-center">
       <div class="quantity-selector">
-        <button type="button" class="quantity-selector__button" data-quantity-change data-line="{{ line_index }}" data-quantity="{{ item.quantity | minus: 1 }}" aria-label="{{ 'products.product.decrease_quantity' | t }}"{% if item.quantity == 1 %} data-line-remove="true"{% endif %}>
+        <button type="button" class="quantity-selector__button" data-quantity-change data-action="moins" data-key="{{ item.key }}" data-line="{{ line_index }}" data-quantity="{{ item.quantity | minus: 1 }}" aria-label="{{ 'products.product.decrease_quantity' | t }} — {{ item.title | escape }}">
           {% render 'icons', icon: 'minus', size: 12 %}
         </button>
-        <span class="quantity-selector__input">{{ item.quantity }}</span>
+        <span class="quantity-selector__input" aria-label="{{ 'products.product.quantity' | t }} : {{ item.quantity }}">{{ item.quantity }}</span>
         <span class="quantity-selector__spinner" aria-hidden="true"></span>
-        <button type="button" class="quantity-selector__button" data-quantity-change data-line="{{ line_index }}" data-quantity="{{ item.quantity | plus: 1 }}" aria-label="{{ 'products.product.increase_quantity' | t }}">
+        <button type="button" class="quantity-selector__button" data-quantity-change data-action="plus" data-key="{{ item.key }}" data-line="{{ line_index }}" data-quantity="{{ item.quantity | plus: 1 }}" aria-label="{{ 'products.product.increase_quantity' | t }} — {{ item.title | escape }}">
           {% render 'icons', icon: 'plus', size: 12 %}
         </button>
       </div>
-      <span class="line-item__price">{{ item.final_line_price | money }}</span>
+      <span class="line-item__price">{% render 'montant', centimes: item.final_line_price %}</span>
     </div>
   </div>
-  <button type="button" class="tap-area" data-quantity-change data-line="{{ line_index }}" data-quantity="0" aria-label="{{ 'cart.remove' | t }}">
+  <button type="button" class="tap-area line-item__retirer" data-quantity-change data-action="retirer" data-key="{{ item.key }}" data-line="{{ line_index }}" data-quantity="0" aria-label="{{ 'cart.remove' | t }} — {{ item.title | escape }}">
     {% render 'icons', icon: 'trash', size: 18 %}
   </button>
 </div>

@@ -1,8 +1,8 @@
 {%- comment -%}Bloc prix (repris de la structure observée : prix réduit + prix barré){%- endcomment -%}
 {%- if product.compare_at_price > product.price -%}
   <span class="product-card__price">
-    <s>{{ product.compare_at_price | money }}</s>{{ product.price | money }}
+    <s>{% render 'montant', centimes: product.compare_at_price %}</s>{% render 'montant', centimes: product.price %}
   </span>
 {%- else -%}
-  <span class="product-card__price">{{ product.price | money }}</span>
+  <span class="product-card__price">{% render 'montant', centimes: product.price %}</span>
 {%- endif -%}

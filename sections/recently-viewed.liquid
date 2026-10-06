@@ -24,24 +24,27 @@
     const info = document.querySelector('[data-product-info]');
     let items = read();
     if (info) {
-      const entry = JSON.parse(info.dataset.productInfo);
+      let entry = null;
+      try { entry = JSON.parse(info.dataset.productInfo); } catch (e) { return; }
       items = [entry, ...items.filter((i) => i.url !== entry.url)];
       write(items);
     }
     const others = items.filter((i) => !info || i.url !== JSON.parse(info.dataset.productInfo).url).slice(0, 4);
+    /* Textes issus du stockage local : échappés avant insertion */
+    const esc = (v) => String(v == null ? '' : v).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     if (!others.length) return;
     others.forEach((item) => {
       const card = document.createElement('div');
       card.className = 'product-card';
       card.innerHTML = `
         <div class="product-card__figure">
-          <a class="product-card__media" href="${item.url}">
-            ${item.image ? `<img class="product-card__image product-card__image--square" src="${item.image}" alt="${item.title}" loading="lazy" width="600" height="600">` : ''}
+          <a class="product-card__media" href="${esc(item.url)}">
+            ${item.image ? `<img class="product-card__image product-card__image--square" src="${esc(item.image)}" alt="${esc(item.title)}" loading="lazy" width="600" height="600">` : ''}
           </a>
         </div>
         <div class="product-card__info">
-          <a class="product-card__title h6" href="${item.url}">${item.title}</a>
-          <span class="product-card__price">${item.price || ''}</span>
+          <a class="product-card__title h6" href="${esc(item.url)}">${esc(item.title)}</a>
+          <span class="product-card__price">${esc(item.price)}</span>
         </div>`;
       list.append(card);
     });

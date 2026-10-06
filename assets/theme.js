@@ -149,18 +149,39 @@
   /* ---------------------------------------------------------------------
      Panier : rafraîchissement du contenu, compteur, pastille
      --------------------------------------------------------------------- */
-  const refreshCart = async () => {
-    const res = await fetch(`${window.Shopify.routes.root}?section_id=cart-drawer`);
-    const text = await res.text();
-    const doc = new DOMParser().parseFromString(text, 'text/html');
-    const fresh = doc.querySelector('#shopify-section-cart-drawer');
-    const current = $('#shopify-section-cart-drawer');
-    if (fresh && current) current.replaceWith(fresh);
-    const countNode = doc.querySelector('[data-cart-count]');
-    const count = countNode ? countNode.textContent.trim() : '0';
+  /* Sections à re-rendre après un changement de panier : le tiroir, et la
+     liste des articles de la page panier quand on s'y trouve. Le tiroir garde
+     son état ouvert (avant, il se refermait en laissant le voile actif). */
+  const cartSectionIds = () => {
+    const ids = ['cart-drawer'];
+    $$('[data-cart-section]').forEach((el) => {
+      const wrapper = el.closest('[id^="shopify-section-"]');
+      if (wrapper) ids.push(wrapper.id.replace('shopify-section-', ''));
+    });
+    return Array.from(new Set(ids));
+  };
+  const refreshCart = async (cart) => {
+    const ids = cartSectionIds();
+    const drawerWasOpen = !!$('#cart-drawer.is-open');
+    const res = await fetch(`${window.Shopify.routes.root}cart?sections=${ids.join(',')}`, { headers: { Accept: 'application/json' } });
+    const sections = await res.json();
+    ids.forEach((id) => {
+      const html = sections[id];
+      const current = document.getElementById(`shopify-section-${id}`);
+      if (!html || !current) return;
+      const fresh = new DOMParser().parseFromString(html, 'text/html').getElementById(`shopify-section-${id}`);
+      if (fresh) current.replaceChildren(...fresh.childNodes);
+    });
+    if (drawerWasOpen) {
+      const drawer = $('#cart-drawer');
+      if (drawer) { drawer.setAttribute('open', ''); drawer.classList.add('is-open'); drawer.removeAttribute('aria-hidden'); }
+    }
+    const count = cart ? String(cart.item_count) : (($('[data-cart-count]') || {}).textContent || '0').trim();
     $$('[data-cart-count]').forEach((el) => { el.textContent = count; });
     $$('[data-cart-dot]').forEach((el) => el.classList.toggle('is-visible', Number(count) > 0));
+    if (cart) document.dispatchEvent(new CustomEvent('llufan:panier-maj', { detail: { cart } }));
   };
+  const fetchCart = () => fetch(`${window.Shopify.routes.root}cart.js`, { headers: { Accept: 'application/json' } }).then((r) => r.json());
 
   const showQuantitySpinner = (selector, onOff) => {
     const node = typeof selector === 'string' ? $(selector) : selector;
@@ -171,10 +192,16 @@
     const form = event.target.closest('form[data-cart-form], .shopify-product-form');
     if (!form || form.dataset.preventDrawer === 'true') return;
     event.preventDefault();
+    /* Un seul ajout à la fois : un double clic n'ajoute pas deux fois */
+    if (form.dataset.busy === 'true') return;
+    form.dataset.busy = 'true';
     const button = event.submitter || form.querySelector('[type="submit"]');
     const isQuickAdd = button && button.classList.contains('product-card__quick-add-button');
-    if (button) button.setAttribute('aria-busy', 'true');
+    const wasDisabled = button ? button.disabled : false;
+    if (button) { button.setAttribute('aria-busy', 'true'); button.disabled = true; }
     if (isQuickAdd) button.classList.add('adding-to-cart');
+    const errorNode = form.querySelector('[data-cart-error]');
+    if (errorNode) { errorNode.hidden = true; errorNode.textContent = ''; }
 
     try {
       const formData = new FormData(form);
@@ -186,12 +213,11 @@
       });
       if (!res.ok) {
         const err = await res.json();
-        const errorNode = form.querySelector('[data-cart-error]');
         if (errorNode) { errorNode.textContent = err.description || err.message || ''; errorNode.hidden = false; }
         if (isQuickAdd) button.classList.remove('adding-to-cart');
         return;
       }
-      await refreshCart();
+      await refreshCart(await fetchCart());
       if (isQuickAdd) {
         // La coche reste dessinée un court instant avant le retour à l'état normal
         setTimeout(() => button.classList.remove('adding-to-cart'), 1400);
@@ -203,27 +229,44 @@
       if (isQuickAdd) button.classList.remove('adding-to-cart');
       form.submit();
     } finally {
-      if (button) button.removeAttribute('aria-busy');
+      delete form.dataset.busy;
+      if (button) { button.removeAttribute('aria-busy'); button.disabled = wasDisabled; }
     }
   });
 
-  on(document, 'click', async (event) => {
+  /* Modification / suppression d'un article. On vise l'article par sa clé
+     (stable) plutôt que par son rang, qui change dès qu'une ligne disparaît.
+     Les demandes sont traitées l'une après l'autre. */
+  let cartQueue = Promise.resolve();
+  on(document, 'click', (event) => {
     const link = event.target.closest('[data-quantity-change]');
     if (!link) return;
     event.preventDefault();
-    const line = link.dataset.line;
-    const qty = link.dataset.quantity;
-    const selector = link.closest('.quantity-selector');
+    if (link.getAttribute('aria-disabled') === 'true') return;
+    const lineNode = link.closest('.line-item');
+    const key = link.dataset.key;
+    const qty = Math.max(0, Number(link.dataset.quantity) || 0);
+    const selector = lineNode ? lineNode.querySelector('.quantity-selector') : link.closest('.quantity-selector');
+    if (lineNode) $$('[data-quantity-change]', lineNode).forEach((b) => b.setAttribute('aria-disabled', 'true'));
     showQuantitySpinner(selector, true);
-    try {
-      await fetch(`${window.Shopify.routes.root}cart/change.js`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ line, quantity: Number(qty) }),
+    cartQueue = cartQueue.then(async () => {
+      const body = key ? { id: key, quantity: qty } : { line: Number(link.dataset.line), quantity: qty };
+      const res = await fetch(`${window.Shopify.routes.root}cart/change.js`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(body),
       });
-      await refreshCart();
-    } finally {
+      const cart = res.ok ? await res.json() : await fetchCart();
+      /* Page panier vidée : on recharge pour afficher l'état « panier vide »
+         (le formulaire de commande disparaît avec l'ancien récapitulatif). */
+      if (!cart.item_count && $('[data-cart-section]')) { window.location.reload(); return; }
+      await refreshCart(cart);
+      /* Le focus revient sur le même bouton de la ligne re-rendue, s'il existe encore */
+      const again = key && $(`[data-quantity-change][data-key="${CSS.escape(key)}"][data-action="${link.dataset.action}"]`);
+      if (again) again.focus({ preventScroll: true });
+    }).catch(() => { window.location.reload(); }).finally(() => {
       showQuantitySpinner(selector, false);
-    }
+      if (lineNode && lineNode.isConnected) $$('[data-quantity-change]', lineNode).forEach((b) => b.removeAttribute('aria-disabled'));
+    });
   });
 
   /* ---------------------------------------------------------------------
@@ -569,9 +612,12 @@
       const variant = this.variants.find((v) => [v.option1, v.option2, v.option3].slice(0, options.length).every((o, i) => o === options[i]));
       $$('fieldset', this).forEach((fieldset) => {
         $$('.color-swatch, .variant-picker__value', fieldset).forEach((label) => {
-          const input = label.previousElementSibling;
+          const input = document.getElementById(label.htmlFor) || label.previousElementSibling;
           label.classList.toggle('is-selected', !!input?.checked);
         });
+        const shown = fieldset.querySelector('[data-option-value]');
+        const checked = fieldset.querySelector('input:checked');
+        if (shown && checked) shown.textContent = checked.value;
       });
       const idInput = this.productForm.querySelector('[name="id"]');
       const button = this.productForm.querySelector('[type="submit"]');
@@ -595,10 +641,21 @@
         const url = new URL(window.location.href);
         url.searchParams.set('variant', variant.id);
         if (!initial) history.replaceState({}, '', url.toString());
-      } else if (button) {
-        button.disabled = true;
-        button.textContent = button.dataset.textUnavailable || button.dataset.textSoldOut;
+      } else {
+        if (button) {
+          button.disabled = true;
+          button.textContent = button.dataset.textUnavailable || button.dataset.textSoldOut;
+        }
+        if (availability) {
+          availability.textContent = availability.dataset.textOutOfStock;
+          availability.hidden = false;
+        }
       }
+      /* Le formulaire de commande (llufan-livraison.js) suit la variante choisie */
+      this.dispatchEvent(new CustomEvent('variant:change', {
+        bubbles: true,
+        detail: { formId: this.dataset.formId, variant: variant || null },
+      }));
     }
   });
 
@@ -611,9 +668,19 @@
     const wrapper = btn.closest('.quantity-selector');
     const input = wrapper.querySelector('input');
     const step = btn.dataset.quantityButton === 'plus' ? 1 : -1;
-    input.value = Math.max(1, Number(input.value || 1) + step);
+    input.value = Math.max(1, (parseInt(input.value, 10) || 1) + step);
     input.dispatchEvent(new Event('change', { bubbles: true }));
   });
+  /* Saisie directe : à la validation du champ, la quantité redevient un
+     entier ≥ 1 (« 0 », « -3 », « 2,5 » ou un champ vide ne passent pas).
+     Écouteur en phase de capture : la valeur est corrigée avant que le
+     formulaire de commande ne la lise. */
+  on(document, 'change', (e) => {
+    const input = e.target.closest && e.target.closest('.quantity-selector__input');
+    if (!input || input.tagName !== 'INPUT') return;
+    const value = Math.max(1, parseInt(input.value, 10) || 1);
+    if (String(value) !== input.value) input.value = value;
+  }, true);
 
   /* ---------------------------------------------------------------------
      Filtres, tri et panneaux déroulants

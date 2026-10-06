@@ -1,12 +1,3 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
     "hero": {
@@ -18,7 +9,7 @@
             "kicker": "Nouveauté",
             "heading": "Le coussin d'allaitement Nomad",
             "button_label": "Découvrir Nomad",
-            "button_link": "/products/coussin-allaitement-nomad"
+            "button_link": "/products/nomad-coussin-dallaitement-llufan"
           }
         },
         "s2": {
@@ -208,7 +199,8 @@
         "text_size": 18,
         "autoplay": true,
         "speed": 7
-      }
+      },
+      "disabled": true
     },
     "editorial": {
       "type": "media-with-text",

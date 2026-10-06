@@ -27,7 +27,7 @@
       <div class="cart-totals">
         <div class="cart-totals__row cart-totals__row--total">
           <span>{{ 'cart.subtotal' | t }}</span>
-          <span>{{ cart.total_price | money }}</span>
+          <span>{% render 'montant', centimes: cart.total_price %}</span>
         </div>
         <p class="text-subdued" style="font-size:var(--text-xs)">{{ 'cart.taxes_and_shipping_note' | t }}</p>
       </div>
@@ -35,7 +35,9 @@
         {%- if section.settings.show_checkout_button -%}
           <button type="submit" name="checkout" class="button button--full">{{ 'cart.checkout' | t }}</button>
         {%- else -%}
-          <a href="{{ routes.cart_url }}#commander" class="button button--navy button--full">{{ section.settings.cta_label | default: 'Commander' }}</a>
+          {%- assign libelle_tiroir = section.settings.cta_label | strip -%}
+          {%- if libelle_tiroir == blank -%}{%- assign libelle_tiroir = 'cart.commander' | t -%}{%- endif -%}
+          <a href="{{ routes.cart_url }}#commander" class="button button--navy button--full">{{ libelle_tiroir }}</a>
         {%- endif -%}
       </form>
       <a href="{{ routes.cart_url }}" class="text-center" style="font-size:var(--text-sm);text-decoration:underline">{{ 'cart.view_cart' | t }}</a>
@@ -57,7 +59,7 @@
       "type": "text",
       "id": "cta_label",
       "label": "Libellé du bouton du tiroir",
-      "default": "Commander"
+      "info": "Laisser vide pour « Commander », traduit automatiquement en arabe."
     }
   ]
 }{% endschema %}

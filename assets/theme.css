@@ -183,7 +183,7 @@
   font-size: var(--text-sm); font-weight: 500;
   transition: border-color .2s ease-in-out, background-color .2s ease-in-out;
 }
-.commande__option.is-selected { border-color: var(--color-coral); background: #FDF1EC; }
+.commande__option.is-selected { border-color: var(--color-coral); background: rgb(var(--color-coral-rgb) / .07); }
 /* Le rond de la livraison : 13 px par défaut dans Chrome, à peine visible au
    doigt. La zone cliquable reste toute la carte (le label), c'est seulement le
    rond qu'on agrandit. */
@@ -284,12 +284,12 @@
 
 /* Scheme 2 — fond bleu foncé */
 .color-scheme--scheme-2 {
-  --page-background: 31 52 98;
+  --page-background: 27 52 98;
   --text-color: 255 255 255;
   --accent: 255 255 255;
   --border-color: 65 82 122;
   --button-background: 255 255 255;
-  --button-text-color: 31 52 98;
+  --button-text-color: 27 52 98;
   --circle-button-background: 255 255 255;
   --circle-button-text-color: 28 28 28;
 }
@@ -1698,22 +1698,15 @@ a.club__discussion:hover { border-color: rgb(var(--text-color) / .45); transform
 /* Chiffres, prix, téléphones : suites latines (« 3 200 DA ») qui doivent se
    lire de gauche à droite même en arabe. Sans cela, « 3 200 DA » s'affiche
    « DA 200 3 » et « 0772 415 120 » ressort à l'envers. */
-[dir="rtl"] .product-card__price,
-[dir="rtl"] .product-info__price,
-[dir="rtl"] .price,
-[dir="rtl"] .line-item__price,
+/* Les montants passent par le snippet « montant » (et montant() en JS) : seul
+   le nombre est isolé de gauche à droite, la devise suit le sens de la page
+   (« 3 200 DA » en français, « د.ج 3 200 » lu de droite à gauche en arabe). */
 [dir="rtl"] .cart__total,
-[dir="rtl"] .commande__option-prix,
-[dir="rtl"] .commande__barre-montant,
 [dir="rtl"] .footer__contact-lien strong,
 [dir="rtl"] .marque,
 [dir="rtl"] .prix,
 [dir="rtl"] .rating__stars,
-[dir="rtl"] .rating__value,
-[dir="rtl"] [data-llufan-frais],
-[dir="rtl"] [data-llufan-total],
-[dir="rtl"] [data-llufan-sous-total],
-[dir="rtl"] [data-llufan-sticky-total] { direction: ltr; unicode-bidi: isolate; text-align: right; }
+[dir="rtl"] .rating__value { direction: ltr; unicode-bidi: isolate; text-align: right; }
 
 /* Champs de saisie latins (téléphone, e-mail) : contenu lu de gauche à droite,
    mais collé au bord droit comme le reste du formulaire arabe. */
@@ -1854,3 +1847,100 @@ a.club__discussion:hover { border-color: rgb(var(--text-color) / .45); transform
     text-align: center;
   }
 }
+
+/* ==========================================================================
+   25. REFONTE TEST — « IVOIRE & NUIT » (branche llufan-refonte-test)
+   Couleurs : réglages du thème (ivoire #FAF6F0, nuit #1B3462, sable #EDE4D8,
+   terracotta #9E5540 en accent). Ce bloc ne contient que les compléments :
+   formulaire de commande, montants, champs, focus.
+   ========================================================================== */
+:root { --llufan-sable: 237 228 216; --llufan-ivoire: 250 246 240; }
+
+/* Montant : nombre isolé, jamais coupé en fin de ligne */
+.montant { white-space: nowrap; unicode-bidi: isolate; }
+.montant bdi { unicode-bidi: isolate; }
+
+/* Un élément masqué par l'attribut hidden reste masqué, même si sa classe
+   impose un affichage (ex. .field en grille → bloc adresse en stop-desk). */
+.commande-wrapper [hidden] { display: none !important; }
+
+/* Champs : bordure lisible sur fond ivoire (contraste ≥ 3:1 pour un champ) */
+.input, .select, .textarea { border-color: rgb(var(--text-color) / .45); }
+.input:focus-visible, .select:focus-visible, .textarea:focus-visible {
+  outline: 2px solid rgb(var(--text-color)); outline-offset: 1px; border-color: rgb(var(--text-color));
+}
+.input[aria-invalid="true"], .select[aria-invalid="true"], .textarea[aria-invalid="true"] { border-color: #b3261e; }
+.select:disabled { opacity: .6; cursor: not-allowed; }
+
+/* Un champ atteint au clavier ou par le bouton « Voir le formulaire » ne se
+   cache jamais sous l'en-tête collant ni sous la barre mobile. */
+.commande .input, .commande .select, .commande .textarea, .commande fieldset,
+.commande__avertissement, .commande__confirmation {
+  scroll-margin-block: calc(var(--sticky-area-height, 0px) + 1.5rem) 6rem;
+}
+
+.field__aide { margin: 0; font-size: var(--text-xs); color: rgb(var(--text-color) / .72); }
+.field__erreur { margin: 0; font-size: var(--text-sm); font-weight: 600; color: #b3261e; }
+.commande__telephone { text-align: start; }
+[dir="rtl"] .commande__telephone { text-align: right; }
+
+/* Bandeau « formulaire en test » sous le titre */
+.commande__simulation {
+  margin: 0; padding: .55rem 1.1rem; text-align: center;
+  background: rgb(var(--llufan-sable)); color: rgb(var(--text-color));
+  font-size: var(--text-sm); font-weight: 600;
+}
+.commande__tarifs-note { margin: .2rem 0 0; font-size: var(--text-xs); color: rgb(var(--text-color) / .72); }
+.commande__adresse { margin-block: .25rem; }
+.commande__titre { font-size: .85rem; line-height: 1.4; }
+
+/* Récapitulatif de simulation */
+.commande__recap {
+  margin-block: .25rem; padding: 1rem; min-width: 0;
+  border: 1px solid rgb(var(--llufan-sable)); border-radius: 12px;
+  background: rgb(var(--llufan-ivoire)); color: rgb(var(--text-color));
+}
+.commande__recap-titre { font-size: 1rem; margin: 0 0 .75rem; text-transform: none; letter-spacing: 0; }
+.commande__recap-liste { display: grid; gap: .5rem; overflow-wrap: anywhere; text-align: start; }
+.commande__recap-ligne { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .25rem 1rem; font-size: var(--text-sm); }
+.commande__recap-libelle { color: rgb(var(--text-color) / .72); }
+.commande__recap-valeur { font-weight: 600; text-align: end; }
+.commande__recap-ligne--total {
+  font-size: 1.1rem; font-weight: 700;
+  border-block-start: 1px solid rgb(var(--llufan-sable)); padding-block-start: .5rem;
+}
+.commande__recap-ligne--total .commande__recap-libelle { color: rgb(var(--text-color)); }
+
+/* Message de simulation : visible, mais jamais présenté comme une commande */
+.commande__confirmation {
+  background: rgb(var(--llufan-sable)); border: 1px solid rgb(var(--text-color) / .25); color: rgb(var(--text-color));
+  font-weight: 500; text-align: start;
+}
+.commande__confirmation p { margin: 0; }
+.commande__confirmation p + p { margin-block-start: .35rem; }
+.commande__avertissement { font-weight: 600; }
+.commande__avertissement:focus, .commande__confirmation:focus { outline: 2px solid rgb(var(--text-color)); outline-offset: 2px; }
+
+/* Sélecteur de variantes : valeur choisie affichée dans la légende */
+.variant-picker__option-value { font-weight: 600; text-transform: none; letter-spacing: 0; }
+.variant-picker__value { min-height: 44px; min-width: 44px; display: inline-flex; align-items: center; justify-content: center; }
+
+/* Panier : le bouton occupé ne peut pas être cliqué deux fois */
+[data-quantity-change][aria-disabled="true"] { pointer-events: none; opacity: .5; }
+.buy-buttons [aria-busy="true"] { cursor: progress; }
+
+/* Focus visible au clavier sur les boutons et liens, contrasté sur ivoire */
+.button:focus-visible, .tap-area:focus-visible, .quantity-selector__button:focus-visible,
+.commande__option:has(input:focus-visible) { outline: 2px solid rgb(var(--text-color)); outline-offset: 2px; }
+
+@media screen and (max-width: 699px) {
+  /* Mobile : champs en 16 px (pas de zoom automatique iOS), cibles de 44 px */
+  .commande .input, .commande .select, .commande .textarea { font-size: 16px; min-height: 44px; }
+  .commande__option { min-height: 48px; }
+  .commande-encart .commande { padding-inline: 1rem; }
+  .commande__barre { padding-block-end: calc(.75rem + env(safe-area-inset-bottom, 0px)); }
+}
+
+/* Pastilles de variantes : le bouton radio est masqué visuellement, le focus
+   clavier s'affiche donc sur son libellé */
+.variant-picker input.sr-only:focus-visible + label { outline: 2px solid rgb(var(--text-color)); outline-offset: 2px; }
