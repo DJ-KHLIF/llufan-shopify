@@ -97,3 +97,43 @@ POURQUOI TOUT AFFICHE « PAGE INTROUVABLE » AUJOURD'HUI
      décochez « Activer la protection par mot de passe ») ;
   • pour comparer, la version déjà remplie et cliquable :
        https://dj-khlif.github.io/llufan.com/
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+7. APRÈS L'AUDIT DU 6 OCTOBRE — LES CORRECTIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  (le détail complet : LLUFAN-REMARQUES-6-OCTOBRE.md)
+
+  ▸ 1. SUPPRIMER la page « Nomad — Commander ». Elle vient de la boutique,
+    pas du thème (police Inter / Playfair, tons bruns, « Photo à
+    remplacer »). Le thème place déjà le formulaire de commande SOUS les
+    boutons d'achat de la fiche produit : pas de panier, pas de checkout,
+    et le tarif de la wilaya s'affiche avant validation.
+
+  ▸ 2. UN SEUL PRIX DE LIVRAISON. Notre thème n'affiche pas un forfait : il
+    affiche le tarif de la WILAYA et du mode (domicile / stop-desk).
+    Tranchez 700 DA ou 1 500 DA, puis supprimez toute page qui annonce un
+    autre montant.
+
+  ▸ 3. LES PAGES « À COMPLÉTER ». Recoller les pages depuis
+    LLUFAN-DEMO-contenus-a-coller.md : elles sont complètes. Les seules
+    informations qui manquent vraiment sont légales (raison sociale,
+    hébergeur, qui paie le retour) et elles sont listées en SECTION 5 du
+    kit, avec leur référence.
+
+  ▸ 4. « LIVRAISON & RETOURS » (page vide dont le contenu se limite à un
+    « s ») : la remplacer par nos deux pages « Livraison » et « Échanges et
+    retours ».
+
+  ▸ 5. LES DÉLAIS : une seule valeur, « 2 à 5 jours ouvrés ». C'est ce que
+    disent la FAQ, la page Livraison et le bandeau d'icônes. Un « 3 à 5 »
+    saisi ailleurs crée une contradiction au moment d'acheter.
+
+  ▸ 6. LE MENU : chaque rubrique vers SA collection (maternite, allaitement,
+    bebe, nouveautes, accessoires) — jamais toutes vers /collections/all.
+    Le bouton MAMA'S CLUB de l'en-tête reste tel quel.
+
+  ▸ 7. STOCKS ET PHOTOS. Vérifiez le poncho et la housse (0 unité) avant de
+    les proposer en complément. Notre CSV importe avec la règle « continuer
+    à vendre même à zéro » : passez-la à « refuser » si vous préférez
+    bloquer. La housse n'a aucune photo — trois prises suffisent :
+    démonstration d'usage, vue entière, détail du tissu.
