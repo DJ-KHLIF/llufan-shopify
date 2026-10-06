@@ -77,6 +77,22 @@ POURQUOI TOUT AFFICHE « PAGE INTROUVABLE » AUJOURD'HUI
   ▸ s'il manque des liens, l'en-tête restera vide : c'est le seul endroit
     où les rubriques se déclarent.
 
+  ▸ LA RÈGLE QUI COMPTE : chaque rubrique vers SA collection (maternite,
+    allaitement, bebe, nouveautes, accessoires). Jamais deux intitulés vers
+    la même adresse : trois noms différents pour la même sélection créent
+    une attente que la page ne tient pas.
+
+  ▸ VARIANTE COURTE — recommandée par l'audit du 6 octobre, et très bien
+    avec trois produits :
+
+          Boutique · La marque · Aide
+
+    « Boutique » → /collections/all (le catalogue), « La marque » →
+    /pages/la-marque, « Aide » → /pages/faq. Le bouton MAMA'S CLUB de
+    l'en-tête reste tel quel : pas de doublon à créer.
+
+    Les deux formules sont bonnes ; la courte se remplit en une minute.
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 5. LE CONTRÔLE QUI TRANCHE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
