@@ -420,8 +420,11 @@
     const barreMobile = raccourci ? raccourci.closest('.commande__barre') : null;
     if (raccourci) raccourci.addEventListener('click', (evenement) => {
       evenement.preventDefault();
-      formulaire.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      /* Défilement centré sur le champ à remplir : il ne passe ni sous
+         l'en-tête collant (en haut) ni sous la barre (en bas). */
       const aRemplir = ['nom', 'telephone', 'wilaya'].map(champ).find((c) => c && !c.value);
+      const cible = aRemplir || bouton || formulaire;
+      cible.scrollIntoView({ behavior: 'smooth', block: 'center' });
       if (aRemplir) aRemplir.focus({ preventScroll: true });
     });
     /* … et s'efface quand le formulaire est à l'écran (pas de doublon, pas de champ masqué) */
