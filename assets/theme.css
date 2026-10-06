@@ -876,6 +876,13 @@ button.header__langue-item:hover { color: var(--color-coral); }
 .hero__scroll .circle-button { width: 3.25rem; height: 3.25rem; }
 @media screen and (max-width: 699px) {
   .hero { --hero-height: 62vh; }
+  /* Hauteur du diaporama sur téléphone, ramenée à 60 % de l'écran.
+     Cette règle vient de l'éditeur de thème de Shopify (6 octobre 2026) : elle
+     porte « !important » parce que la hauteur est écrite en style en ligne par
+     la section, d'après le réglage choisi dans l'éditeur. Sans elle, la
+     première image prend tout l'écran et le titre passe sous la ligne de flottaison.
+     Pour revenir au réglage de la section sur téléphone : supprimer ce bloc. */
+  .slideshow { --hero-height: 60vh !important; }
   .hero__title { font-size: var(--text-h2); }
 }
 
