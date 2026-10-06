@@ -11,16 +11,30 @@ POURQUOI TOUT AFFICHE « PAGE INTROUVABLE » AUJOURD'HUI
 
   Autrement dit : à partir de maintenant, remplir = voir le thème s'allumer.
 
+  Dernière mise à jour : 6 octobre 2026 — 2ᵉ audit : sélecteur de langue en
+  deux mots, 182 traductions de thème, textes alternatifs des images, verrou
+  élargi aux réglages, suivi des commandes COD.
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   0. LA LANGUE ARABE — à faire en premier (30 secondes)
      ------------------------------------------------------------
      Paramètres → Langues → Ajouter une langue → العربية → Publier.
 
      Sans cette étape, la boutique n'a qu'une seule langue : l'en-tête ne
-     peut afficher AUCUNE bascule, et les 133 lignes de traduction arabe
+     peut afficher AUCUNE bascule, et les 292 lignes de traduction arabe
      n'ont nulle part où aller. Le réglage du thème (« Afficher le
      sélecteur de langue ») est déjà coché : dès que l'arabe est publié,
-     la pastille « العربية » apparaît dans l'en-tête, à côté du panier.
+     la mention « Français | العربية » apparaît dans l'en-tête.
+
+     POURQUOI ELLE N'APPARAISSAIT PAS (relevé le 6 octobre) : le dossier de
+     travail du thème avait reculé, et le réglage « Afficher le sélecteur de
+     langue » s'y était remis à « non » — d'où l'absence de bascule. C'est
+     réparé, et ce fichier de réglages est surveillé lui aussi désormais. Le
+     thème à importer est celui de cet envoi.
+
+     L'en-tête affiche maintenant les DEUX langues, SANS drapeau : la langue
+     en cours en gras (non cliquable), l'autre cliquable — « Français |
+     العربية » en version française, « العربية | Français » en version arabe.
 
 1. LES 10 PAGES          (Contenu → Pages → Ajouter une page)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -153,3 +167,27 @@ POURQUOI TOUT AFFICHE « PAGE INTROUVABLE » AUJOURD'HUI
     à vendre même à zéro » : passez-la à « refuser » si vous préférez
     bloquer. La housse n'a aucune photo — trois prises suffisent :
     démonstration d'usage, vue entière, détail du tissu.
+
+    ▸ 8. LES TEXTES DU THÈME EN ARABE (2ᵉ audit). Les titres et boutons de
+      l'accueil, la réassurance, les blocs de la fiche produit, la FAQ,
+      l'en-tête et le pied de page n'avaient pas d'équivalent arabe. Le
+      fichier LLUFAN-DEMO-traductions-ar.csv est passé de 23 à 182 lignes
+      pour le thème (292 au total, une ligne = un champ). Mode d'emploi :
+      Paramètres → Langues → Exporter, puis coller la colonne
+      « Translated content » en face de chaque ligne, et importer. Un seul
+      fichier suffit, et on ne modifie QUE cette colonne.
+
+    ▸ 9. LA DESCRIPTION DES PHOTOS. Dans Shopify, chaque image accepte une
+      description (texte alternatif). Écrivez-y ce qu'on voit — « Coussin
+      Nomad — bleu, vue de face ». Le thème s'en sert pour les lecteurs
+      d'écran et pour la recherche ; sans description, il se rabat sur le
+      titre du produit et sa couleur. Les 12 images du thème qui n'avaient
+      aucun texte alternatif sont corrigées.
+
+    ▸ 10. LE SUIVI DES COMMANDES. Une commande LLUFAN arrive par le
+      formulaire (Formulaires de contact / l'e-mail de la boutique) : Shopify
+      comptera donc toujours 0 commande et 0 DZD, même en cas de ventes. Le
+      classeur LLUFAN-suivi-commandes-COD.xlsx sert de registre : statuts
+      reçue → confirmée → expédiée → livrée / refusée / encaissée, frais
+      réels du transporteur, coût des articles, et net encaissé calculé
+      tout seul.
