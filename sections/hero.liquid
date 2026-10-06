@@ -31,7 +31,7 @@
           {{ slide_image | image_url: width: 3200 | image_tag: class: 'slideshow__slide-media', loading: chargement, fetchpriority: priorite, widths: '600, 900, 1200, 1600, 2000, 2600, 3200', sizes: '100vw', alt: slide_image.alt | default: '' }}
         {%- elsif settings.mode_demo -%}
           {%- assign numero_visuel = forloop.index | minus: 1 | modulo: 2 | plus: 1 -%}
-          <img src="{{ 'demo-hero-' | append: numero_visuel | append: '.jpg' | asset_img_url: '1600x' }}" class="slideshow__slide-media" alt="" width="1600" height="720" loading="{{ chargement }}"{% if forloop.first %} fetchpriority="high"{% endif %}>
+          <img src="{{ 'demo-hero-' | append: numero_visuel | append: '.jpg' | asset_img_url: '1600x' }}" class="slideshow__slide-media" alt="{{ block.settings.heading | default: 'Visuel de démonstration' | escape }}" width="1600" height="720" loading="{{ chargement }}"{% if forloop.first %} fetchpriority="high"{% endif %}>
         {%- elsif forloop.first -%}
           {%- comment -%}
             Première diapositive sans visuel choisi : la photo du coussin Nomad
@@ -39,7 +39,7 @@
             moment par un envoi dans l'éditeur). Les diapositives suivantes
             restent vides tant qu'aucun visuel n'est fourni.
           {%- endcomment -%}
-          <img src="{{ 'llufan-nomad-coussin.jpg' | asset_img_url: '1200x' }}" class="slideshow__slide-media" width="1200" height="896" alt="" loading="{{ chargement }}"{% if forloop.first %} fetchpriority="high"{% endif %}>
+          <img src="{{ 'llufan-nomad-coussin.jpg' | asset_img_url: '1200x' }}" class="slideshow__slide-media" width="1200" height="896" alt="{{ block.settings.heading | default: 'Coussin d\'allaitement LLUFAN' | escape }}" loading="{{ chargement }}"{% if forloop.first %} fetchpriority="high"{% endif %}>
         {%- else -%}
           <div class="hero__placeholder" style="height: var(--hero-height)">{{ 'sections.hero.image_placeholder' | t }}</div>
         {%- endif -%}

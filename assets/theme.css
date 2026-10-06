@@ -714,18 +714,31 @@ summary::-webkit-details-marker { display: none; }
 /* Bascule de langue : un seul mot dans l'en-tête — celui de la langue cible.
    Pas de dépliant, pas de liste : un clic, et la langue change.
    (Les styles du dépliant ci-dessus restent utiles au sélecteur de pays.) */
-.header__langue { margin: 0; display: inline-flex; align-items: center; }
-.header__langue-bouton,
-a.header__langue {
+/* Sélecteur de langue « Français | العربية ».
+   Deux mots, un séparateur, aucun drapeau : la langue en cours est en gras et
+   non cliquable, l'autre se clique. Un seul niveau de lecture, lisible même à
+   320 px — c'est la recommandation de l'audit du 6 octobre, et cela montre
+   d'emblée que la boutique existe dans les deux langues (voir header.liquid). */
+.header__langue { margin: 0; display: inline-flex; align-items: center; gap: .3rem; white-space: nowrap; }
+.header__langue-form { margin: 0; display: inline-flex; }
+.header__langue-item {
   background: none; border: 0; padding: 0; cursor: pointer; color: inherit;
   font-family: var(--heading-font-family); font-size: .8rem; font-weight: 500; letter-spacing: 0;
   transition: color .2s ease;
 }
-.header__langue-bouton:hover,
-a.header__langue:hover { color: var(--color-coral); }
+/* La langue en cours : en gras, et pas cliquable (c'est l'état, pas une action). */
+.header__langue-item.is-actif { font-weight: 700; cursor: default; }
+button.header__langue-item { text-decoration: underline; text-underline-offset: .2em; text-decoration-thickness: 1px; }
+button.header__langue-item:hover { color: var(--color-coral); }
+.header__langue-sep { color: currentColor; opacity: .45; font-size: .75rem; }
 /* Le mot arabe « العربية » est un peu plus grand visuellement : on l'aligne
    sur les autres icônes de la rangée. */
-.header__langue-bouton[lang="ar"], a.header__langue[lang="ar"] { font-size: .9rem; }
+.header__langue-item[lang="ar"] { font-size: .9rem; }
+/* Sur une page arabe, la ligne se lit de droite à gauche : on inverse l'ordre
+   pour que la langue en cours (« العربية ») soit toujours la première qu'on
+   lit. La page française affiche « Français | العربية », la page arabe
+   « العربية | Français » — même logique des deux côtés. */
+[dir="rtl"] .header__langue { flex-direction: row-reverse; }
 
 /* Ligne de navigation : liens centrés sous le logo, pastille « MAMA'S CLUB »
    à droite sur la même ligne, sans trait de séparation au-dessus. */
@@ -815,7 +828,9 @@ a.header__langue:hover { color: var(--color-coral); }
   .header__logo { flex: 1 1 auto; min-width: 0; display: flex; justify-content: center; }
   .header__logo-image { height: 26px; }
   .header__logo-text { font-size: 1.25rem; }
-  .header__langue { font-size: .75rem; }
+  .header__langue { font-size: .75rem; gap: .2rem; }
+  .header__langue-item { font-size: .75rem; }
+  .header__langue-item[lang="ar"] { font-size: .82rem; }
 }
 
 /* 320 px (iPhone SE 1re génération) : marge, logo et bascule plus compacts. */
@@ -824,8 +839,10 @@ a.header__langue:hover { color: var(--color-coral); }
   .header__logo-image { height: 24px; }
   .header__logo-text { font-size: 1.15rem; }
   .header__icons { gap: 0; }
-  .header__langue { font-size: .7rem; }
-  .header__icons .header__langue { min-width: 36px; letter-spacing: 0; }
+  .header__langue { font-size: .68rem; gap: .15rem; letter-spacing: 0; }
+  .header__langue-item { font-size: .68rem; letter-spacing: 0; }
+  .header__langue-item[lang="ar"] { font-size: .74rem; }
+  .header__langue-sep { font-size: .64rem; }
   .header__cart-count { font-size: .7rem; }
 }
 
@@ -1479,7 +1496,35 @@ details.footer__colonne .footer__block-links { padding-block: .1rem .9rem; }
 .slideshow__slide { grid-area: 1 / 1; opacity: 0; visibility: hidden; }
 .slideshow__slide.is-selected { opacity: 1; visibility: visible; }
 .slideshow__slide-media { width: 100%; height: var(--hero-height, 78vh); object-fit: cover; }
-.slideshow__slide-content { position: absolute; inset-inline: 0; bottom: 0; padding-block: 2.5rem 3.5rem; display: grid; gap: 1rem; justify-items: start; }
+.slideshow__slide-content {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+
+  box-sizing: border-box;
+  width: 100%;
+  max-width: calc(
+    var(--container-xl-max-width, 1200px)
+    + 2 * var(--container-gutter, 20px)
+  );
+  margin-inline: auto;
+
+  padding-block: 2.5rem 3.5rem;
+  padding-inline: max(20px, var(--container-gutter, 20px));
+
+  display: grid;
+  gap: 1rem;
+  justify-items: start;
+  text-align: start;
+}
+
+.slideshow__slide-content > * {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+
+
 
 /* Tiroir de navigation (mobile) : plein écran, entrée par la droite en .4 s,
    sortie en .3 s (valeurs de la référence pour le tiroir de menu), puis
@@ -1785,4 +1830,20 @@ a.club__discussion:hover { border-color: rgb(var(--text-color) / .45); transform
   .quantity-selector__input { min-height: 44px; width: 3rem; }
   .quantity-selector__button { width: 2.75rem; height: 2.75rem; }
   .product-card .color-swatch { width: 1.25rem; height: 1.25rem; }
+}
+
+@media screen and (max-width: 699px) {
+  .slideshow__slide-content {
+    padding-block: 1.5rem 3.5rem;
+  }
+
+  .slideshow__slide-content .hero__title {
+    font-size: clamp(1.5rem, 6vw, 2.25rem);
+    line-height: 1.25;
+  }
+
+  .slideshow__slide-content .button {
+    white-space: normal;
+    text-align: center;
+  }
 }

@@ -53,25 +53,41 @@
       {%- if request.page_type == 'index' -%}</h1>{%- else -%}</div>{%- endif -%}
       <div class="header__icons">
         {%- comment -%}
-          Bascule de langue : l'en-tête n'affiche QUE la langue vers laquelle on
-          bascule — « العربية » quand la page est en français, « Français »
-          quand elle est en arabe. Un clic change la langue tout de suite.
-          On ne montre jamais les deux langues en même temps.
+          Sélecteur de langue : « Français | العربية » dans cet ordre, sans
+          drapeau. La langue en cours est en gras et non cliquable (aria-current),
+          l'autre change la langue immédiatement.
+
+          Choix revu le 6 octobre 2026 : l'en-tête n'affichait que la langue vers
+          laquelle on bascule. Un audit a demandé les deux langues visibles, en
+          clair et sans drapeau — c'est plus lisible, surtout sur téléphone, et
+          cela montre tout de suite que la boutique existe dans les deux langues.
+          L'ordre est toujours français d'abord, arabe ensuite : dans une page en
+          arabe (écriture de droite à gauche) c'est l'ordre de lecture naturel.
+
+          Le sélecteur reste discret : c'est une pastille de texte, pas un bouton.
         {%- endcomment -%}
         {%- if settings.show_language_selector and localization.available_languages.size > 1 -%}
           {%- assign iso_courant = localization.language.iso_code -%}
-          {%- assign langue_cible = nil -%}
-          {%- for language in localization.available_languages -%}
-            {%- if language.iso_code != iso_courant and langue_cible == nil -%}
-              {%- assign langue_cible = language -%}
-            {%- endif -%}
-          {%- endfor -%}
-          {%- if langue_cible -%}
-            {%- form 'localization', id: 'header-language', class: 'header__langue' -%}
-              <input type="hidden" name="language_code" value="{{ langue_cible.iso_code }}">
-              <button type="submit" class="header__langue-bouton" lang="{{ langue_cible.iso_code }}" aria-label="{{ 'general.language' | t }} : {{ langue_cible.endonym_name }}">{{ langue_cible.endonym_name | capitalize }}</button>
-            {%- endform -%}
-          {%- endif -%}
+          <div class="header__langue" role="group" aria-label="{{ 'general.language' | t }}">
+            {%- for language in localization.available_languages -%}
+              {%- assign est_courante = false -%}
+              {%- if language.iso_code == iso_courant -%}{%- assign est_courante = true -%}{%- endif -%}
+              {%- if est_courante -%}
+                <span class="header__langue-item is-actif" lang="{{ language.iso_code }}" aria-current="true">{{ language.endonym_name | capitalize }}</span>
+              {%- else -%}
+                {%- comment -%}
+                  L'identifiant du formulaire se calcule AVANT la balise : Shopify
+                  refuse les filtres (« | append: ») à l'intérieur d'un {%- form -%}.
+                {%- endcomment -%}
+                {%- assign id_formulaire = 'header-language-' | append: language.iso_code -%}
+                {%- form 'localization', id: id_formulaire, class: 'header__langue-form' -%}
+                  <input type="hidden" name="language_code" value="{{ language.iso_code }}">
+                  <button type="submit" class="header__langue-item" lang="{{ language.iso_code }}" aria-label="{{ 'general.language' | t }} : {{ language.endonym_name }}">{{ language.endonym_name | capitalize }}</button>
+                {%- endform -%}
+              {%- endif -%}
+              {%- unless forloop.last -%}<span class="header__langue-sep" aria-hidden="true">|</span>{%- endunless -%}
+            {%- endfor -%}
+          </div>
         {%- endif -%}
         {%- if settings.show_country_selector and localization.available_countries.size > 1 -%}
           <details class="header__locale header__country">

@@ -7,17 +7,17 @@
     <div class="media-with-text">
       <div class="media-with-text__media">
         {%- if section.settings.image_main == blank and section.settings.image_secondary == blank and settings.mode_demo -%}
-          <div class="media-with-text__image-main"><img src="{{ 'demo-editorial.jpg' | asset_img_url: '1200x' }}" alt="" width="900" height="1100" loading="lazy"></div>
-          <div class="media-with-text__image-secondary"><img src="{{ 'llufan-nomad-coussin.jpg' | asset_img_url: '800x' }}" alt="" width="1200" height="896" loading="lazy"></div>
+          <div class="media-with-text__image-main"><img src="{{ 'demo-editorial.jpg' | asset_img_url: '1200x' }}" alt="{{ section.settings.heading | default: 'Visuel de démonstration' | escape }}" width="900" height="1100" loading="lazy"></div>
+          <div class="media-with-text__image-secondary"><img src="{{ 'llufan-nomad-coussin.jpg' | asset_img_url: '800x' }}" alt="{{ section.settings.heading | default: 'Coussin d\'allaitement LLUFAN' | escape }}" width="1200" height="896" loading="lazy"></div>
         {%- endif -%}
         {%- if section.settings.image_main != blank -%}
-          <div class="media-with-text__image-main">{{ section.settings.image_main | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '400, 600, 800, 1200', sizes: '(min-width: 1000px) 33vw, 70vw' }}</div>
+          <div class="media-with-text__image-main">{{ section.settings.image_main | image_url: width: 1200 | image_tag: loading: 'lazy', alt: section.settings.image_main.alt | default: section.settings.heading, widths: '400, 600, 800, 1200', sizes: '(min-width: 1000px) 33vw, 70vw' }}</div>
         {%- endif -%}
         {%- if section.settings.image_secondary != blank -%}
-          <div class="media-with-text__image-secondary">{{ section.settings.image_secondary | image_url: width: 800 | image_tag: loading: 'lazy', widths: '300, 500, 800', sizes: '(min-width: 1000px) 20vw, 45vw' }}</div>
+          <div class="media-with-text__image-secondary">{{ section.settings.image_secondary | image_url: width: 800 | image_tag: loading: 'lazy', alt: section.settings.image_secondary.alt | default: section.settings.heading, widths: '300, 500, 800', sizes: '(min-width: 1000px) 20vw, 45vw' }}</div>
         {%- endif -%}
         {%- if section.settings.image_tertiary != blank -%}
-          <div class="media-with-text__image-tertiary">{{ section.settings.image_tertiary | image_url: width: 800 | image_tag: loading: 'lazy', widths: '300, 500, 800', sizes: '(min-width: 1000px) 20vw, 45vw' }}</div>
+          <div class="media-with-text__image-tertiary">{{ section.settings.image_tertiary | image_url: width: 800 | image_tag: loading: 'lazy', alt: section.settings.image_tertiary.alt | default: section.settings.heading, widths: '300, 500, 800', sizes: '(min-width: 1000px) 20vw, 45vw' }}</div>
         {%- endif -%}
       </div>
       <div class="media-with-text__content">

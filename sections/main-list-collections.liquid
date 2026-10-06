@@ -10,7 +10,7 @@
               {{ collection.featured_image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '400, 600, 800, 1200', sizes: '(min-width: 700px) 50vw, 100vw', alt: collection.title }}
             {%- else -%}
               {%- assign numero_collection = forloop.index | minus: 1 | modulo: 4 | plus: 1 -%}
-              <img src="{{ 'demo-univers-' | append: numero_collection | append: '.jpg' | asset_img_url: '1000x' }}" alt="" loading="lazy">
+              <img src="{{ 'demo-univers-' | append: numero_collection | append: '.jpg' | asset_img_url: '1000x' }}" alt="{{ collection.title | default: 'Visuel de démonstration' | escape }}" loading="lazy">
             {%- endif -%}
             <span class="collection-card__overlay"></span>
             <div class="collection-card__content"><span class="collection-card__title">{{ collection.title }}</span></div>
