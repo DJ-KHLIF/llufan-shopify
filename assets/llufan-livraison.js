@@ -215,7 +215,9 @@
     if (modeSection === 'produit') {
       const variantes = JSON.parse((document.querySelector('[data-llufan-variantes]') || {}).textContent || '[]');
       const formulaireProduit = document.querySelector('form.shopify-product-form');
-      const champQuantite = formulaireProduit ? formulaireProduit.querySelector('input[name="quantity"]') : null;
+      const champQuantite = formulaireProduit
+  ? formulaireProduit.elements.namedItem('quantity')
+  : null;
       const titreProduit = racine.dataset.produit || '';
 
       const majProduit = () => {
@@ -230,6 +232,20 @@
       };
 
       majProduit();
+      if (champQuantite) {
+  champQuantite.addEventListener('input', majProduit);
+  champQuantite.addEventListener('change', majProduit);
+
+  const selecteurQuantite = champQuantite.closest('.quantity-selector');
+
+  if (selecteurQuantite) {
+    selecteurQuantite.addEventListener('click', (evenement) => {
+      if (evenement.target.closest('[data-quantity-button]')) {
+        setTimeout(majProduit, 0);
+      }
+    });
+  }
+}
       if (formulaireProduit) {
         formulaireProduit.addEventListener('change', majProduit);
         formulaireProduit.addEventListener('input', majProduit);
@@ -259,12 +275,16 @@
     /* La barre mobile s'efface quand le bouton du formulaire est déjà à l'écran (évite le doublon) */
     const barreMobile = $('[data-llufan-sticky]') ? $('[data-llufan-sticky]').closest('.commande__barre') : null;
     const boutonPrincipal = $('[data-llufan-bouton]');
-    if (barreMobile && boutonPrincipal && 'IntersectionObserver' in window) {
-      new IntersectionObserver((entrees) => {
-        entrees.forEach((entree) => barreMobile.classList.toggle('commande__barre--masquee', entree.isIntersecting));
-      }, { threshold: 0.6 }).observe(boutonPrincipal);
-    }
-
+  if (barreMobile && formulaire && 'IntersectionObserver' in window) {
+  new IntersectionObserver((entrees) => {
+    entrees.forEach((entree) => {
+      barreMobile.classList.toggle(
+        'commande__barre--masquee',
+        entree.isIntersecting
+      );
+    });
+  }, { threshold: 0 }).observe(formulaire);
+}
     if (formulaire) formulaire.addEventListener('submit', (evenement) => {
       const wilaya = wilayaCourante();
       const commune = communeSelect ? communeSelect.value : '';

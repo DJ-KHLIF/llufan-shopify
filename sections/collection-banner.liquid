@@ -8,7 +8,7 @@
   {%- elsif collection.image != blank -%}
     {{ collection.image | image_url: width: 3200 | image_tag: class: 'collection-banner__image', loading: 'eager', widths: '600, 900, 1200, 1600, 2200, 3200', sizes: '100vw', alt: collection.title }}
   {%- elsif settings.mode_demo -%}
-    <img src="{{ 'demo-collection-banner.jpg' | asset_img_url: '2400x' }}" class="collection-banner__image" alt="{{ collection.title | default: 'Visuel de démonstration' | escape }}" width="2000" height="680" loading="eager">
+    <img src="{{ 'demo-collection-banner.jpg' | asset_img_url: '2400x' }}" class="collection-banner__image" alt="" width="2000" height="680" loading="eager">
   {%- else -%}
     <div class="collection-banner__placeholder"><span class="eyebrow">{{ 'sections.collection_banner.image_placeholder' | t }}</span></div>
   {%- endif -%}

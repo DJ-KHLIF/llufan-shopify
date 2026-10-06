@@ -1,5 +1,16 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "current": {
+    "hero_placeholder_color": "#E7E2DD",
+    "mode_demo": true,
     "scheme_1_background": "#FFFFFF",
     "scheme_1_text": "#1F3462",
     "scheme_1_button_background": "#183264",
@@ -32,26 +43,22 @@
     "card_show_quick_add": false,
     "cart_type": "drawer",
     "cart_show_note": true,
+    "hide_header_on_purchase": true,
     "show_rating": true,
     "show_reviews_app": false,
-    "social_facebook": "",
-    "social_instagram": "",
-    "social_tiktok": "",
-    "show_country_selector": false,
-    "show_language_selector": true,
-    "show_payment_icons": false,
-    "show_powered_by_shopify": true,
-    "favicon": null,
-    "logo": null,
-    "hero_placeholder_color": "#E7E2DD",
-    "hide_header_on_purchase": true,
     "brand_name": "LLUFAN",
     "brand_tagline": "Une marque algérienne dédiée au confort de la maman et du bébé.",
     "whatsapp_number": "0772 415 120",
     "whatsapp_label": "Contactez-nous sur WhatsApp",
     "whatsapp_message": "",
     "contact_email": "contact@llufan.com",
-    "mode_demo": true,
-    "auto_language": true
+    "social_facebook": "",
+    "social_instagram": "",
+    "social_tiktok": "",
+    "auto_language": true,
+    "show_country_selector": false,
+    "show_language_selector": true,
+    "show_payment_icons": false,
+    "show_powered_by_shopify": true
   }
 }

@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "type": "header",
   "name": "En-tête de page",
@@ -82,14 +91,13 @@
     "header": {
       "type": "header",
       "settings": {
-        "logo": null,
-        "menu": "main-menu",
-        "sticky": true,
-        "pill_label": "CLUB MAMAN",
-        "pill_link": "/pages/club-maman",
         "logo_height": 30,
         "logo_height_mobile": 26,
+        "menu": "main-menu",
+        "sticky": true,
         "behavior": "shadow",
+        "pill_label": "CLUB MAMAN",
+        "pill_link": "/pages/club-maman",
         "show_account": true
       }
     }

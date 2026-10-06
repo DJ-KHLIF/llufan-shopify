@@ -1,8 +1,16 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
       "type": "main-product",
-      "settings": {},
       "blocks": {
         "badges": {
           "type": "badges",
@@ -111,14 +119,12 @@
         "trust",
         "description",
         "reviews"
-      ]
+      ],
+      "settings": {}
     },
     "editorial": {
       "type": "media-with-text",
       "settings": {
-        "image_main": null,
-        "image_secondary": null,
-        "image_tertiary": null,
         "eyebrow": "LLUFAN",
         "heading": "Des produits pensés pour le quotidien",
         "text": "<p>Nous concevons des produits doux, faciles à entretenir et faits pour être utilisés longtemps, de la grossesse aux premiers mois de bébé.</p><p><em>Texte de démonstration.</em></p>",

@@ -1,19 +1,20 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "hero": {
-      "settings": {
-        "height": 78,
-        "autoplay": true,
-        "speed": 5,
-        "overlay": false,
-        "show_scroll_button": true
-      },
       "type": "hero",
       "blocks": {
         "s1": {
           "type": "slide",
           "settings": {
-            "image": null,
             "kicker": "Nouveauté",
             "heading": "Le coussin d'allaitement Nomad",
             "button_label": "Découvrir Nomad",
@@ -23,7 +24,6 @@
         "s2": {
           "type": "slide",
           "settings": {
-            "image": null,
             "kicker": "Confort maman et bébé",
             "heading": "Des matières douces, pensées pour le quotidien",
             "button_label": "Découvrir la marque",
@@ -34,7 +34,14 @@
       "block_order": [
         "s1",
         "s2"
-      ]
+      ],
+      "settings": {
+        "height": 78,
+        "autoplay": true,
+        "speed": 5,
+        "overlay": false,
+        "show_scroll_button": true
+      }
     },
     "icons": {
       "type": "text-with-icons",
@@ -82,7 +89,6 @@
           "type": "collection_card",
           "settings": {
             "collection": "maternite",
-            "image": null,
             "title": "Maternité",
             "link": "/collections/maternite",
             "badge": "",
@@ -94,7 +100,6 @@
           "type": "collection_card",
           "settings": {
             "collection": "allaitement",
-            "image": null,
             "title": "Allaitement",
             "link": "/collections/allaitement",
             "badge": "",
@@ -106,7 +111,6 @@
           "type": "collection_card",
           "settings": {
             "collection": "bebe",
-            "image": null,
             "title": "Bébé",
             "link": "/collections/bebe",
             "badge": "",
@@ -118,7 +122,6 @@
           "type": "collection_card",
           "settings": {
             "collection": "nouveautes",
-            "image": null,
             "title": "Nouveautés",
             "link": "/collections/nouveautes",
             "badge": "Nouveau",
@@ -164,8 +167,7 @@
       "type": "video",
       "settings": {
         "heading": "",
-        "video_url": "",
-        "video": null
+        "video_url": ""
       }
     },
     "avis": {
@@ -211,9 +213,6 @@
     "editorial": {
       "type": "media-with-text",
       "settings": {
-        "image_main": null,
-        "image_secondary": null,
-        "image_tertiary": null,
         "eyebrow": "Parce que",
         "heading": "Chaque détail compte",
         "text": "<p>Une tétée confortable, une sieste qui tient, un objet qu'on garde longtemps : notre travail commence par ces petits moments du quotidien.</p><p><em>Texte de démonstration à remplacer par l'éditorial LLUFAN.</em></p>",

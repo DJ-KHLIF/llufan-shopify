@@ -108,23 +108,48 @@
                   {%- for option in product.options_with_values -%}
                     <fieldset class="variant-picker__option">
                       <legend class="variant-picker__option-label">{{ option.name }}{% if option.name == 'Color' or option.name == 'Couleur' %}:{% endif %}</legend>
-                      <div class="variant-picker__values">
-                        {%- for value in option.values -%}
-                          {%- assign input_id = section.id | append: '-' | append: option.position | append: '-' | append: forloop.index -%}
-                          {%- assign variant_available = false -%}
-                          {%- for variant in product.variants -%}
-                            {%- if variant.options[option.position] == value and variant.available -%}{%- assign variant_available = true -%}{%- endif -%}
-                          {%- endfor -%}
-                          <input class="sr-only" type="radio" id="{{ input_id }}" name="option-{{ option.position }}" value="{{ value | escape }}" {% if option.selected_value == value %}checked{% endif %} {% if variant_available == false %}disabled{% endif %}>
-                          {%- if option.name == 'Color' or option.name == 'Couleur' -%}
-                            <label class="color-swatch{% if variant_available == false %} is-disabled{% endif %}" for="{{ input_id }}" data-swatch-value="{{ value | escape }}" title="{{ value | escape }}">
-                              <span class="sr-only">{{ value }}</span>
-                            </label>
-                          {%- else -%}
-                            <label class="variant-picker__value{% if variant_available == false %} is-disabled{% endif %}" for="{{ input_id }}">{{ value }}</label>
-                          {%- endif -%}
-                        {%- endfor -%}
-                      </div>
+<div class="variant-picker__values">
+  {%- for value in option.values -%}
+    {%- assign input_id = section.id | append: '-' | append: option.position | append: '-' | append: forloop.index -%}
+    {%- assign option_index = option.position | minus: 1 -%}
+    {%- assign variant_available = false -%}
+
+    {%- for variant in product.variants -%}
+      {%- if variant.options[option_index] == value and variant.available -%}
+        {%- assign variant_available = true -%}
+        {%- break -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    <input
+      class="sr-only"
+      type="radio"
+      id="{{ input_id }}"
+      name="option-{{ option.position }}"
+      value="{{ value | escape }}"
+      {% if option.selected_value == value %}checked{% endif %}
+      {% if variant_available == false %}disabled{% endif %}
+    >
+
+    {%- if option.name == 'Color' or option.name == 'Couleur' -%}
+      <label
+        class="color-swatch{% if variant_available == false %} is-disabled{% endif %}"
+        for="{{ input_id }}"
+        data-swatch-value="{{ value | escape }}"
+        title="{{ value | escape }}"
+      >
+        <span class="sr-only">{{ value }}</span>
+      </label>
+    {%- else -%}
+      <label
+        class="variant-picker__value{% if variant_available == false %} is-disabled{% endif %}"
+        for="{{ input_id }}"
+      >
+        {{ value }}
+      </label>
+    {%- endif -%}
+  {%- endfor -%}
+</div>
                     </fieldset>
                   {%- endfor -%}
                   <p class="text-subdued" data-variant-availability hidden data-text-in-stock="{{ 'products.product.in_stock' | t }}" data-text-out-of-stock="{{ 'products.product.out_of_stock' | t }}"></p>
@@ -160,7 +185,18 @@
             {%- when 'accordion' -%}
               <details class="accordion" {{ block.shopify_attributes }}>
                 <summary class="accordion__toggle">
-                  <span>{{ block.settings.title }}</span>
+                 {%- assign titre_accordeon = block.settings.title -%}
+{%- if localization.language.iso_code == 'ar' -%}
+  {%- case block.settings.title -%}
+    {%- when 'Utilisation' -%}
+      {%- assign titre_accordeon = 'طريقة الاستخدام' -%}
+    {%- when 'Entretien' -%}
+      {%- assign titre_accordeon = 'العناية والتنظيف' -%}
+    {%- when 'Composition' -%}
+      {%- assign titre_accordeon = 'المكونات' -%}
+  {%- endcase -%}
+{%- endif -%}
+<span>{{ titre_accordeon }}</span>
                   <span class="animated-plus" aria-hidden="true"></span>
                 </summary>
                 <div class="accordion__content prose">{{ block.settings.content }}</div>
@@ -182,12 +218,17 @@
               </div>
             {%- when 'commande' -%}
               <div class="product-info__block" {{ block.shopify_attributes }}>
-                {%- render 'forme-commande',
-                  mode: 'produit',
-                  cle: block.id,
-                  titre: block.settings.heading,
-                  cta: block.settings.cta,
-                  barre_mobile: block.settings.barre_mobile -%}
+                {%- assign titre_commande = block.settings.heading -%}
+{%- if localization.language.iso_code == 'ar' -%}
+  {%- assign titre_commande = 'commande.titre_defaut' | t -%}
+{%- endif -%}
+
+{%- render 'forme-commande',
+  mode: 'produit',
+  cle: block.id,
+  titre: titre_commande,
+  cta: block.settings.cta,
+  barre_mobile: block.settings.barre_mobile -%}
               </div>
             {%- when 'description' -%}
               {%- comment -%}

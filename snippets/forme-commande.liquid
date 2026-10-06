@@ -1,23 +1,7 @@
 {%- comment -%}
-  Formulaire de commande — paiement à la livraison
-  ---------------------------------------------------------------------------
-  Un seul composant, utilisé à deux endroits :
-    • « produit » : bloc de la fiche produit, juste sous les boutons d'achat
-      → le client commande sans passer par le panier (2 étapes au lieu de 4) ;
-    • « panier » : section de la page panier, pour les clients qui ont mis
-      plusieurs articles de côté.
-
-  La wilaya choisie détermine les communes proposées, le tarif (à domicile ou
-  stop-desk) puis le total. Aucun tarif n'est écrit en dur : tout vient de
-  `assets/llufan-livraison-dz.json`.
-
-  Paramètres attendus :
-    mode          « produit » ou « panier »
-    cle           identifiant unique (section.id ou block.id)
-    titre         titre du formulaire
-    cta           libellé du bouton d'envoi
-    barre_mobile  afficher la barre « Commander » en mobile
-    sous_total    total en centimes (panier) — la fiche produit le calcule côté JS
+  COPIE DE TEST UNIQUEMENT — ne pas publier.
+  Simulation locale : aucune commande Shopify créée.
+  L'envoi natif est bloqué ; le script existant gère la simulation.
 {%- endcomment -%}
 
 {%- assign mode = mode | default: 'panier' -%}
@@ -56,7 +40,9 @@
   data-sous-total="{{ reference }}"
   data-produit="{{ product.title | escape }}"
   data-lignes="{{ lignes_du_panier | strip | escape }}"
-  data-mode=""
+  data-mode="apercu"
+  data-libelle-domicile="{% if localization.language.iso_code == 'ar' %}التوصيل إلى المنزل{% else %}À domicile{% endif %}"
+  data-libelle-stop-desk="{% if localization.language.iso_code == 'ar' %}الاستلام من الوكالة{% else %}Stop-desk{% endif %}"
   data-libelle-a-calculer="{{ 'commande.a_calculer' | t | escape }}"
   data-libelle-choisir="{{ 'commande.choisir' | t | escape }}"
   data-libelle-choix-incomplet="{{ 'commande.choix_incomplet' | t | escape }}"
@@ -75,41 +61,32 @@
     {%- endif -%}
 
     {%- assign id_formulaire_commande = 'commande-formulaire-' | append: cle -%}
-    {%- form 'contact', class: 'commande', id: id_formulaire_commande -%}
-      {%- if form.posted_successfully? -%}
-        <p class="commande__confirmation" data-llufan-confirmation role="status">{{ 'commande.confirmation' | t }}</p>
-      {%- else -%}
-        <p class="commande__confirmation" data-llufan-confirmation role="status" hidden>{{ 'commande.confirmation' | t }}</p>
-      {%- endif -%}
-
-      {%- if form.errors -%}
-        <p class="commande__avertissement" role="alert">{{ form.errors | default_errors }}</p>
-      {%- endif -%}
+    <form class="commande" id="{{ id_formulaire_commande }}" onsubmit="event.preventDefault(); return false;">
+      <p class="commande__confirmation" data-llufan-confirmation role="status" hidden>
+        {% if localization.language.iso_code == 'ar' %}
+          محاكاة فقط — لم يتم إنشاء أي طلب.
+        {% else %}
+          Simulation uniquement — aucune commande créée.
+        {% endif %}
+      </p>
       <p class="commande__avertissement" data-llufan-avertissement role="alert" hidden></p>
 
-      <input type="hidden" name="contact[email]" value="{{ shop.email | escape }}">
-      <input type="hidden" name="contact[subject]" value="Commande — paiement à la livraison">
-      <textarea name="contact[body]" data-llufan-recapitulatif hidden></textarea>
 
       <div class="commande__champs">
         <label class="field">
           <span class="field__label">{{ 'commande.nom' | t }} *</span>
           <input class="input" type="text" name="contact[Nom complet]" autocomplete="name" placeholder="{{ 'commande.nom_placeholder' | t }}" required>
         </label>
-
         <label class="field">
           <span class="field__label">{{ 'commande.telephone' | t }} *</span>
-          <input class="input" type="tel" name="contact[Téléphone]" inputmode="tel" autocomplete="tel" placeholder="05 / 06 / 07 …"
-                 pattern="[0-9+][0-9+ ]{8,17}" title="{{ 'commande.telephone_aide' | t }}" required>
+          <input class="input" type="tel" name="contact[Téléphone]" inputmode="tel" autocomplete="tel" placeholder="05 / 06 / 07 …" pattern="[0-9+][0-9+ ]{8,17}" title="{{ 'commande.telephone_aide' | t }}" required>
         </label>
-
         <label class="field">
           <span class="field__label">{{ 'commande.wilaya' | t }} *</span>
           <select class="select" name="contact[Wilaya]" data-llufan-wilaya required>
             <option value="">{{ 'commande.choisir' | t }}</option>
           </select>
         </label>
-
         <label class="field">
           <span class="field__label">{{ 'commande.commune' | t }} *</span>
           <select class="select" name="contact[Commune]" data-llufan-commune required disabled>
@@ -132,19 +109,33 @@
         </label>
       </fieldset>
 
+      <label class="field" data-test-adresse-bloc style="display: block; margin-block: 1rem;">
+        <span class="field__label">
+          {% if localization.language.iso_code == 'ar' %}عنوان التوصيل بالتفصيل *{% else %}Adresse précise de livraison *{% endif %}
+        </span>
+        <textarea class="textarea" name="contact[Adresse]" data-test-adresse rows="3" autocomplete="street-address" required minlength="5" placeholder="{% if localization.language.iso_code == 'ar' %}الشارع، الحي، رقم المبنى أو المنزل{% else %}Rue, quartier, numéro de bâtiment ou de maison{% endif %}"></textarea>
+      </label>
+
       <div class="commande__totaux">
         <div class="commande__total-ligne"><span>{{ 'commande.sous_total' | t }}</span><span data-llufan-sous-total>{{ reference | money }}</span></div>
         <div class="commande__total-ligne"><span>{{ 'commande.frais' | t }}</span><span data-llufan-frais>{{ 'commande.a_calculer' | t }}</span></div>
         <div class="commande__total-ligne commande__total-ligne--total"><span>{{ 'commande.total' | t }}</span><span data-llufan-total>—</span></div>
       </div>
 
-      <button type="submit" class="button button--coral button--lg commande__bouton" data-llufan-bouton>{{ cta }}</button>
+      <section style="margin-block: 1rem; padding: 1rem; border: 1px solid #EDE4D8; border-radius: 12px; background: #FAF6F0; color: #1B3462; min-width: 0;">
+        <h3 style="font-size: 1rem; margin: 0 0 .75rem;">{% if localization.language.iso_code == 'ar' %}ملخص المحاكاة{% else %}Récapitulatif de simulation{% endif %}</h3>
+        <textarea name="contact[body]" data-llufan-recapitulatif hidden></textarea>
+        <div data-test-recap-visible style="display: grid; gap: .5rem; overflow-wrap: anywhere; text-align: start;"></div>
+      </section>
 
+      <button type="submit" class="button button--coral button--lg commande__bouton" data-llufan-bouton>
+        {% if localization.language.iso_code == 'ar' %}اختبار النموذج{% else %}Tester le formulaire{% endif %}
+      </button>
       <div class="commande__reassurance">
         <span>{{ 'commande.sans_paiement' | t }}</span>
-        <span>{{ 'commande.commande_protegee' | t }}</span>
+        <span>{% if localization.language.iso_code == 'ar' %}نسخة تجريبية — لا يتم إرسال أي طلب{% else %}Version de test — aucune commande envoyée{% endif %}</span>
       </div>
-    {%- endform -%}
+    </form>
 
     <div class="commande__infos">
       <p>{{ 'commande.delai' | t }}</p>
@@ -156,9 +147,94 @@
     <div class="commande__barre-espace" aria-hidden="true"></div>
     <div class="commande__barre">
       <span class="commande__barre-montant" data-llufan-sticky-total>—</span>
-      <a href="#commande-{{ cle }}" class="button button--coral" data-llufan-sticky>{{ 'commande.barre_cta' | t }}</a>
+      <a href="#commande-{{ cle }}" class="button button--coral" data-llufan-sticky>{% if localization.language.iso_code == 'ar' %}عرض النموذج{% else %}Voir le formulaire{% endif %}</a>
     </div>
   {%- endif -%}
 </div>
-
+<script>
+(function () {
+  const root = document.currentScript.previousElementSibling;
+  if (!root || !root.matches('[data-llufan-commande]')) return;
+  const field = root.querySelector('[data-test-adresse]');
+  const block = root.querySelector('[data-test-adresse-bloc]');
+  const form = root.querySelector('form.commande');
+  function syncAddress() {
+    const selected = root.querySelector('[data-llufan-type] input:checked');
+    const home = selected && selected.value === 'domicile';
+    block.style.display = home ? 'block' : 'none';
+    field.disabled = !home;
+    field.required = !!home;
+  }
+  const recap = root.querySelector('[data-llufan-recapitulatif]');
+  const isArabic = (document.documentElement.lang || '').toLowerCase().startsWith('ar');
+  const addressLabel = isArabic ? 'عنوان التوصيل' : 'Adresse de livraison';
+  function updateRecapAddress() {
+    if (!recap) return;
+    const prefix = addressLabel + ' : ';
+    const lines = recap.value.split('\n').filter(function (line) {
+      return !line.startsWith(prefix);
+    });
+    const address = field.value.trim().replace(/\s+/g, ' ');
+    if (!field.disabled && address) lines.push(prefix + address);
+    recap.value = lines.join('\n').trim();
+    const visible = root.querySelector('[data-test-recap-visible]');
+    if (visible) {
+      const totalLabel = (root.dataset.libelleRecapTotal || 'TOTAL').trim();
+      const fragment = document.createDocumentFragment();
+      lines.filter(function (line) { return line.trim(); }).forEach(function (line) {
+        const row = document.createElement('div');
+        row.style.unicodeBidi = 'isolate';
+        row.dir = isArabic ? 'rtl' : 'ltr';
+        const separator = line.indexOf(' : ');
+        if (separator !== -1) {
+          const labelText = line.slice(0, separator);
+          const valueText = line.slice(separator + 3);
+          const label = document.createElement('bdi');
+          label.dir = 'auto';
+          label.textContent = labelText;
+          const value = document.createElement('bdi');
+          // Isoler prix, téléphone et code administratif du texte arabe.
+          value.dir = /\bDA\b|\bDZD\b/.test(valueText) || /^[\d+]/.test(valueText) ? 'ltr' : 'auto';
+          value.textContent = valueText;
+          row.append(label, document.createTextNode(' : '), value);
+        } else {
+          const value = document.createElement('bdi');
+          value.dir = 'auto';
+          value.textContent = line;
+          row.appendChild(value);
+        }
+        if (line.toLocaleLowerCase().startsWith(totalLabel.toLocaleLowerCase() + ' :')) {
+          row.style.fontWeight = '700';
+          row.style.fontSize = '1.1rem';
+          row.style.borderTop = '1px solid #EDE4D8';
+          row.style.paddingTop = '.5rem';
+        }
+        fragment.appendChild(row);
+      });
+      visible.replaceChildren(fragment);
+    }
+  }
+  function refreshRecap() {
+    syncAddress();
+    // Laisser le script de livraison recalculer avant d'ajouter l'adresse.
+    window.setTimeout(updateRecapAddress, 0);
+  }
+  root.addEventListener('change', refreshRecap);
+  root.addEventListener('input', refreshRecap);
+  root.addEventListener('submit', refreshRecap);
+  if (form) {
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+    });
+  }
+  syncAddress();
+  const totals = root.querySelector('.commande__totaux');
+  if (totals) {
+    new MutationObserver(function () {
+      window.setTimeout(updateRecapAddress, 0);
+    }).observe(totals, { childList: true, subtree: true, characterData: true });
+  }
+  updateRecapAddress();
+})();
+</script>
 <script src="{{ 'llufan-livraison.js' | asset_url }}" defer></script>
