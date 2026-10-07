@@ -197,6 +197,7 @@
     "adresse": "Adresse précise de livraison",
     "adresse_placeholder": "Rue, quartier, numéro de bâtiment ou de maison",
     "frais_confirmes": "Frais de livraison estimés : le montant définitif s'affiche à l'étape suivante.",
+    "frais_fixes": "Livraison : {{ montant }} partout en Algérie, à domicile comme en stop-desk. Taxes incluses.",
     "envoi": "Un instant…"
   }
 }

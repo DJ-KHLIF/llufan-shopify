@@ -12,7 +12,7 @@
           "settings": {
             "icone": "shipping",
             "titre": "Zones desservies",
-            "texte": "<p>Les 69 wilayas d'Algérie, à domicile ou en stop-desk.</p><p><em>Tarifs de démonstration : ils seront remplacés par les tarifs transporteur réels.</em></p>",
+            "texte": "<p>Les 69 wilayas d'Algérie, à domicile ou en stop-desk.</p><p>Tarif : 700 DA, quel que soit le mode de livraison.</p>",
             "lien_label": "",
             "lien": ""
           }
@@ -22,7 +22,7 @@
           "settings": {
             "icone": "tag",
             "titre": "Frais de livraison",
-            "texte": "<p>Le tarif dépend de la wilaya et du mode de livraison. Il apparaît dès que vous choisissez votre wilaya et votre commune dans le formulaire de commande.</p>",
+            "texte": "<p>La livraison coûte 700 DA partout en Algérie, à domicile comme en stop-desk. Le montant s'affiche dans le formulaire de commande, avant validation.</p>",
             "lien_label": "Commander",
             "lien": "/collections/all"
           }
@@ -58,7 +58,7 @@
         "bandeau_demo": "Contenu de démonstration — à remplacer avant la mise en ligne.",
         "eyebrow": "Aide",
         "heading": "Livraison partout en Algérie",
-        "intro": "<p>Nous livrons dans les 69 wilayas, à domicile ou en stop-desk. Les frais sont calculés selon votre wilaya et le mode choisi, et s'affichent automatiquement dans le formulaire de commande.</p>",
+        "intro": "<p>Nous livrons dans les 69 wilayas, à domicile ou en stop-desk, pour 700 DA. Ce montant s'affiche dans le formulaire de commande, avant validation.</p>",
         "note": "<p><em>Délais indicatifs de démonstration : 2 à 5 jours ouvrés selon la wilaya (à confirmer selon le transporteur).</em></p>",
         "cta_label": "Questions fréquentes",
         "cta_lien": "/pages/faq"

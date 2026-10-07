@@ -74,6 +74,17 @@
 
   let donnees = null;
 
+  /* Tarif unique (réglage du thème « Tarif de livraison unique ») : quand il
+     est renseigné, il remplace les tarifs par wilaya du fichier JSON, pour les
+     deux modes. Il doit rester égal au tarif d'expédition réglé dans Shopify,
+     pour que le total affiché ici soit celui de la caisse. */
+  const tarifUnique = (() => {
+    const brut = (racine.dataset.tarifUnique || '').trim();
+    if (brut === '') return null;
+    const valeur = Number(brut);
+    return Number.isFinite(valeur) && valeur >= 0 ? valeur : null;
+  })();
+
   /* 12 345 DA — séparateur de milliers à la française, comme le prototype */
   const montant = (nombre) =>
     Math.round(nombre)
@@ -99,6 +110,7 @@
   };
 
   const fraisCourants = () => {
+    if (tarifUnique !== null) return tarifUnique;
     const wilaya = wilayaCourante();
     if (!wilaya) return null;
     const tarif = typeCourant() === 'domicile' ? wilaya.domicile : wilaya.stop_desk;
@@ -109,7 +121,8 @@
     const wilaya = wilayaCourante();
     radios.forEach((radio) => {
       const quoi = radio.value === 'domicile' ? 'domicile' : 'stop_desk';
-      const tarif = wilaya && typeof wilaya[quoi] === 'number' ? wilaya[quoi] : null;
+      const tarif = tarifUnique !== null ? tarifUnique
+        : (wilaya && typeof wilaya[quoi] === 'number' ? wilaya[quoi] : null);
       const sortie = $(`[data-llufan-prix-${radio.value}]`);
       if (sortie) sortie.textContent = tarif === null ? '—' : montant(tarif);
     });
@@ -248,7 +261,117 @@
     }
   };
 
+  /* -------------------------------------------------------------------------
+     Option : téléphone de contact à la caisse (API Storefront)
+     Documentation Shopify : `cartCreate` accepte `buyerIdentity.phone`, utilisé
+     pour les informations de contact de la caisse ; on envoie ensuite la
+     cliente sur `checkoutUrl`. Le lien de panier, lui, n'a aucun paramètre
+     documenté pour ce champ. L'option ne s'active que si un jeton PUBLIC
+     Storefront est saisi dans les réglages du thème. À la moindre erreur
+     (jeton absent ou refusé, numéro non reconnu, délai dépassé), on revient
+     au lien de panier ci-dessus, inchangé. Aucune commande n'est créée ici :
+     la cliente valide toujours elle-même dans la caisse.
+     ------------------------------------------------------------------------- */
+  const jetonStorefront = (racine.dataset.storefrontJeton || '').trim();
+
+  /* Numéro algérien au format international (+213…), exigé par Shopify.
+     Mobiles : 05/06/07 + 8 chiffres ; fixes : 0 + 8 chiffres. */
+  const telephoneInternational = (brut) => {
+    const chiffres = String(brut || '').replace(/[\s.()-]/g, '');
+    if (/^\+213([5-7]\d{8}|[1-4]\d{7})$/.test(chiffres)) return chiffres;
+    if (/^00213([5-7]\d{8}|[1-4]\d{7})$/.test(chiffres)) return `+${chiffres.slice(2)}`;
+    if (/^0([5-7]\d{8}|[1-4]\d{7})$/.test(chiffres)) return `+213${chiffres.slice(1)}`;
+    return null;
+  };
+
+  const MUTATION_PANIER = `mutation CreerPanier($input: CartInput!, $langue: LanguageCode, $pays: CountryCode) @inContext(language: $langue, country: $pays) {
+    cartCreate(input: $input) {
+      cart { id checkoutUrl }
+      userErrors { field message code }
+    }
+  }`;
+
+  const caisseStorefront = async () => {
+    if (!jetonStorefront) return null;
+    const telephone = telephoneInternational((champTelephone || {}).value);
+    if (!telephone) return null;
+    const wilaya = wilayaCourante();
+    const commune = communeSelect ? communeSelect.value : '';
+    const domicile = typeCourant() === 'domicile';
+    const nom = ((champNom || {}).value || '').trim().replace(/\s+/g, ' ');
+    const adresse = domicile ? ((champAdresse || {}).value || '').trim().replace(/\s+/g, ' ') : '';
+    const infos = {
+      'Nom complet': nom,
+      'Téléphone': ((champTelephone || {}).value || '').trim(),
+      'Wilaya': wilaya ? `${wilaya.code} - ${wilaya.nom}` : '',
+      'Commune': commune,
+      'Type de livraison': domicile ? 'Domicile' : 'Stop-desk',
+    };
+    if (adresse) infos['Adresse'] = adresse;
+    const enPaires = (objet) => Object.keys(objet)
+      .filter((cle) => objet[cle] !== null && objet[cle] !== undefined && String(objet[cle]) !== '')
+      .map((cle) => ({ key: cle, value: String(objet[cle]) }));
+    const gid = (id) => `gid://shopify/ProductVariant/${id}`;
+    const racineRoutes = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
+
+    const input = { attributes: [] };
+    if (modeSection === 'produit') {
+      if (!varianteCourante) return null;
+      input.lines = [{ merchandiseId: gid(varianteCourante.id), quantity: quantiteCourante, attributes: enPaires(infos) }];
+    } else {
+      const reponse = await fetch(`${racineRoutes}cart.js`, { credentials: 'same-origin', headers: { Accept: 'application/json' } });
+      if (!reponse.ok) return null;
+      const panier = await reponse.json();
+      if (!panier.items || panier.items.length === 0) return null;
+      input.lines = panier.items.map((article) => ({
+        merchandiseId: gid(article.variant_id),
+        quantity: article.quantity,
+        attributes: enPaires(article.properties || {}),
+      }));
+      input.attributes = enPaires(infos);
+      if (panier.note) input.note = panier.note;
+    }
+    const [prenom, ...reste] = nom.split(' ');
+    input.buyerIdentity = { phone: telephone, countryCode: 'DZ' };
+    input.delivery = { addresses: [{ selected: true, oneTimeUse: true, address: { deliveryAddress: {
+      firstName: prenom || '',
+      lastName: reste.join(' ') || prenom || '',
+      address1: adresse || `Stop-desk — ${commune}`,
+      address2: wilaya ? `${wilaya.code} - ${wilaya.nom}` : '',
+      city: commune,
+      countryCode: 'DZ',
+      phone: telephone,
+    } } }] };
+
+    const controle = new AbortController();
+    const minuterie = setTimeout(() => controle.abort(), 8000);
+    try {
+      const reponse = await fetch(`${racineRoutes}api/2026-07/graphql.json`, {
+        method: 'POST',
+        signal: controle.signal,
+        headers: { 'Content-Type': 'application/json', 'X-Shopify-Storefront-Access-Token': jetonStorefront },
+        body: JSON.stringify({
+          query: MUTATION_PANIER,
+          variables: { input, langue: enArabe ? 'AR' : 'FR', pays: 'DZ' },
+        }),
+      });
+      if (!reponse.ok) return null;
+      const resultat = await reponse.json();
+      const creation = resultat && resultat.data && resultat.data.cartCreate;
+      if (!creation || (resultat.errors && resultat.errors.length) || (creation.userErrors && creation.userErrors.length)) return null;
+      return (creation.cart && creation.cart.checkoutUrl) || null;
+    } finally {
+      clearTimeout(minuterie);
+    }
+  };
+
   const envoyer = async () => {
+    try {
+      const caisse = await caisseStorefront();
+      if (caisse) { window.location.assign(caisse); return; }
+    } catch (erreur) {
+      /* option indisponible : on continue avec le lien de panier */
+    }
     const articles = modeSection === 'produit' ? null : await articlesDuPanier();
     const lien = modeSection === 'produit' || articles ? lienCaisse(articles) : null;
     /* Sans lien (panier illisible ou vide), l'envoi classique prend le relais. */

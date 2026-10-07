@@ -325,6 +325,32 @@
     ]
   },
   {
+    "name": "Livraison",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Ce montant doit rester égal au tarif d'expédition réglé dans Shopify (Paramètres > Expédition et livraison). Il est affiché dans le formulaire de commande pour les deux modes : à domicile et stop-desk."
+      },
+      {
+        "type": "number",
+        "id": "livraison_tarif_unique",
+        "label": "Tarif de livraison unique (DA)",
+        "default": 700,
+        "info": "Vide : le formulaire reprend les tarifs par wilaya du fichier llufan-livraison-dz.json."
+      },
+      {
+        "type": "header",
+        "content": "Téléphone de contact à la caisse (option)"
+      },
+      {
+        "type": "text",
+        "id": "storefront_jeton_public",
+        "label": "Jeton public de l'API Storefront",
+        "info": "Vide (par défaut) : la caisse reçoit le téléphone dans l'adresse de livraison seulement. Rempli : le formulaire crée le panier par l'API Storefront et transmet aussi le téléphone de contact. Jeton PUBLIC uniquement (conçu pour être visible dans la page), jamais un jeton Admin."
+      }
+    ]
+  },
+  {
     "name": "Avis clients",
     "settings": [
       {

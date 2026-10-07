@@ -25,7 +25,7 @@
           "type": "item",
           "settings": {
             "question": "Comment sont calculés les frais de livraison ?",
-            "answer": "<p>Les frais dépendent de la wilaya et du mode choisi. Le tarif s'affiche dans le formulaire de commande dès que vous sélectionnez votre wilaya et votre commune.</p>"
+            "answer": "<p>La livraison coûte 700 DA partout en Algérie, à domicile comme en stop-desk. Le montant s'affiche dans le formulaire de commande, avant validation.</p>"
           }
         },
         "q4": {

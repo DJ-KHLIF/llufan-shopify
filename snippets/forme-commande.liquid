@@ -9,8 +9,9 @@
     • page panier : les articles du panier, avec les mêmes informations en
       attributs de commande (section « Détails supplémentaires » de la commande).
   Dans les deux cas, le nom, la commune, la wilaya et l'adresse pré-remplissent
-  l'adresse de livraison de la caisse. Les frais affichés ici sont une
-  estimation : le tarif facturé vient des zones d'expédition Shopify.
+  l'adresse de livraison de la caisse. Le tarif facturé vient des zones
+  d'expédition Shopify : le réglage « Tarif de livraison unique » du thème
+  doit lui rester égal (700 DA au 2026-10-07, domicile comme stop-desk).
 
   Paramètres : mode ('produit' | 'panier'), cle, titre, cta, barre_mobile, devise.
 {%- endcomment -%}
@@ -29,6 +30,8 @@
   {%- assign cta = defaut_cta -%}
 {%- endif -%}
 {%- assign barre_mobile = barre_mobile | default: true -%}
+{%- assign tarif_unique = settings.livraison_tarif_unique -%}
+{%- capture montant_livraison -%}{{ tarif_unique }} {{ devise | default: 'DA' }}{%- endcapture -%}
 
 {%- if mode == 'produit' -%}
   {%- assign reference = product.selected_or_first_available_variant.price -%}
@@ -58,6 +61,8 @@
   data-produit="{{ product.title | escape }}"
   data-articles="{{ articles_du_panier | strip }}"
   data-langue="{{ request.locale.iso_code }}"
+  data-tarif-unique="{{ tarif_unique }}"
+  data-storefront-jeton="{{ settings.storefront_jeton_public | strip | escape }}"
   data-libelle-domicile="{{ 'commande.domicile' | t | escape }}"
   data-libelle-stop-desk="{{ 'commande.stop_desk' | t | escape }}"
   data-libelle-a-calculer="{{ 'commande.a_calculer' | t | escape }}"
@@ -122,12 +127,12 @@
         <label class="commande__option" data-llufan-type-item>
           <input type="radio" name="{{ prefixe }}[Type de livraison]" value="domicile" checked>
           <span>{{ 'commande.domicile' | t }}</span>
-          <span class="commande__option-prix" data-llufan-prix-domicile>—</span>
+          <span class="commande__option-prix" data-llufan-prix-domicile>{% if tarif_unique != blank %}{{ montant_livraison }}{% else %}—{% endif %}</span>
         </label>
         <label class="commande__option" data-llufan-type-item>
           <input type="radio" name="{{ prefixe }}[Type de livraison]" value="stop-desk">
           <span>{{ 'commande.stop_desk' | t }}</span>
-          <span class="commande__option-prix" data-llufan-prix-stop-desk>—</span>
+          <span class="commande__option-prix" data-llufan-prix-stop-desk>{% if tarif_unique != blank %}{{ montant_livraison }}{% else %}—{% endif %}</span>
         </label>
       </fieldset>
 
@@ -138,10 +143,14 @@
 
       <div class="commande__totaux">
         <div class="commande__total-ligne"><span>{{ 'commande.sous_total' | t }}</span><span data-llufan-sous-total>{{ reference | money }}</span></div>
-        <div class="commande__total-ligne"><span>{{ 'commande.frais' | t }}</span><span data-llufan-frais>{{ 'commande.a_calculer' | t }}</span></div>
+        <div class="commande__total-ligne"><span>{{ 'commande.frais' | t }}</span><span data-llufan-frais>{% if tarif_unique != blank %}{{ montant_livraison }}{% else %}{{ 'commande.a_calculer' | t }}{% endif %}</span></div>
         <div class="commande__total-ligne commande__total-ligne--total"><span>{{ 'commande.total' | t }}</span><span data-llufan-total>—</span></div>
       </div>
-      <p class="commande__note text-subdued">{{ 'commande.frais_confirmes' | t }}</p>
+      {%- if tarif_unique != blank -%}
+        <p class="commande__note text-subdued">{{ 'commande.frais_fixes' | t: montant: montant_livraison }}</p>
+      {%- else -%}
+        <p class="commande__note text-subdued">{{ 'commande.frais_confirmes' | t }}</p>
+      {%- endif -%}
 
       <button type="submit" class="button button--coral button--lg commande__bouton" data-llufan-bouton{% if mode == 'produit' %}{% unless variante_initiale.available %} disabled{% endunless %}{% endif %}>
         {{ cta }}
