@@ -1944,3 +1944,24 @@ a.club__discussion:hover { border-color: rgb(var(--text-color) / .45); transform
 /* Pastilles de variantes : le bouton radio est masqué visuellement, le focus
    clavier s'affiche donc sur son libellé */
 .variant-picker input.sr-only:focus-visible + label { outline: 2px solid rgb(var(--text-color)); outline-offset: 2px; }
+
+/* Message d'erreur du panier (theme.js → cartAlert) : sous l'en-tête collant,
+   au-dessus du tiroir, jamais sur les champs du formulaire. */
+.cart-alerte {
+  position: fixed; z-index: 30; inset-inline: 1rem; top: calc(var(--sticky-area-height, 0px) + .75rem);
+  max-width: 34rem; margin-inline: auto;
+  display: flex; align-items: flex-start; gap: .75rem;
+  padding: .85rem 1rem; border-radius: var(--rounded-md, .5rem);
+  background: #FDECEA; color: #7a1c14; border: 1px solid #b3261e;
+  box-shadow: 0 10px 30px rgb(0 0 0 / .12); font-size: var(--text-sm); font-weight: 600;
+}
+.cart-alerte[hidden] { display: none; }
+.cart-alerte__texte { margin: 0; flex: 1; }
+.cart-alerte__fermer { background: none; border: 0; color: inherit; font-size: 1.25rem; line-height: 1; cursor: pointer; min-width: 44px; min-height: 44px; margin-block: -.6rem; margin-inline-end: -.6rem; }
+/* Tiroir ouvert : le message s'insère en tête du contenu, sans rien recouvrir */
+.cart-alerte--tiroir { position: static; inset: auto; max-width: none; margin: 0 0 1rem; box-shadow: none; }
+.drawer__desynchro { display: grid; place-items: center; padding-block: 1.5rem; margin: 0; }
+.cart-alerte__fermer:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+
+/* Pied du tiroir masqué (affichage du panier non reconstruit) : hidden prime sur display */
+.drawer__footer[hidden] { display: none; }

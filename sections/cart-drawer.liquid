@@ -2,7 +2,18 @@
   Tiroir panier — structure observée : panneau latéral droit, titre « Panier »,
   état vide centré, lignes de commande, sous-total et bouton de commande.
 {%- endcomment -%}
-<cart-drawer class="drawer color-scheme color-scheme--scheme-1" id="cart-drawer" aria-hidden="true">
+{%- comment -%}
+  Textes des messages d'erreur du panier (theme.js, cartText) : portés ici car
+  le tiroir est présent sur toutes les pages.
+{%- endcomment -%}
+<cart-drawer class="drawer color-scheme color-scheme--scheme-1" id="cart-drawer" aria-hidden="true"
+  data-texte-erreur-rendu="{{ 'cart.erreurs.rendu' | t | escape }}"
+  data-texte-erreur-modification="{{ 'cart.erreurs.modification' | t | escape }}"
+  data-texte-erreur-reseau="{{ 'cart.erreurs.reseau' | t | escape }}"
+  data-texte-erreur-ajout="{{ 'cart.erreurs.ajout' | t | escape }}"
+  data-texte-fermer="{{ 'accessibility.close' | t | escape }}"
+  data-texte-voir-panier="{{ 'cart.view_cart' | t | escape }}"
+  data-url-panier="{{ routes.cart_url }}">
   <div class="drawer__header">
     <p class="h4">{{ 'cart.title' | t }}</p>
     <button type="button" class="tap-area" data-drawer-close aria-label="{{ 'accessibility.close' | t }}">{% render 'icons', icon: 'close', size: 14 %}</button>
@@ -27,7 +38,7 @@
       <div class="cart-totals">
         <div class="cart-totals__row cart-totals__row--total">
           <span>{{ 'cart.subtotal' | t }}</span>
-          <span>{% render 'montant', centimes: cart.total_price %}</span>
+          <span data-cart-total>{% render 'montant', centimes: cart.total_price %}</span>
         </div>
         <p class="text-subdued" style="font-size:var(--text-xs)">{{ 'cart.taxes_and_shipping_note' | t }}</p>
       </div>

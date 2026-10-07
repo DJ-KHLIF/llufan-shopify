@@ -86,7 +86,13 @@
     "note": "Note de commande",
     "update": "Mettre à jour",
     "remove": "Retirer",
-    "commander": "Commander"
+    "commander": "Commander",
+    "erreurs": {
+      "ajout": "L’article n’a pas pu être ajouté au panier.",
+      "modification": "La modification du panier n’a pas été prise en compte. Réessayez.",
+      "reseau": "Connexion interrompue : impossible de confirmer l’opération. Rechargez la page pour vérifier votre panier avant de recommencer.",
+      "rendu": "Votre panier a bien été mis à jour, mais l’affichage n’a pas pu être actualisé. Rechargez la page pour voir le détail à jour."
+    }
   },
   "search": {
     "title": "Recherche",

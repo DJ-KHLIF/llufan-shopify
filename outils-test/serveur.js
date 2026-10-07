@@ -212,6 +212,10 @@ const page = async (langue, gabarit, ctx) => {
 const corps = (req) => new Promise((ok) => { let d = ''; req.on('data', (c) => { d += c; }); req.on('end', () => ok(d)); });
 const envoyer = (res, code, type, data) => { res.writeHead(code, { 'Content-Type': type }); res.end(data); };
 let compteurCle = 0;
+/* Pannes simulées (tests) : sections-500 | sections-null | sections-absente |
+   sections-coupee | change-500 | add-reponse-perdue | cartjs-500 */
+let panne = new Set();
+const mutations = { add: 0, change: 0, ajoutNatif: 0 };
 
 http.createServer(async (req, res) => {
   try {
@@ -228,11 +232,15 @@ http.createServer(async (req, res) => {
       const types = { '.css': 'text/css', '.js': 'application/javascript', '.json': 'application/json', '.woff2': 'font/woff2', '.png': 'image/png', '.jpg': 'image/jpeg' };
       return envoyer(res, 200, types[path.extname(f)] || 'application/octet-stream', fs.readFileSync(f));
     }
-    if (chemin === '/__test/reset') { panier = []; indisponible = null; return envoyer(res, 200, 'text/plain', 'ok'); }
+    if (chemin === '/__test/reset') { panier = []; indisponible = null; panne = new Set(); mutations.add = 0; mutations.change = 0; mutations.ajoutNatif = 0; return envoyer(res, 200, 'text/plain', 'ok'); }
+    if (chemin === '/__test/panne') { panne = new Set((url.searchParams.get('modes') || '').split(',').filter(Boolean)); return envoyer(res, 200, 'text/plain', [...panne].join(',')); }
+    if (chemin === '/__test/mutations') return envoyer(res, 200, 'application/json', JSON.stringify(mutations));
+    if (chemin === '/cart/add' && req.method === 'POST') { mutations.ajoutNatif += 1; return envoyer(res, 404, 'text/html', 'envoi natif'); }
     if (chemin === '/__test/indisponible') { indisponible = Number(url.searchParams.get('id')) || null; return envoyer(res, 200, 'text/plain', 'ok'); }
     if (chemin === '/__test/manquantes') return envoyer(res, 200, 'application/json', JSON.stringify([...manquantes]));
 
     if (chemin === '/cart/add.js' && req.method === 'POST') {
+      mutations.add += 1;
       const brut = await corps(req);
       const ct = req.headers['content-type'] || '';
       let id; let q;
@@ -245,17 +253,27 @@ http.createServer(async (req, res) => {
       await new Promise((ok) => setTimeout(ok, 150)); // latence réaliste
       const exist = panier.find((l) => l.variant_id === v.id);
       if (exist) exist.quantity += Number(q); else panier.push({ key: `${v.id}:k${++compteurCle}`, variant_id: v.id, quantity: Number(q) });
+      if (panne.has('add-reponse-perdue')) return envoyer(res, 502, 'text/html', 'Bad Gateway'); // ajout fait, puis erreur passerelle
       return envoyer(res, 200, 'application/json', JSON.stringify(vueLigne(panier.find((l) => l.variant_id === v.id), 0, '')));
     }
     if (chemin === '/cart/change.js' && req.method === 'POST') {
+      mutations.change += 1;
       const d = JSON.parse(await corps(req));
+      if (panne.has('change-500')) return envoyer(res, 500, 'application/json', JSON.stringify({ status: 500, description: 'erreur simulée' }));
+      if (panne.has('change-400-vide')) { panier = []; return envoyer(res, 400, 'application/json', JSON.stringify({ status: 400, description: 'ligne introuvable' })); }
+      if (panne.has('change-lent')) await new Promise((ok) => setTimeout(ok, 900));
       const l = d.id ? panier.find((x) => x.key === d.id) : panier[Number(d.line) - 1];
       if (l) { l.quantity = Number(d.quantity); panier = panier.filter((x) => x.quantity > 0); }
+      if (panne.has('change-502-apres')) return envoyer(res, 502, 'text/html', 'Bad Gateway');   // appliquée, non confirmée
+      if (panne.has('change-json-casse')) return envoyer(res, 200, 'application/json', '{"items":[');  // appliquée, réponse illisible
       await new Promise((ok) => setTimeout(ok, 100));
       return envoyer(res, 200, 'application/json', JSON.stringify(vuePanier(langue === 'ar' ? '/ar' : '')));
     }
+    if (chemin === '/cart.js' && panne.has('cartjs-500')) return envoyer(res, 500, 'application/json', '{}');
     if (chemin === '/cart.js') return envoyer(res, 200, 'application/json', JSON.stringify(vuePanier(langue === 'ar' ? '/ar' : '')));
     if (chemin === '/cart' && url.searchParams.get('sections')) {
+      if (panne.has('sections-500')) return envoyer(res, 500, 'text/html', 'erreur simulée');
+      if (panne.has('sections-coupee')) { req.socket.destroy(); return; }
       const ctx = ctxDe('cart');
       const sortie = {};
       const tpl = json('templates/cart.json');
@@ -263,6 +281,8 @@ http.createServer(async (req, res) => {
         if (id === 'cart-drawer') sortie[id] = await rendreSection('cart-drawer', 'cart-drawer', {}, ctx);
         else { const cle = id.replace('template--1__', ''); if (tpl.sections[cle]) sortie[id] = await rendreSection(id, tpl.sections[cle].type, tpl.sections[cle], ctx); }
       }
+      if (panne.has('sections-null')) Object.keys(sortie).forEach((k) => { sortie[k] = null; });
+      if (panne.has('sections-absente')) Object.keys(sortie).forEach((k) => { delete sortie[k]; });
       return envoyer(res, 200, 'application/json', JSON.stringify(sortie));
     }
     if (chemin === '/cart') return envoyer(res, 200, 'text/html; charset=utf-8', await page(langue, 'cart', ctxDe('cart')));

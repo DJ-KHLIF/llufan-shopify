@@ -149,9 +149,63 @@
   /* ---------------------------------------------------------------------
      Panier : rafraîchissement du contenu, compteur, pastille
      --------------------------------------------------------------------- */
-  /* Sections à re-rendre après un changement de panier : le tiroir, et la
-     liste des articles de la page panier quand on s'y trouve. Le tiroir garde
-     son état ouvert (avant, il se refermait en laissant le voile actif). */
+  /* Le panier se traite en TROIS étapes séparées, pour qu'une panne de l'une
+     ne casse pas les autres et ne fasse jamais rejouer une modification :
+       1. la mutation (/cart/add.js, /cart/change.js), statut HTTP vérifié ;
+       2. la synchronisation à partir de la réponse JSON du panier (compteur,
+          événement « llufan:panier-maj » pour le formulaire de commande) —
+          aucune requête réseau, donc rien ne peut l'empêcher ;
+       3. le rafraîchissement visuel des sections (tiroir, page panier). S'il
+          échoue (statut HTTP, section nulle ou absente), l'affichage est
+          corrigé à partir du JSON du panier et un message clair s'affiche ;
+          la mutation n'est jamais relancée.
+     Toutes les opérations (ajouts et modifications) passent par une même file :
+     leurs résultats s'affichent dans l'ordre où elles ont été faites. */
+
+  /* Messages : textes traduits portés par le tiroir (présent sur toutes les
+     pages), avec un repli français unique. */
+  const CART_MESSAGES = {
+    rendu: ['texteErreurRendu', 'Votre panier a bien été mis à jour, mais l’affichage n’a pas pu être actualisé. Rechargez la page pour voir le détail à jour.'],
+    reseau: ['texteErreurReseau', 'Connexion interrompue : impossible de confirmer l’opération. Rechargez la page pour vérifier votre panier avant de recommencer.'],
+    modification: ['texteErreurModification', 'La modification du panier n’a pas été prise en compte. Réessayez.'],
+    ajout: ['texteErreurAjout', 'L’article n’a pas pu être ajouté au panier.'],
+    fermer: ['texteFermer', 'Fermer'],
+  };
+  const cartMessage = (name) => {
+    const [key, fallback] = CART_MESSAGES[name];
+    const drawer = $('#cart-drawer');
+    return (drawer && drawer.dataset[key]) || fallback;
+  };
+
+  /* Zone d'alerte unique, lue par les lecteurs d'écran. Tiroir ouvert : elle se
+     place en tête du contenu du tiroir (sans rien recouvrir) ; sinon, elle
+     flotte sous l'en-tête. */
+  const cartAlert = (message) => {
+    let node = $('[data-cart-alerte]');
+    if (!message) { if (node) node.hidden = true; return; }
+    if (!node) {
+      node = document.createElement('div');
+      node.className = 'cart-alerte';
+      node.setAttribute('role', 'alert');
+      node.setAttribute('data-cart-alerte', '');
+      const text = document.createElement('p');
+      text.className = 'cart-alerte__texte';
+      const close = document.createElement('button');
+      close.type = 'button';
+      close.className = 'cart-alerte__fermer';
+      close.textContent = '×';
+      close.addEventListener('click', () => { node.hidden = true; });
+      node.append(text, close);
+    }
+    node.querySelector('.cart-alerte__fermer').setAttribute('aria-label', cartMessage('fermer'));
+    const drawerBody = $('#cart-drawer.is-open .drawer__body');
+    if (drawerBody) { node.classList.add('cart-alerte--tiroir'); drawerBody.prepend(node); }
+    else { node.classList.remove('cart-alerte--tiroir'); document.body.appendChild(node); }
+    node.querySelector('.cart-alerte__texte').textContent = message;
+    node.hidden = false;
+  };
+
+  /* Sections à re-rendre : le tiroir, et la liste des articles de la page panier */
   const cartSectionIds = () => {
     const ids = ['cart-drawer'];
     $$('[data-cart-section]').forEach((el) => {
@@ -160,34 +214,143 @@
     });
     return Array.from(new Set(ids));
   };
-  const refreshCart = async (cart) => {
+
+  /* Étape 2 — synchronisation depuis la réponse du panier (pas de réseau) */
+  const syncFromCart = (cart) => {
+    if (!cart || typeof cart.item_count !== 'number') return;
+    const count = String(cart.item_count);
+    $$('[data-cart-count]').forEach((el) => { el.textContent = count; });
+    $$('[data-cart-dot]').forEach((el) => el.classList.toggle('is-visible', cart.item_count > 0));
+    document.dispatchEvent(new CustomEvent('llufan:panier-maj', { detail: { cart } }));
+  };
+
+  /* « 9 600 » — même écriture que snippets/montant.liquid (espace insécable) */
+  const cartDigits = (cents) => {
+    const value = Math.round(Number(cents) || 0);
+    const whole = String(Math.floor(Math.abs(value) / 100)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    const rest = Math.abs(value) % 100;
+    return (value < 0 ? '−' : '') + whole + (rest ? ',' + String(rest).padStart(2, '0') : '');
+  };
+
+  /* Secours de l'étape 3 : si le rendu des sections a échoué, on remet
+     l'affichage existant d'accord avec le JSON du panier — quantités, boutons
+     (data-quantity), montants, lignes supprimées, totaux. Ce qu'on ne peut pas
+     reconstruire sans le rendu (une ligne nouvelle, un panier devenu vide ou
+     plein) est signalé : la page panier est relue (simple lecture, la
+     modification n'est pas rejouée) ; le tiroir affiche un lien vers le panier. */
+  const patchFromCart = (cart) => {
+    if (!cart || !Array.isArray(cart.items)) return;
+    const byKey = new Map(cart.items.map((item) => [item.key, item]));
+    const containers = [$('#cart-drawer'), $('[data-cart-section]')].filter(Boolean);
+    containers.forEach((container) => {
+      const shownKeys = new Set();
+      $$('.line-item[data-line]', container).forEach((line) => {
+        const item = byKey.get(line.dataset.line);
+        if (!item) { line.remove(); return; }
+        shownKeys.add(item.key);
+        const shown = line.querySelector('.quantity-selector__input');
+        if (shown) {
+          shown.textContent = String(item.quantity);
+          const label = shown.getAttribute('aria-label');
+          if (label) shown.setAttribute('aria-label', label.replace(/\d+\s*$/, String(item.quantity)));
+        }
+        $$('[data-quantity-change]', line).forEach((button) => {
+          if (button.dataset.action === 'moins') button.dataset.quantity = String(item.quantity - 1);
+          if (button.dataset.action === 'plus') button.dataset.quantity = String(item.quantity + 1);
+        });
+        const price = line.querySelector('.line-item__price .montant bdi');
+        if (price) price.textContent = cartDigits(item.final_line_price);
+      });
+      $$('[data-cart-total] .montant bdi', container).forEach((el) => { el.textContent = cartDigits(cart.total_price); });
+      /* Affichage impossible à reconstruire : une ligne manque, ou le panier
+         est devenu vide alors que la mise en page « plein » est affichée
+         (ou l'inverse). */
+      const missingLine = cart.items.some((item) => !shownKeys.has(item.key));
+      const showsFilled = !!container.querySelector('.line-items, .drawer__footer');
+      const incomplete = missingLine || (cart.item_count === 0) === showsFilled;
+      if (!incomplete) return;
+      if (container.matches('[data-cart-section]')) { window.location.reload(); return; }
+      const body = container.querySelector('.drawer__body');
+      const footer = container.querySelector('.drawer__footer');
+      if (body) {
+        const notice = document.createElement('p');
+        notice.className = 'drawer__desynchro';
+        const link = document.createElement('a');
+        link.href = container.dataset.urlPanier || `${window.Shopify.routes.root}cart`;
+        link.className = 'button button--navy';
+        link.textContent = container.dataset.texteVoirPanier || 'Voir le panier';
+        notice.appendChild(link);
+        body.replaceChildren(notice);
+      }
+      if (footer) footer.hidden = true;
+    });
+  };
+
+  /* Étape 3 — rendu des sections ; lève une erreur si une section manque */
+  const renderCartSections = async () => {
     const ids = cartSectionIds();
     const drawerWasOpen = !!$('#cart-drawer.is-open');
     const res = await fetch(`${window.Shopify.routes.root}cart?sections=${ids.join(',')}`, { headers: { Accept: 'application/json' } });
+    if (!res.ok) throw new Error(`rendu des sections : HTTP ${res.status}`);
     const sections = await res.json();
+    const missing = [];
     ids.forEach((id) => {
-      const html = sections[id];
       const current = document.getElementById(`shopify-section-${id}`);
-      if (!html || !current) return;
-      const fresh = new DOMParser().parseFromString(html, 'text/html').getElementById(`shopify-section-${id}`);
-      if (fresh) current.replaceChildren(...fresh.childNodes);
+      if (!current) return;
+      const html = sections && sections[id];
+      const fresh = typeof html === 'string' && html
+        ? new DOMParser().parseFromString(html, 'text/html').getElementById(`shopify-section-${id}`)
+        : null;
+      if (!fresh) { missing.push(id); return; }
+      current.replaceChildren(...fresh.childNodes);
     });
     if (drawerWasOpen) {
       const drawer = $('#cart-drawer');
       if (drawer) { drawer.setAttribute('open', ''); drawer.classList.add('is-open'); drawer.removeAttribute('aria-hidden'); }
     }
-    const count = cart ? String(cart.item_count) : (($('[data-cart-count]') || {}).textContent || '0').trim();
-    $$('[data-cart-count]').forEach((el) => { el.textContent = count; });
-    $$('[data-cart-dot]').forEach((el) => el.classList.toggle('is-visible', Number(count) > 0));
-    if (cart) document.dispatchEvent(new CustomEvent('llufan:panier-maj', { detail: { cart } }));
+    if (missing.length) throw new Error(`sections absentes ou nulles : ${missing.join(', ')}`);
   };
-  const fetchCart = () => fetch(`${window.Shopify.routes.root}cart.js`, { headers: { Accept: 'application/json' } }).then((r) => r.json());
+
+  /* Étapes 2 et 3. « uncertain » : la mutation n'a pas pu être confirmée
+     (réseau, 5xx) — le message « impossible de confirmer » reste affiché,
+     même si le rendu réussit, et n'est jamais remplacé par « mis à jour ». */
+  const refreshCart = async (cart, { uncertain = false } = {}) => {
+    syncFromCart(cart);
+    try {
+      await renderCartSections();
+      cartAlert(uncertain ? cartMessage('reseau') : '');
+    } catch (error) {
+      console.warn('[LLUFAN] affichage du panier non actualisé :', error);
+      patchFromCart(cart);
+      cartAlert(cartMessage(uncertain ? 'reseau' : 'rendu'));
+    }
+  };
+
+  /* Lecture du panier (GET : sans effet sur le panier) */
+  const fetchCart = async () => {
+    const res = await fetch(`${window.Shopify.routes.root}cart.js`, { headers: { Accept: 'application/json' } });
+    if (!res.ok) throw new Error(`lecture du panier : HTTP ${res.status}`);
+    return res.json();
+  };
+  /* Après une mutation non confirmée : on relit l'état réel, sans rejouer */
+  const resyncUncertain = async () => {
+    try { await refreshCart(await fetchCart(), { uncertain: true }); } catch (e) { cartAlert(cartMessage('reseau')); }
+  };
+
+  /* File unique des opérations panier : une à la fois, dans l'ordre */
+  let cartQueue = Promise.resolve();
+  const enqueueCart = (task) => {
+    const run = cartQueue.then(task);
+    cartQueue = run.catch(() => {});
+    return run;
+  };
 
   const showQuantitySpinner = (selector, onOff) => {
     const node = typeof selector === 'string' ? $(selector) : selector;
     if (node) node.classList.toggle('is-loading', onOff);
   };
 
+  /* Ajout au panier */
   on(document, 'submit', async (event) => {
     const form = event.target.closest('form[data-cart-form], .shopify-product-form');
     if (!form || form.dataset.preventDrawer === 'true') return;
@@ -201,43 +364,64 @@
     if (button) { button.setAttribute('aria-busy', 'true'); button.disabled = true; }
     if (isQuickAdd) button.classList.add('adding-to-cart');
     const errorNode = form.querySelector('[data-cart-error]');
+    const showError = (message) => {
+      if (errorNode) { errorNode.textContent = message; errorNode.hidden = false; } else cartAlert(message);
+    };
     if (errorNode) { errorNode.hidden = true; errorNode.textContent = ''; }
+    const formData = new FormData(form);
+    if (button && button.name) formData.append(button.name, button.value);
+    let added = false;
 
     try {
-      const formData = new FormData(form);
-      if (button && button.name) formData.append(button.name, button.value);
-      const res = await fetch(`${window.Shopify.routes.root}cart/add.js`, {
-        method: 'POST',
-        headers: { Accept: 'application/json' },
-        body: formData,
+      await enqueueCart(async () => {
+        /* Étape 1 — mutation. Si elle n'est pas confirmée (réseau, 5xx),
+           l'article a pu être ajouté : on le dit, on relit le panier, et on
+           ne renvoie JAMAIS le formulaire (plus de form.submit()). */
+        let res;
+        try {
+          res = await fetch(`${window.Shopify.routes.root}cart/add.js`, {
+            method: 'POST',
+            headers: { Accept: 'application/json' },
+            body: formData,
+          });
+        } catch (networkError) {
+          showError(cartMessage('reseau'));
+          await resyncUncertain();
+          return;
+        }
+        if (res.status >= 500) {
+          showError(cartMessage('reseau'));
+          await resyncUncertain();
+          return;
+        }
+        if (!res.ok) {
+          let description = '';
+          try { const err = await res.json(); description = err.description || err.message || ''; } catch (e) { /* réponse non JSON */ }
+          showError(description || cartMessage('ajout'));
+          return;
+        }
+        /* Ajout confirmé : il ne sera plus jamais renvoyé. La suite ne fait
+           que relire le panier (GET) et rafraîchir l'affichage. */
+        added = true;
+        let cart = null;
+        try { cart = await fetchCart(); } catch (e) { console.warn('[LLUFAN] ajout réussi, panier non relu :', e); }
+        if (cart) await refreshCart(cart);
+        else cartAlert(cartMessage('rendu'));
+        openDrawer('cart-drawer');
+        /* Le message éventuel suit le tiroir maintenant ouvert */
+        const shown = $('[data-cart-alerte]:not([hidden])');
+        if (shown) cartAlert(shown.querySelector('.cart-alerte__texte').textContent);
       });
-      if (!res.ok) {
-        const err = await res.json();
-        if (errorNode) { errorNode.textContent = err.description || err.message || ''; errorNode.hidden = false; }
-        if (isQuickAdd) button.classList.remove('adding-to-cart');
-        return;
-      }
-      await refreshCart(await fetchCart());
-      if (isQuickAdd) {
-        // La coche reste dessinée un court instant avant le retour à l'état normal
-        setTimeout(() => button.classList.remove('adding-to-cart'), 1400);
-        openDrawer('cart-drawer');
-      } else {
-        openDrawer('cart-drawer');
-      }
-    } catch (e) {
-      if (isQuickAdd) button.classList.remove('adding-to-cart');
-      form.submit();
+      if (added && isQuickAdd) setTimeout(() => button.classList.remove('adding-to-cart'), 1400);
     } finally {
+      if (isQuickAdd && !added) button.classList.remove('adding-to-cart');
       delete form.dataset.busy;
       if (button) { button.removeAttribute('aria-busy'); button.disabled = wasDisabled; }
     }
   });
 
   /* Modification / suppression d'un article. On vise l'article par sa clé
-     (stable) plutôt que par son rang, qui change dès qu'une ligne disparaît.
-     Les demandes sont traitées l'une après l'autre. */
-  let cartQueue = Promise.resolve();
+     (stable) plutôt que par son rang, qui change dès qu'une ligne disparaît. */
   on(document, 'click', (event) => {
     const link = event.target.closest('[data-quantity-change]');
     if (!link) return;
@@ -245,25 +429,56 @@
     if (link.getAttribute('aria-disabled') === 'true') return;
     const lineNode = link.closest('.line-item');
     const key = link.dataset.key;
+    const action = link.dataset.action;
     const qty = Math.max(0, Number(link.dataset.quantity) || 0);
     const selector = lineNode ? lineNode.querySelector('.quantity-selector') : link.closest('.quantity-selector');
     if (lineNode) $$('[data-quantity-change]', lineNode).forEach((b) => b.setAttribute('aria-disabled', 'true'));
     showQuantitySpinner(selector, true);
-    cartQueue = cartQueue.then(async () => {
+    enqueueCart(async () => {
+      /* Étape 1 — mutation */
       const body = key ? { id: key, quantity: qty } : { line: Number(link.dataset.line), quantity: qty };
-      const res = await fetch(`${window.Shopify.routes.root}cart/change.js`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify(body),
-      });
-      const cart = res.ok ? await res.json() : await fetchCart();
-      /* Page panier vidée : on recharge pour afficher l'état « panier vide »
-         (le formulaire de commande disparaît avec l'ancien récapitulatif). */
-      if (!cart.item_count && $('[data-cart-section]')) { window.location.reload(); return; }
+      let res;
+      try {
+        res = await fetch(`${window.Shopify.routes.root}cart/change.js`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify(body),
+        });
+      } catch (networkError) {
+        cartAlert(cartMessage('reseau'));
+        await resyncUncertain();
+        return;
+      }
+      if (res.status >= 500) {
+        /* Non confirmée : elle a pu être appliquée. On relit l'état réel. */
+        cartAlert(cartMessage('reseau'));
+        await resyncUncertain();
+        return;
+      }
+      if (!res.ok) {
+        /* Refusée (4xx) : on le dit, puis l'affichage suit l'état réel */
+        cartAlert(cartMessage('modification'));
+        try { const actual = await fetchCart(); syncFromCart(actual); patchFromCart(actual); } catch (e) { /* message déjà affiché */ }
+        return;
+      }
+      let cart;
+      try { cart = await res.json(); } catch (e) {
+        /* Réponse 2xx illisible : la modification est faite, mais sans son
+           résultat. On relit le panier au lieu d'annoncer un échec. */
+        await resyncUncertain();
+        return;
+      }
+      /* Page panier vidée : on la relit (simple lecture) pour afficher l'état
+         « panier vide » ; le formulaire disparaît avec l'ancien récapitulatif. */
+      if (!cart.item_count && $('[data-cart-section]')) { syncFromCart(cart); window.location.reload(); return; }
+      /* Étapes 2 et 3 */
       await refreshCart(cart);
-      /* Le focus revient sur le même bouton de la ligne re-rendue, s'il existe encore */
-      const again = key && $(`[data-quantity-change][data-key="${CSS.escape(key)}"][data-action="${link.dataset.action}"]`);
+      /* Le focus revient sur le même bouton de la ligne, s'il existe encore */
+      const again = key && $(`[data-quantity-change][data-key="${CSS.escape(key)}"][data-action="${action}"]`);
       if (again) again.focus({ preventScroll: true });
-    }).catch(() => { window.location.reload(); }).finally(() => {
+    }).catch((error) => {
+      console.warn('[LLUFAN] modification du panier :', error);
+      cartAlert(cartMessage('reseau'));
+    }).finally(() => {
       showQuantitySpinner(selector, false);
       if (lineNode && lineNode.isConnected) $$('[data-quantity-change]', lineNode).forEach((b) => b.removeAttribute('aria-disabled'));
     });

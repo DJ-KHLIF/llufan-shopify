@@ -42,7 +42,7 @@
             <div class="cart-totals">
               <div class="cart-totals__row cart-totals__row--total">
                 <span>{{ 'cart.subtotal' | t }}</span>
-                <span>{% render 'montant', centimes: cart.total_price %}</span>
+                <span data-cart-total>{% render 'montant', centimes: cart.total_price %}</span>
               </div>
               <p class="text-subdued" style="font-size:var(--text-xs)">{{ 'cart.taxes_and_shipping_note' | t }}</p>
             </div>

@@ -209,10 +209,13 @@ const egal = (a, b, msg) => assert(norm(a) === norm(b), `${msg} : obtenu « ${no
       await p.waitForFunction(() => /12\s?800/.test(document.querySelector('[data-llufan-sous-total]').textContent.replace(/ /g, ' ')));
       egal(await texte(p, '[data-llufan-total]'), `13 200 ${devise}`, 'total après + (domicile)');
       assert(norm(await recap(p)).includes(`2 × ${TITRE[langue]} — ${COULEUR[langue].Gris}`), 'récap après +');
+      /* Le formulaire suit la réponse du panier (étape 2) ; les lignes sont re-rendues ensuite (étape 3) */
+      await p.waitForFunction(() => Array.from(document.querySelectorAll('[data-cart-section] .line-item')).some((l) => /47934041424033/.test(l.dataset.line) && l.querySelector('.quantity-selector__input').textContent.trim() === '2'), null, { timeout: 8000 }).catch(() => {});
       egal(await p.locator('[data-cart-section] .line-item', { hasText: COULEUR[langue].Gris }).locator('.quantity-selector__input').innerText(), '2', 'quantité affichée sur la page panier');
       await p.locator('[data-cart-section] .line-item', { hasText: COULEUR[langue].Bleu }).locator('[data-action="retirer"]').click();
       await p.waitForFunction(() => /6\s?400/.test(document.querySelector('[data-llufan-sous-total]').textContent.replace(/ /g, ' ')));
       assert(!norm(await recap(p)).includes(COULEUR[langue].Bleu), 'ligne supprimée absente du récap');
+      await p.waitForFunction(() => document.querySelectorAll('[data-cart-section] .line-item').length === 1, null, { timeout: 8000 }).catch(() => {});
       egal(await p.locator('[data-cart-section] .line-item').count(), '1', 'une ligne restante');
       egal(await p.inputValue('[data-llufan-commune]'), 'Bab El Oued', 'destination conservée');
       await p.locator('[data-cart-section] .line-item [data-action="retirer"]').click();
