@@ -1,0 +1,23 @@
+# Relais COD LLUFAN — configuration Cloudflare Workers (EXEMPLE, à copier en wrangler.toml)
+# Aucun secret ici : les secrets se saisissent avec `wrangler secret put <NOM>`.
+name = "llufan-relais-cod"
+main = "src/worker.js"
+compatibility_date = "2026-10-01"
+
+[vars]
+MODE = "simulation"              # « production » seulement après validation écrite du marchand
+COMMANDES_REELLES = "non"        # 2e verrou : « oui » + MODE = production pour créer de vraies commandes
+SHOPIFY_BOUTIQUE = "vawqkk-ww.myshopify.com"
+SHOPIFY_API_VERSION = "2026-07"
+ORIGINES_AUTORISEES = "https://llufan.com,https://www.llufan.com,https://vawqkk-ww.myshopify.com"
+TARIF_LIVRAISON = "700"          # doit rester égal au tarif Shopify ET au réglage du thème
+MAX_PAR_10_MIN = "8"
+META_API_VERSION = "v23.0"       # vérifier la version en vigueur avant activation
+
+[[d1_databases]]
+binding = "DB"
+database_name = "llufan-relais-cod"
+database_id = "A_REMPLIR_APRES_wrangler_d1_create"
+
+[triggers]
+crons = ["17 3 * * *"]           # purge quotidienne (03:17 UTC)

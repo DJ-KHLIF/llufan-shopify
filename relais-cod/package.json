@@ -1,0 +1,7 @@
+{
+  "name": "llufan-relais-cod",
+  "private": true,
+  "type": "module",
+  "description": "Relais COD LLUFAN (prototype, simulation par défaut). Aucune dépendance d'exécution.",
+  "scripts": { "test": "node --test tests/*.test.mjs" }
+}
