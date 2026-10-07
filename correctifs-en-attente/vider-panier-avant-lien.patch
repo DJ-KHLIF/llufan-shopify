@@ -1,0 +1,60 @@
+diff --git a/assets/llufan-livraison.js b/assets/llufan-livraison.js
+index 258aa5c..07a48e0 100644
+--- a/assets/llufan-livraison.js
++++ b/assets/llufan-livraison.js
+@@ -375,7 +375,18 @@
+     const articles = modeSection === 'produit' ? null : await articlesDuPanier();
+     const lien = modeSection === 'produit' || articles ? lienCaisse(articles) : null;
+     /* Sans lien (panier illisible ou vide), l'envoi classique prend le relais. */
+-    if (lien) window.location.assign(lien);
++    if (lien) {
++      /* Le panier du site est vidé juste avant le lien : la caisse ne contient
++         que la commande du formulaire, que Shopify ajoute le lien au panier
++         existant ou qu'il le remplace. Page panier : les articles ont déjà été
++         relus ci-dessus et figurent dans le lien. Échec du vidage : on
++         continue, comme avant. */
++      try {
++        const racineRoutes = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
++        await fetch(`${racineRoutes}cart/clear.js`, { method: 'POST', credentials: 'same-origin', headers: { Accept: 'application/json' } });
++      } catch (erreur) { /* on continue avec le lien */ }
++      window.location.assign(lien);
++    }
+     else HTMLFormElement.prototype.submit.call(formulaire);
+   };
+ 
+diff --git a/outils-test/serveur.js b/outils-test/serveur.js
+index af1be13..0d783e2 100644
+--- a/outils-test/serveur.js
++++ b/outils-test/serveur.js
+@@ -243,6 +243,7 @@ http.createServer(async (req, res) => {
+     if (chemin === '/__test/reset') { panier = []; indisponible = null; panne = new Set(); mutations.add = 0; mutations.change = 0; mutations.ajoutNatif = 0; return envoyer(res, 200, 'text/plain', 'ok'); }
+     if (chemin === '/__test/panne') { panne = new Set((url.searchParams.get('modes') || '').split(',').filter(Boolean)); return envoyer(res, 200, 'text/plain', [...panne].join(',')); }
+     if (chemin === '/__test/mutations') return envoyer(res, 200, 'application/json', JSON.stringify(mutations));
++    if (chemin === '/cart/clear.js' && req.method === 'POST') { mutations.clear = (mutations.clear || 0) + 1; panier = []; return envoyer(res, 200, 'application/json', JSON.stringify(vuePanier(langue === 'ar' ? '/ar' : ''))); }
+     if (chemin === '/cart/add' && req.method === 'POST') { mutations.ajoutNatif += 1; return envoyer(res, 404, 'text/html', 'envoi natif'); }
+     if (chemin === '/__test/indisponible') { indisponible = Number(url.searchParams.get('id')) || null; return envoyer(res, 200, 'text/plain', 'ok'); }
+     if (chemin === '/__test/manquantes') return envoyer(res, 200, 'application/json', JSON.stringify([...manquantes]));
+diff --git a/outils-test/tests-tiroir-cod.js b/outils-test/tests-tiroir-cod.js
+index 319e995..8fb5139 100644
+--- a/outils-test/tests-tiroir-cod.js
++++ b/outils-test/tests-tiroir-cod.js
+@@ -110,7 +110,7 @@ const eq = (a, b, m) => ok(norm(a) === norm(b), `${m} : obtenu « ${norm(a)} »,
+ 
+   /* ---------------- 3. Formulaire avec un panier déjà rempli ---------------- */
+   for (const qte of [1, 3]) {
+-    await test(`[fr] panier à 2 Gris, formulaire Gris × ${qte} : lien de caisse = Gris:${qte} seulement, panier du site intact`, async () => {
++    await test(`[fr] panier à 2 Gris, formulaire Gris × ${qte} : lien de caisse = Gris:${qte} seulement, panier du site vidé avant le lien`, async () => {
+       const p = await ouvrir(null);
+       await etatObserve(p);
+       await p.goto(B + PRODUIT); await p.waitForTimeout(300);
+@@ -130,7 +130,9 @@ const eq = (a, b, m) => ok(norm(a) === norm(b), `${m} : obtenu « ${norm(a)} »,
+       const apres = await mutations(p);
+       eq(apres.add - avant.add, 0, 'ajouts /cart/add.js pendant l’envoi');
+       eq(apres.ajoutNatif - avant.ajoutNatif, 0, 'envois natifs pendant l’envoi');
+-      eq((await panier(p)).item_count, 2, 'panier du site (inchangé)');
++      /* Correctif en attente : panier du site vidé avant le lien de caisse */
++      eq(((await mutations(p)).clear || 0) - (avant.clear || 0), 1, 'vidages /cart/clear.js avant le lien');
++      eq((await panier(p)).item_count, 0, 'panier du site vidé');
+       await p.context().close();
+     });
+   }
