@@ -2,18 +2,7 @@
   Tiroir panier — structure observée : panneau latéral droit, titre « Panier »,
   état vide centré, lignes de commande, sous-total et bouton de commande.
 {%- endcomment -%}
-{%- comment -%}
-  Textes des messages d'erreur du panier (theme.js, cartText) : portés ici car
-  le tiroir est présent sur toutes les pages.
-{%- endcomment -%}
-<cart-drawer class="drawer color-scheme color-scheme--scheme-1" id="cart-drawer" aria-hidden="true"
-  data-texte-erreur-rendu="{{ 'cart.erreurs.rendu' | t | escape }}"
-  data-texte-erreur-modification="{{ 'cart.erreurs.modification' | t | escape }}"
-  data-texte-erreur-reseau="{{ 'cart.erreurs.reseau' | t | escape }}"
-  data-texte-erreur-ajout="{{ 'cart.erreurs.ajout' | t | escape }}"
-  data-texte-fermer="{{ 'accessibility.close' | t | escape }}"
-  data-texte-voir-panier="{{ 'cart.view_cart' | t | escape }}"
-  data-url-panier="{{ routes.cart_url }}">
+<cart-drawer class="drawer color-scheme color-scheme--scheme-1" id="cart-drawer" aria-hidden="true" data-nombre-articles="{{ cart.item_count }}">
   <div class="drawer__header">
     <p class="h4">{{ 'cart.title' | t }}</p>
     <button type="button" class="tap-area" data-drawer-close aria-label="{{ 'accessibility.close' | t }}">{% render 'icons', icon: 'close', size: 14 %}</button>
@@ -38,7 +27,7 @@
       <div class="cart-totals">
         <div class="cart-totals__row cart-totals__row--total">
           <span>{{ 'cart.subtotal' | t }}</span>
-          <span data-cart-total>{% render 'montant', centimes: cart.total_price %}</span>
+          <span>{{ cart.total_price | money }}</span>
         </div>
         <p class="text-subdued" style="font-size:var(--text-xs)">{{ 'cart.taxes_and_shipping_note' | t }}</p>
       </div>
@@ -46,9 +35,7 @@
         {%- if section.settings.show_checkout_button -%}
           <button type="submit" name="checkout" class="button button--full">{{ 'cart.checkout' | t }}</button>
         {%- else -%}
-          {%- assign libelle_tiroir = section.settings.cta_label | strip -%}
-          {%- if libelle_tiroir == blank -%}{%- assign libelle_tiroir = 'cart.commander' | t -%}{%- endif -%}
-          <a href="{{ routes.cart_url }}#commander" class="button button--navy button--full">{{ libelle_tiroir }}</a>
+          <a href="{{ routes.cart_url }}#commander" class="button button--navy button--full">{{ section.settings.cta_label | default: 'Commander' }}</a>
         {%- endif -%}
       </form>
       <a href="{{ routes.cart_url }}" class="text-center" style="font-size:var(--text-sm);text-decoration:underline">{{ 'cart.view_cart' | t }}</a>
@@ -70,7 +57,7 @@
       "type": "text",
       "id": "cta_label",
       "label": "Libellé du bouton du tiroir",
-      "info": "Laisser vide pour « Commander », traduit automatiquement en arabe."
+      "default": "Commander"
     }
   ]
 }{% endschema %}

@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "general": {
     "accueil": "Accueil",
@@ -12,8 +21,7 @@
       "title": "Cette page est introuvable",
       "subtext": "Le lien est peut-être erroné ou la page a été déplacée.",
       "link": "Voir tous les produits"
-    },
-    "devise": "DA"
+    }
   },
   "accessibility": {
     "skip_to_content": "Aller au contenu",
@@ -46,11 +54,6 @@
     },
     "reviews": {
       "rating": "Note"
-    },
-    "accordeons": {
-      "utilisation": "Utilisation",
-      "entretien": "Entretien",
-      "composition": "Composition"
     }
   },
   "collections": {
@@ -85,14 +88,7 @@
     "view_cart": "Voir le panier",
     "note": "Note de commande",
     "update": "Mettre à jour",
-    "remove": "Retirer",
-    "commander": "Commander",
-    "erreurs": {
-      "ajout": "L’article n’a pas pu être ajouté au panier.",
-      "modification": "La modification du panier n’a pas été prise en compte. Réessayez.",
-      "reseau": "Connexion interrompue : impossible de confirmer l’opération. Rechargez la page pour vérifier votre panier avant de recommencer.",
-      "rendu": "Votre panier a bien été mis à jour, mais l’affichage n’a pas pu être actualisé. Rechargez la page pour voir le détail à jour."
-    }
+    "remove": "Retirer"
   },
   "search": {
     "title": "Recherche",
@@ -168,6 +164,7 @@
   "commande": {
     "titre_defaut": "Commander — Paiement à la livraison",
     "cta_defaut": "Commander maintenant",
+    "confirmation": "Merci ! Commande enregistrée. On vous rappelle pour confirmer.",
     "nom": "Nom complet",
     "nom_placeholder": "Nom et prénom",
     "telephone": "Téléphone",
@@ -199,25 +196,7 @@
     "recap_total": "TOTAL",
     "adresse": "Adresse précise de livraison",
     "adresse_placeholder": "Rue, quartier, numéro de bâtiment ou de maison",
-    "recap_adresse": "Adresse de livraison",
-    "recap_titre": "Récapitulatif de simulation",
-    "bouton_simulation": "Tester le formulaire",
-    "version_test": "Version de test — aucune commande envoyée",
-    "voir_formulaire": "Voir le formulaire",
-    "simulation_bandeau": "Formulaire en test : aucune commande n’est créée ni envoyée.",
-    "simulation_titre": "Simulation uniquement — aucune commande créée.",
-    "simulation_confirmation": "Le formulaire est correctement rempli. Ceci est un test : rien n’a été envoyé et LLUFAN ne recevra pas cette demande.",
-    "tarifs_indicatifs": "Frais de livraison indicatifs.",
-    "erreurs": {
-      "resume": "Certains champs sont à compléter ou à corriger.",
-      "nom": "Indiquez votre nom complet.",
-      "telephone": "Indiquez un numéro de téléphone valide (chiffres, espaces, +).",
-      "wilaya": "Choisissez votre wilaya.",
-      "commune": "Choisissez votre commune.",
-      "adresse": "Indiquez l’adresse de livraison (au moins 5 caractères).",
-      "tarif": "Le tarif de livraison n’est pas disponible pour cette destination. Choisissez un autre mode de livraison ou contactez-nous.",
-      "variante": "Cette option n’est pas disponible. Choisissez-en une autre.",
-      "tarifs_indisponibles": "Les tarifs de livraison n’ont pas pu être chargés. Rechargez la page."
-    }
+    "frais_confirmes": "Frais de livraison estimés : le montant définitif s'affiche à l'étape suivante.",
+    "envoi": "Un instant…"
   }
 }

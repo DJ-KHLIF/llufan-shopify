@@ -7,15 +7,8 @@
     • « collections/allaitement » ou « shopify://collections/allaitement »
         → adresse de la collection si elle existe, sinon rien ;
     • « products/coussin-allaitement-nomad » → adresse du produit s'il existe ;
-    • « /pages/livraison », « /collections/x », « /products/x » (avec ou sans
-      préfixe de langue, « /ar/pages/livraison ») → traités comme ci-dessus :
-      la cible est vérifiée et l'adresse suit la langue de la page ;
-    • toute autre adresse interne commençant par « / » (« /cart#commander »,
-      « /policies/… ») → préfixée par la langue en cours (« /ar/cart#… ») ;
-    • « http », « mailto: », « tel: » ou « # » → renvoyée telle quelle.
-  Pourquoi la langue : une adresse « /pages/x » écrite en dur ramenait une
-  visiteuse arabophone vers la version française. L'adresse d'un objet
-  Shopify (page.url, collection.url…) porte déjà le bon préfixe de langue.
+    • toute adresse commençant par « / », « http », « mailto: », « tel: » ou « # »
+        → renvoyée telle quelle.
 
   Pourquoi : les réglages de démonstration contiennent des cibles lisibles
   (« pages/la-marque ») qui n'existent qu'une fois les pages créées dans
@@ -33,21 +26,6 @@
     if v contains 'shopify://'
       assign v = v | remove_first: 'shopify://'
     endif
-    assign interne = false
-    assign premier = v | slice: 0
-    assign deux_premiers = v | slice: 0, 2
-    if premier == '/' and deux_premiers != '//'
-      assign interne = true
-      assign v = v | remove_first: '/'
-      assign segment_langue = v | split: '/' | first | downcase
-      for langue in localization.available_languages
-        assign code_langue = langue.iso_code | downcase
-        if segment_langue == code_langue
-          assign v = v | remove_first: segment_langue | remove_first: '/'
-          break
-        endif
-      endfor
-    endif
     assign parties = v | split: '/'
     assign tete = parties[0]
     assign queue = parties | last
@@ -62,9 +40,7 @@
         endif
       when 'collections'
         assign cible_collection = collections[queue]
-        if queue == 'all' or queue == 'collections'
-          assign href = routes.all_products_collection_url
-        elsif cible_collection != blank
+        if cible_collection != blank
           assign href = cible_collection.url
         else
           assign href = ''
@@ -77,28 +53,18 @@
           assign href = ''
         endif
       else
-        if interne
-          if v == blank
-            assign href = routes.root_url
-          elsif routes.root_url == '/'
-            assign href = '/' | append: v
-          else
-            assign href = routes.root_url | append: '/' | append: v
-          endif
+        assign garder = false
+        if v contains '/' or v contains ':' or v contains '#' or v contains '?' or v contains '.'
+          assign garder = true
+        endif
+        if garder
+          assign href = v
         else
-          assign garder = false
-          if v contains '/' or v contains ':' or v contains '#' or v contains '?' or v contains '.'
-            assign garder = true
-          endif
-          if garder
-            assign href = v
+          assign cible_page = pages[v]
+          if cible_page != blank
+            assign href = cible_page.url
           else
-            assign cible_page = pages[v]
-            if cible_page != blank
-              assign href = cible_page.url
-            else
-              assign href = ''
-            endif
+            assign href = ''
           endif
         endif
     endcase

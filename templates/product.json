@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
@@ -45,7 +54,7 @@
         "commande": {
           "type": "commande",
           "settings": {
-            "heading": "",
+            "heading": "Commander — Paiement à la livraison",
             "cta": "Commander maintenant",
             "barre_mobile": true
           }
@@ -54,24 +63,21 @@
           "type": "accordion",
           "settings": {
             "title": "Utilisation",
-            "content": "<p>Chaque produit LLUFAN est pensé pour un usage simple au quotidien. Les indications détaillées figurent dans la description du produit.</p><p><em>Texte de démonstration.</em></p>",
-            "titre_standard": "utilisation"
+            "content": "<p>Chaque produit LLUFAN est pensé pour un usage simple au quotidien. Les indications détaillées figurent dans la description du produit.</p><p><em>Texte de démonstration.</em></p>"
           }
         },
         "acc-entretien": {
           "type": "accordion",
           "settings": {
             "title": "Entretien",
-            "content": "<p><em>Consignes d'entretien à préciser par LLUFAN (texte à compléter avant publication).</em></p>",
-            "titre_standard": "entretien"
+            "content": "<p>Lavage en machine à 30 °C recommandé pour les textiles. Séchage à l'air libre. Ne pas utiliser d'eau de javel.</p><p><em>Texte de démonstration.</em></p>"
           }
         },
         "acc-composition": {
           "type": "accordion",
           "settings": {
             "title": "Composition",
-            "content": "<p>La composition précise est indiquée sur la fiche de chaque produit.</p><p><em>Emplacement de démonstration : composition détaillée et origine des matières.</em></p>",
-            "titre_standard": "composition"
+            "content": "<p>La composition précise est indiquée sur la fiche de chaque produit.</p><p><em>Emplacement de démonstration : composition détaillée et origine des matières.</em></p>"
           }
         },
         "trust": {

@@ -5,7 +5,7 @@
   Le passage en caisse Shopify reste disponible par un réglage, mais il n'est pas
   affiché par défaut : la commande se fait en paiement à la livraison.
 {%- endcomment -%}
-<div class="section-spacing color-scheme color-scheme--scheme-1" data-cart-section>
+<div class="section-spacing color-scheme color-scheme--scheme-1">
   {%- if cart.item_count == 0 -%}
     {%- comment -%}
       Panier vide : même mise en page que la référence — titre, message et bouton
@@ -42,7 +42,7 @@
             <div class="cart-totals">
               <div class="cart-totals__row cart-totals__row--total">
                 <span>{{ 'cart.subtotal' | t }}</span>
-                <span data-cart-total>{% render 'montant', centimes: cart.total_price %}</span>
+                <span>{{ cart.total_price | money }}</span>
               </div>
               <p class="text-subdued" style="font-size:var(--text-xs)">{{ 'cart.taxes_and_shipping_note' | t }}</p>
             </div>
