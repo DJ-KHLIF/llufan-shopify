@@ -16,7 +16,9 @@ class Couleur extends Drop {
   constructor(hex) { super(); this.hex = hex; const n = parseInt(hex.slice(1), 16); this.red = (n >> 16) & 255; this.green = (n >> 8) & 255; this.blue = n & 255; }
   valueOf() { return this.hex; } toString() { return this.hex; }
 }
-const SETTINGS = Object.fromEntries(Object.entries(json('config/settings_data.json').current).map(([k, v]) => [k, typeof v === 'string' && /^#[0-9a-f]{6}$/i.test(v) ? new Couleur(v) : v]));
+/* Comme Shopify : un réglage absent de settings_data prend la valeur par défaut du schéma. */
+const DEFAUTS = Object.fromEntries(JSON.parse(lire('config/settings_schema.json')).flatMap((g) => g.settings || []).filter((r) => r.id && r.default !== undefined).map((r) => [r.id, r.default]));
+const SETTINGS = Object.fromEntries(Object.entries({ ...DEFAUTS, ...json('config/settings_data.json').current, ...(process.env.REGLAGES ? JSON.parse(process.env.REGLAGES) : {}) }).map(([k, v]) => [k, typeof v === 'string' && /^#[0-9a-f]{6}$/i.test(v) ? new Couleur(v) : v]));
 const manquantes = new Set();
 
 /* ------------------------------------------------------------ données */
@@ -69,7 +71,7 @@ const vueLigne = (l, i, url, langue = 'fr') => {
   const v = { ...v0, title: ar ? AR[v0.title] : v0.title };
   const PRODUIT_L = { ...PRODUIT, title: ar ? 'نوماد — وسادة الرضاعة من ليلوفان' : PRODUIT.title };
   return {
-    key: l.key, id: v.id, quantity: l.quantity, title: `${PRODUIT_L.title} - ${v.title}`,
+    key: l.key, id: v.id, variant_id: v.id, quantity: l.quantity, title: `${PRODUIT_L.title} - ${v.title}`,
     product: { title: PRODUIT_L.title, has_only_default_variant: false }, variant: { title: v.title },
     product_title: PRODUIT_L.title, variant_title: v.title, product_has_only_default_variant: false,
     final_line_price: v.price * l.quantity, final_price: v.price, price: v.price, line_price: v.price * l.quantity,
@@ -119,7 +121,12 @@ const traduire = (langue) => function (cle) {
   if (v === undefined || typeof v === 'object') { manquantes.add(`${langue}:${cle}`); return `translation missing: ${langue}.${cle}`; }
   return v;
 };
-moteur.registerFilter('t', function (cle) { return traduire(this.context.getSync(['request', 'locale', 'iso_code']) || 'fr')(cle); });
+/* Comme Shopify : `| t: nom: valeur` remplace {{ nom }} dans la traduction. */
+moteur.registerFilter('t', function (cle, ...args) {
+  let texte = traduire(this.context.getSync(['request', 'locale', 'iso_code']) || 'fr')(cle);
+  args.filter(Array.isArray).forEach(([nom, valeur]) => { texte = String(texte).split(`{{ ${nom} }}`).join(valeur); });
+  return texte;
+});
 moteur.registerFilter('json', (v) => JSON.stringify(v && v.valueOf ? v.valueOf() : v));
 moteur.registerFilter('asset_url', (f) => '/cdn/assets/' + f);
 moteur.registerFilter('asset_img_url', (f) => '/cdn/assets/' + f);
@@ -285,6 +292,8 @@ http.createServer(async (req, res) => {
       if (panne.has('sections-absente')) Object.keys(sortie).forEach((k) => { delete sortie[k]; });
       return envoyer(res, 200, 'application/json', JSON.stringify(sortie));
     }
+    /* Rendu de section utilisé par theme.js (refreshCart) : /?section_id=cart-drawer */
+    if (url.searchParams.get('section_id') === 'cart-drawer') return envoyer(res, 200, 'text/html; charset=utf-8', await rendreSection('cart-drawer', 'cart-drawer', {}, ctxDe('cart')));
     if (chemin === '/cart') return envoyer(res, 200, 'text/html; charset=utf-8', await page(langue, 'cart', ctxDe('cart')));
     if (chemin.startsWith('/recommendations/')) return envoyer(res, 200, 'text/html', '<div></div>');
     if (chemin.startsWith('/products/') && chemin !== '/products/' + PRODUIT.handle) return envoyer(res, 404, 'text/html', '<p>404</p>');
