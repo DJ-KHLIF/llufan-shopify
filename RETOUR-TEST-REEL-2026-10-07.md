@@ -55,3 +55,12 @@ Données fictives uniquement (ex. « Test Llufan », 0500 00 00 00).
 5. Revenir en arrière vers la boutique, ouvrir le tiroir. Noter : nombre de lignes, et si une ligne
    montre des informations du formulaire (attendu après correctif : aucune).
 6. Recommencer l'étape 3 une seconde fois, puis l'étape 4. Noter les unités en caisse.
+
+## Appliqué au thème 154731577505 (2026-10-07, 19:02 UTC)
+
+À la demande du marchand, les 5 fichiers du commit `fda6e8d` ont été écrits dans le thème de test
+(`themeFilesUpsert`) : `assets/theme.js`, `locales/ar.json`, `locales/fr.default.json`,
+`sections/main-product.liquid`, `snippets/cart-line-item.liquid`. Avant l'écriture, leurs MD5 dans
+Shopify étaient ceux de `3bcfc62` (aucune modification faite entre-temps dans l'éditeur). Après,
+5/5 MD5 identiques à `fda6e8d`. Thème toujours **non publié** ; aucun autre fichier, réglage ou thème touché.
+Le nom du thème indique encore « (3bcfc62) ».
