@@ -12,9 +12,20 @@
     {%- unless item.variant.title contains 'Default' -%}
       <span class="line-item__properties">{{ item.variant.title }}</span>
     {%- endunless -%}
+    {%- comment -%}
+      Les champs du formulaire de commande (nom, téléphone, adresse…) restent
+      dans la ligne et dans la commande, mais ne s'affichent pas ici : le
+      tiroir et la page panier sont visibles par quiconque ouvre le site sur
+      le même appareil. Les clés commençant par « _ » sont masquées aussi
+      (convention Shopify).
+    {%- endcomment -%}
+    {%- assign champs_commande = 'Nom complet|Téléphone|Adresse|Wilaya|Commune|Type de livraison' | split: '|' -%}
     {%- for property in item.properties -%}
-      {%- if property.last != blank -%}
-        <span class="line-item__properties">{{ property.first }} : {{ property.last }}</span>
+      {%- assign premier_caractere = property.first | slice: 0 -%}
+      {%- if property.last != blank and premier_caractere != '_' -%}
+        {%- unless champs_commande contains property.first -%}
+          <span class="line-item__properties">{{ property.first }} : {{ property.last }}</span>
+        {%- endunless -%}
       {%- endif -%}
     {%- endfor -%}
     <div class="h-stack gap-4 items-center">

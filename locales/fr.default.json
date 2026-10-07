@@ -50,7 +50,8 @@
       "media": "Élément",
       "share": "Partager",
       "on_sale": "Promotion",
-      "play_video": "Lire la vidéo"
+      "play_video": "Lire la vidéo",
+      "ajout_non_confirme": "L’ajout n’a pas pu être confirmé. Vérifiez votre panier avant de recommencer."
     },
     "reviews": {
       "rating": "Note"

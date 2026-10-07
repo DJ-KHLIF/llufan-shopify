@@ -178,7 +178,7 @@
                       {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %}>
                       {%- if product.selected_or_first_available_variant.available -%}{{ 'products.product.add_to_cart' | t }}{%- else -%}{{ 'products.product.sold_out' | t }}{%- endif -%}
                     </button>
-                    <p class="product-form__error" data-cart-error hidden></p>
+                    <p class="product-form__error" data-cart-error data-texte-non-confirme="{{ 'products.product.ajout_non_confirme' | t | escape }}" role="alert" hidden></p>
                   </buy-buttons>
                 {%- endform -%}
               </div>

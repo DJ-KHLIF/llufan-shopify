@@ -75,7 +75,7 @@ const vueLigne = (l, i, url, langue = 'fr') => {
     product: { title: PRODUIT_L.title, has_only_default_variant: false }, variant: { title: v.title },
     product_title: PRODUIT_L.title, variant_title: v.title, product_has_only_default_variant: false,
     final_line_price: v.price * l.quantity, final_price: v.price, price: v.price, line_price: v.price * l.quantity,
-    url: url + '?variant=' + v.id, image: null, properties: {},
+    url: url + '?variant=' + v.id, image: null, properties: l.properties || {},
   };
 };
 const vuePanier = (racine = '') => {
@@ -220,7 +220,8 @@ const corps = (req) => new Promise((ok) => { let d = ''; req.on('data', (c) => {
 const envoyer = (res, code, type, data) => { res.writeHead(code, { 'Content-Type': type }); res.end(data); };
 let compteurCle = 0;
 /* Pannes simulées (tests) : sections-500 | sections-null | sections-absente |
-   sections-coupee | change-500 | add-reponse-perdue | cartjs-500 */
+   sections-coupee | change-500 | add-reponse-perdue | cartjs-500 |
+   section-id-coupee (rendu du tiroir par theme.js : /?section_id=cart-drawer) */
 let panne = new Set();
 const mutations = { add: 0, change: 0, ajoutNatif: 0 };
 
@@ -251,17 +252,20 @@ http.createServer(async (req, res) => {
       const brut = await corps(req);
       const ct = req.headers['content-type'] || '';
       let id; let q;
-      if (ct.includes('json')) { const d = JSON.parse(brut); id = d.id; q = d.quantity; } else {
+      let props = {};
+      if (ct.includes('json')) { const d = JSON.parse(brut); id = d.id; q = d.quantity; props = d.properties || {}; } else {
         const m = brut.match(/name="id"\r?\n\r?\n(\d+)/); const n = brut.match(/name="quantity"\r?\n\r?\n(\d+)/);
         id = m && m[1]; q = n ? n[1] : 1;
       }
       const v = variantes().find((x) => String(x.id) === String(id));
       if (!v || !v.available) return envoyer(res, 422, 'application/json', JSON.stringify({ status: 422, description: 'Variante indisponible' }));
       await new Promise((ok) => setTimeout(ok, 150)); // latence réaliste
-      const exist = panier.find((l) => l.variant_id === v.id);
-      if (exist) exist.quantity += Number(q); else panier.push({ key: `${v.id}:k${++compteurCle}`, variant_id: v.id, quantity: Number(q) });
+      /* Comme Shopify : même variante avec d'autres propriétés = ligne séparée */
+      const memes = (l) => l.variant_id === v.id && JSON.stringify(l.properties || {}) === JSON.stringify(props);
+      const exist = panier.find(memes);
+      if (exist) exist.quantity += Number(q); else panier.push({ key: `${v.id}:k${++compteurCle}`, variant_id: v.id, quantity: Number(q), properties: props });
       if (panne.has('add-reponse-perdue')) return envoyer(res, 502, 'text/html', 'Bad Gateway'); // ajout fait, puis erreur passerelle
-      return envoyer(res, 200, 'application/json', JSON.stringify(vueLigne(panier.find((l) => l.variant_id === v.id), 0, '')));
+      return envoyer(res, 200, 'application/json', JSON.stringify(vueLigne(panier.find(memes), 0, '')));
     }
     if (chemin === '/cart/change.js' && req.method === 'POST') {
       mutations.change += 1;
@@ -293,6 +297,7 @@ http.createServer(async (req, res) => {
       return envoyer(res, 200, 'application/json', JSON.stringify(sortie));
     }
     /* Rendu de section utilisé par theme.js (refreshCart) : /?section_id=cart-drawer */
+    if (url.searchParams.get('section_id') === 'cart-drawer' && panne.has('section-id-coupee')) { req.socket.destroy(); return; }
     if (url.searchParams.get('section_id') === 'cart-drawer') return envoyer(res, 200, 'text/html; charset=utf-8', await rendreSection('cart-drawer', 'cart-drawer', {}, ctxDe('cart')));
     if (chemin === '/cart') return envoyer(res, 200, 'text/html; charset=utf-8', await page(langue, 'cart', ctxDe('cart')));
     if (chemin.startsWith('/recommendations/')) return envoyer(res, 200, 'text/html', '<div></div>');

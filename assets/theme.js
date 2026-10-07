@@ -183,11 +183,19 @@
     const form = event.target.closest('form[data-cart-form], .shopify-product-form');
     if (!form || form.dataset.preventDrawer === 'true') return;
     event.preventDefault();
+    /* Double clic : un seul ajout à la fois par formulaire */
+    if (form.dataset.ajoutEnCours === 'true') return;
+    form.dataset.ajoutEnCours = 'true';
     const button = event.submitter || form.querySelector('[type="submit"]');
     const isQuickAdd = button && button.classList.contains('product-card__quick-add-button');
     if (button) button.setAttribute('aria-busy', 'true');
     if (isQuickAdd) button.classList.add('adding-to-cart');
 
+    const errorNode = form.querySelector('[data-cart-error]');
+    const showError = (message) => {
+      if (errorNode) { errorNode.textContent = message; errorNode.hidden = false; }
+    };
+    if (errorNode) errorNode.hidden = true;
     try {
       const formData = new FormData(form);
       if (button && button.name) formData.append(button.name, button.value);
@@ -197,9 +205,14 @@
         body: formData,
       });
       if (!res.ok) {
-        const err = await res.json();
-        const errorNode = form.querySelector('[data-cart-error]');
-        if (errorNode) { errorNode.textContent = err.description || err.message || ''; errorNode.hidden = false; }
+        /* Réponse d'erreur parfois non JSON (passerelle 502…) : on ne la laisse
+           pas tomber dans le catch, qui renverrait le formulaire. */
+        const err = await res.json().catch(() => null);
+        if (err && (err.description || err.message)) showError(err.description || err.message);
+        else {
+          showError((errorNode && errorNode.dataset.texteNonConfirme) || 'L’ajout n’a pas pu être confirmé. Vérifiez votre panier avant de recommencer.');
+          refreshCart().catch(() => {});
+        }
         if (isQuickAdd) button.classList.remove('adding-to-cart');
         return;
       }
@@ -212,9 +225,14 @@
         openDrawer('cart-drawer');
       }
     } catch (e) {
+      /* Jamais de form.submit() ici : l'ajout a pu être enregistré (réponse
+         perdue, rendu du tiroir en échec) et le renvoyer ajoutait l'article une
+         seconde fois. On le signale et on relit le panier (simple lecture). */
       if (isQuickAdd) button.classList.remove('adding-to-cart');
-      form.submit();
+      showError((errorNode && errorNode.dataset.texteNonConfirme) || 'L’ajout n’a pas pu être confirmé. Vérifiez votre panier avant de recommencer.');
+      refreshCart().catch(() => {});
     } finally {
+      delete form.dataset.ajoutEnCours;
       if (button) button.removeAttribute('aria-busy');
     }
   });
